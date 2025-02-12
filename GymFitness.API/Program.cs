@@ -61,9 +61,9 @@ namespace GymFitness.API
                 app.MapScalarApiReference();
             }
 
-            app.UseHttpsRedirection();
-            app.UseCors("AllowAll");
-            app.UseAuthorization();
+            //app.UseHttpsRedirection();
+            //app.UseCors("AllowAll");
+            //app.UseAuthorization();
 
             app.MapControllers();
 
