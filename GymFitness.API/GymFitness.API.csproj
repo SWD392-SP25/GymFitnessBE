@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GymFitness.Domain\GymFitness.Domain.csproj" />
     <ProjectReference Include="..\GymFitness.Application\GymFitness.Application.csproj" />
     <ProjectReference Include="..\GymFitness.Infrastructure\GymFitness.Infrastructure.csproj" />
