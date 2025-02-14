@@ -78,6 +78,11 @@ namespace GymFitness.API
             builder.Services.AddScoped<IChatCompletionService, ChatCompletionService>();
 
             var app = builder.Build();
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             // ✅ Luôn hiển thị Swagger (không chỉ trong Development)
             app.UseSwagger(options =>
