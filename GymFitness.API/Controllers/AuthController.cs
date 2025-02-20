@@ -8,6 +8,8 @@ using System.Security.Claims;
 using System.Text;
 using GymFitness.Domain.Services;
 using GymFitness.Domain.Abstractions.Services;
+using GymFitness.Infrastructure.Data;
+using GymFitness.API.Services.Abstractions;
 
 namespace GymFitness.API.Controllers
 {
@@ -17,41 +19,47 @@ namespace GymFitness.API.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IFirebaseAuthService _firebaseAuthService;
+        private readonly IUserService _userService;
+        private readonly IStaffService _staffService;
 
-        public AuthController(IConfiguration configuration, IFirebaseAuthService firebaseAuthService)
+        public AuthController(IConfiguration configuration, IFirebaseAuthService firebaseAuthService,
+                              IUserService userService, IStaffService staffService)
         {
             _configuration = configuration;
             _firebaseAuthService = firebaseAuthService;
+            _userService = userService;
+            _staffService = staffService;
         }
 
-        // ✅ API tạo Firebase Custom Token (chỉ dùng khi cần)
+        // ✅ API tạo token từ Firebase UID
         [HttpPost("generate-token")]
         public async Task<IActionResult> GenerateToken([FromBody] string uid)
         {
-            var token = await _firebaseAuthService.GenerateFirebaseToken(uid);
+            var token = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(uid);
             return Ok(new { token });
         }
 
-        [HttpPost("google-login")]
-        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequestDto request)
-        {
-            try
-            {
-                // Xác thực token với Firebase
-                var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.IdToken);
-                var uid = decodedToken.Uid;
-                var email = decodedToken.Claims["email"].ToString();
 
-                // Tạo JWT cho hệ thống
-                var token = GenerateJwtToken(uid, email);
+        //[HttpPost("google-login")]
+        //public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequestDto request)
+        //{
+        //    try
+        //    {
+        //        // Xác thực token với Firebase
+        //        var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.IdToken);
+        //        var uid = decodedToken.Uid;
+        //        var email = decodedToken.Claims["email"].ToString();
 
-                return Ok(new { token });
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(new { message = "Invalid token", error = ex.Message });
-            }
-        }
+        //        // Tạo JWT cho hệ thống
+        //        var token = GenerateJwtToken(uid, email);
+
+        //        return Ok(new { token });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Unauthorized(new { message = "Invalid token", error = ex.Message });
+        //    }
+        //}
 
         // ✅ API xác thực ID Token từ Client gửi lên
         [HttpPost("verify-token")]
@@ -74,17 +82,17 @@ namespace GymFitness.API.Controllers
             }
         }
 
-        private string GenerateJwtToken(string uid, string email)
+        private string GenerateJwtToken(string id, string email, string role)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, uid),
-            new Claim(JwtRegisteredClaimNames.Email, email),
-            new Claim(ClaimTypes.Role, "User") // Default role
-        };
+    {
+        new Claim(JwtRegisteredClaimNames.Sub, id),
+        new Claim(JwtRegisteredClaimNames.Email, email),
+        new Claim(ClaimTypes.Role, role)
+    };
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
@@ -94,6 +102,63 @@ namespace GymFitness.API.Controllers
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] GoogleLoginRequestDto request)
+        {
+            try
+            {
+                // ✅ Xác thực ID token từ Firebase
+                FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.IdToken);
+                string email = decodedToken.Claims["email"]?.ToString();
+                string uid = decodedToken.Uid;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return Unauthorized(new { message = "Invalid Firebase token" });
+                }
+
+                // ✅ Kiểm tra xem user hoặc staff đã tồn tại trong DB chưa
+                var user = await _userService.GetUserByEmail(email);
+                var staff = await _staffService.GetStaffByEmail(email);
+
+                if (user == null)
+                {
+                    // Nếu email chưa tồn tại trong cả 2 bảng -> Tạo User mới
+                    user = new User
+                    {
+                        Email = email,
+                      
+                    };
+
+                     _userService.AddUser(user);
+                }
+
+                // ✅ Xác định đối tượng đăng nhập & lấy thông tin
+                string role;
+                string id;
+
+                if (staff != null)
+                {
+                    id = staff.StaffId.ToString();
+                    role = "Staff";
+                }
+                else
+                {
+                    id = user.UserId.ToString();
+                    role = "User";
+                }
+
+                // ✅ Tạo JWT token
+                string jwtToken = GenerateJwtToken(id, email, role);
+
+                return Ok(new { Token = jwtToken, Id = id, Email = email, Role = role });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

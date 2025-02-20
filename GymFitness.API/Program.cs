@@ -1,8 +1,12 @@
 ﻿using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using GymFitness.API.Services;
+using GymFitness.API.Services.Abstractions;
 using GymFitness.Domain.Abstractions.Services;
 using GymFitness.Domain.Models;
 using GymFitness.Domain.Services;
+using GymFitness.Infrastructure.Repositories;
+using GymFitness.Infrastructure.Repositories.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -18,6 +22,10 @@ namespace GymFitness.API
 
             // Add services to the container.
             builder.Services.AddControllers();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IStaffService, StaffService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 
             // ✅ Thêm Swagger với cấu hình chi tiết
             builder.Services.AddEndpointsApiExplorer();
