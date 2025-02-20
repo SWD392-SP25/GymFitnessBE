@@ -14,6 +14,11 @@ namespace GymFitness.Infrastructure.Repositories
     {
         private readonly GymbotDbContext _context;
 
+        public StaffRepository(GymbotDbContext context)
+        {
+            _context = context;
+        }
+
         public void AddStaff(Staff staff)
         {
             // Kiểm tra Staff đã tồn tại chưa
@@ -37,8 +42,15 @@ namespace GymFitness.Infrastructure.Repositories
 
         public async Task<Staff> GetStaffByEmail(string email)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentException("Email cannot be null or empty", nameof(email));
+            }
+
+            Console.WriteLine($"GetStaffByEmail called with email: {email}");
+
             return await _context.Staffs.Include(x => x.Role)
-                                        .FirstOrDefaultAsync(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase)); 
+                                        .FirstOrDefaultAsync(x => EF.Functions.Like(x.Email, email));
         }
     }
 }

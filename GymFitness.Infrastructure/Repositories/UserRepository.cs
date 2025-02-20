@@ -14,10 +14,18 @@ namespace GymFitness.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly GymbotDbContext _context;
+
+        public UserRepository(GymbotDbContext context)
+        {
+            _context = context;
+        }
+
         public async void AddUser(User user)
         {
             // Kiểm tra User đã tồn tại chưa
-            User temp = await _context.Users.FirstOrDefaultAsync(x => x.Email.ToLower() == user.Email.ToLower());
+            User temp = await _context.Users
+                                      .FirstOrDefaultAsync(x => EF.Functions.Like(x.Email, user.Email));
+
 
             if (temp == null)
             {
@@ -40,7 +48,17 @@ namespace GymFitness.Infrastructure.Repositories
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentException("Email cannot be null or empty", nameof(email));
+            }
+
+            Console.WriteLine($"GetUserByEmail called with email: {email}");
+
+            return await _context.Users
+                         .FirstOrDefaultAsync(x => EF.Functions.Like(x.Email, email));
+
+
         }
     }
 }

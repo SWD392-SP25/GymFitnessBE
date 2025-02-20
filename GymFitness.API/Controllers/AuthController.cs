@@ -31,57 +31,6 @@ namespace GymFitness.API.Controllers
             _staffService = staffService;
         }
 
-        // ✅ API tạo token từ Firebase UID
-        [HttpPost("generate-token")]
-        public async Task<IActionResult> GenerateToken([FromBody] string uid)
-        {
-            var token = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(uid);
-            return Ok(new { token });
-        }
-
-
-        //[HttpPost("google-login")]
-        //public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequestDto request)
-        //{
-        //    try
-        //    {
-        //        // Xác thực token với Firebase
-        //        var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.IdToken);
-        //        var uid = decodedToken.Uid;
-        //        var email = decodedToken.Claims["email"].ToString();
-
-        //        // Tạo JWT cho hệ thống
-        //        var token = GenerateJwtToken(uid, email);
-
-        //        return Ok(new { token });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Unauthorized(new { message = "Invalid token", error = ex.Message });
-        //    }
-        //}
-
-        // ✅ API xác thực ID Token từ Client gửi lên
-        [HttpPost("verify-token")]
-        public async Task<IActionResult> VerifyToken([FromHeader] string Authorization)
-        {
-            if (string.IsNullOrEmpty(Authorization))
-            {
-                return Unauthorized("Missing token");
-            }
-
-            var idToken = Authorization.Replace("Bearer ", "");
-            try
-            {
-                var decodedToken = await _firebaseAuthService.VerifyIdToken(idToken);
-                return Ok(new { uid = decodedToken.Uid, message = "Authenticated" });
-            }
-            catch
-            {
-                return Unauthorized("Invalid token");
-            }
-        }
-
         private string GenerateJwtToken(string id, string email, string role)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -109,6 +58,10 @@ namespace GymFitness.API.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(request.IdToken))
+                {
+                    return BadRequest(new { message = "ID Token is required" });
+                }
                 // ✅ Xác thực ID token từ Firebase
                 FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.IdToken);
                 string email = decodedToken.Claims["email"]?.ToString();
@@ -116,12 +69,20 @@ namespace GymFitness.API.Controllers
 
                 if (string.IsNullOrEmpty(email))
                 {
-                    return Unauthorized(new { message = "Invalid Firebase token" });
+                    return Unauthorized(new { message = "Invalid Firebase token: missing email" });
                 }
 
+                Console.WriteLine($"Email extracted from token: {email}");
+
                 // ✅ Kiểm tra xem user hoặc staff đã tồn tại trong DB chưa
+
+                Console.WriteLine($"Checking user with email: {email}");
                 var user = await _userService.GetUserByEmail(email);
+                Console.WriteLine(user != null ? $"User found: {user.UserId}" : "User not found");
+
+                Console.WriteLine($"Checking staff with email: {email}");
                 var staff = await _staffService.GetStaffByEmail(email);
+                Console.WriteLine(staff != null ? $"Staff found: {staff.StaffId}" : "Staff not found");
 
                 if (user == null)
                 {
@@ -139,16 +100,22 @@ namespace GymFitness.API.Controllers
                 string role;
                 string id;
 
-                if (staff != null)
+                if (user != null)
+                {
+                    id = user.UserId.ToString();
+                    role = "User";
+                }
+                else if(staff != null)
                 {
                     id = staff.StaffId.ToString();
                     role = "Staff";
                 }
                 else
                 {
-                    id = user.UserId.ToString();
-                    role = "User";
+                    throw new Exception("User or Staff not found");
+
                 }
+                
 
                 // ✅ Tạo JWT token
                 string jwtToken = GenerateJwtToken(id, email, role);
@@ -160,5 +127,6 @@ namespace GymFitness.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        
     }
 }
