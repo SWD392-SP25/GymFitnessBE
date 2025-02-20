@@ -5,12 +5,17 @@ using GymFitness.API.Services.Abstractions;
 using GymFitness.Domain.Abstractions.Services;
 using GymFitness.Domain.Models;
 using GymFitness.Domain.Services;
+using GymFitness.Infrastructure.Data;
 using GymFitness.Infrastructure.Repositories;
 using GymFitness.Infrastructure.Repositories.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace GymFitness.API
 {
@@ -26,6 +31,15 @@ namespace GymFitness.API
             builder.Services.AddScoped<IStaffService, StaffService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+
+            // ✅ Thêm DbContext
+            builder.Services.AddDbContext<GymbotDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+            // other services
+
+
 
             // ✅ Thêm Swagger với cấu hình chi tiết
             builder.Services.AddEndpointsApiExplorer();
