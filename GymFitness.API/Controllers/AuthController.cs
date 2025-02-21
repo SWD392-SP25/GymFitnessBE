@@ -33,15 +33,21 @@ namespace GymFitness.API.Controllers
 
         private string GenerateJwtToken(string id, string email, string role)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var jwtKey = _configuration["JwtSettings:Key"];
+            if (string.IsNullOrEmpty(jwtKey))
+            {
+                throw new ArgumentNullException("Jwt:Key", "JWT key is not configured.");
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, id),
-        new Claim(JwtRegisteredClaimNames.Email, email),
-        new Claim(ClaimTypes.Role, role)
-    };
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, id),
+                new Claim(JwtRegisteredClaimNames.Email, email),
+                new Claim(ClaimTypes.Role, role)
+            };
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
@@ -78,12 +84,13 @@ namespace GymFitness.API.Controllers
 
                 Console.WriteLine($"Checking user with email: {email}");
                 var user = await _userService.GetUserByEmail(email);
-                Console.WriteLine(user != null ? $"User found: {user.UserId}" : "User not found");
+                Console.WriteLine(user != null ? $"User found Auth Layer: {user.UserId}" : "User not found");
 
-                Console.WriteLine($"Checking staff with email: {email}");
-                var staff = await _staffService.GetStaffByEmail(email);
-                Console.WriteLine(staff != null ? $"Staff found: {staff.StaffId}" : "Staff not found");
+                //Console.WriteLine($"Checking staff with email: {email}");
+                //var staff = await _staffService.GetStaffByEmail(email);
+                //Console.WriteLine(staff != null ? $"Staff found: {staff.StaffId}" : "Staff not found");
 
+                Console.WriteLine("Check if user is already exist");
                 if (user == null)
                 {
                     // Nếu email chưa tồn tại trong cả 2 bảng -> Tạo User mới
@@ -100,26 +107,30 @@ namespace GymFitness.API.Controllers
                 string role;
                 string id;
 
+                Console.WriteLine("Take user from db and transfer data to jwt");
                 if (user != null)
                 {
+                    Console.WriteLine("Adding user to jwt token");
                     id = user.UserId.ToString();
-                    role = "User";
+                    role = user.Role.Name;
                 }
-                else if(staff != null)
-                {
-                    id = staff.StaffId.ToString();
-                    role = "Staff";
-                }
+                //else if(staff != null)
+                //{
+                //    id = staff.StaffId.ToString();
+                //    role = "Staff";
+                //}
                 else
                 {
-                    throw new Exception("User or Staff not found");
+                    throw new Exception("User not found");
 
                 }
-                
+
 
                 // ✅ Tạo JWT token
+                Console.WriteLine("calling GenerateJwtToken ");
                 string jwtToken = GenerateJwtToken(id, email, role);
 
+                Console.WriteLine("return jwtToken");
                 return Ok(new { Token = jwtToken, Id = id, Email = email, Role = role });
             }
             catch (Exception ex)

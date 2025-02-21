@@ -55,8 +55,11 @@ namespace GymFitness.Infrastructure.Repositories
 
             Console.WriteLine($"GetUserByEmail called with email: {email}");
 
-            return await _context.Users
+            var returnUser = _context.Users.Include(x => x.Role)
                          .FirstOrDefaultAsync(x => EF.Functions.Like(x.Email, email));
+            return await returnUser;
+
+            Console.WriteLine("UserRepository found with role: ", returnUser.Result.Role);
 
 
         }

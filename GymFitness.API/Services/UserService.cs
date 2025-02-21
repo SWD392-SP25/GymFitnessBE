@@ -15,7 +15,9 @@ namespace GymFitness.API.Services
         }
         public async Task<User> GetUserByEmail(string email)
         {
-            return await _userRepository.GetUserByEmail(email);
+            var returnUser = _userRepository.GetUserByEmail(email);
+            return await returnUser;
+            Console.WriteLine("UserService found with role: ", returnUser.Result.Role);
         }
  
         public async void AddUser(User user)
