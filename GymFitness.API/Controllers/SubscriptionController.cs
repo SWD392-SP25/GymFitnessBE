@@ -1,59 +1,80 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using GymFitness.Infrastructure; // Đảm bảo namespace đúng
-using GymFitness.Domain; // Kiểm tra lại namespace
-using Microsoft.EntityFrameworkCore;
+﻿using GymFitness.API.Dto;
+using GymFitness.Application.Abstractions.Repositories;
 using GymFitness.Infrastructure.Data;
+using Microsoft.AspNetCore.Mvc;
 
-[Route("api/[controller]")]
-[ApiController]
-public class SubscriptionsController : ControllerBase
+namespace GymFitness.API.Controllers
 {
-    private readonly GymbotDbContext _context;
-
-    public SubscriptionsController(GymbotDbContext context)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SubscriptionPlanController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly ISubscriptionPlanRepository _repository;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAllSubscriptions()
-    {
-        var subscriptions = await _context.SubscriptionPlans.ToListAsync();
-        return Ok(subscriptions);
-    }
+        public SubscriptionPlanController(ISubscriptionPlanRepository repository)
+        {
+            _repository = repository;
+        }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetSubscriptionById(int id)
-    {
-        var subscription = await _context.SubscriptionPlans.FindAsync(id);
-        if (subscription == null) return NotFound();
-        return Ok(subscription);
-    }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var plans = await _repository.GetAllAsync();
+            return Ok(plans);
+        }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateSubscription([FromBody] SubscriptionPlan subscription)
-    {
-        _context.SubscriptionPlans.Add(subscription);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetSubscriptionById), new { id = subscription.PlanId }, subscription);
-    }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var plan = await _repository.GetByIdAsync(id);
+            if (plan == null)
+                return NotFound();
+            return Ok(plan);
+        }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateSubscription(int id, [FromBody] SubscriptionPlan subscription)
-    {
-        if (id != subscription.PlanId) return BadRequest();
-        _context.Entry(subscription).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-        return NoContent();
-    }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] SubscriptionPlanDto dto)
+        {
+            var plan = new SubscriptionPlan
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                DurationMonths = dto.DurationMonths,
+                Features = dto.Features,
+                MaxSessionsPerMonth = dto.MaxSessionsPerMonth,
+                IsActive = dto.IsActive,
+                CreatedAt = DateTime.UtcNow
+            };
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteSubscription(int id)
-    {
-        var subscription = await _context.SubscriptionPlans.FindAsync(id);
-        if (subscription == null) return NotFound();
-        _context.SubscriptionPlans.Remove(subscription);
-        await _context.SaveChangesAsync();
-        return NoContent();
+            await _repository.AddAsync(plan);
+            return CreatedAtAction(nameof(GetById), new { id = plan.PlanId }, plan);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] SubscriptionPlanDto dto)
+        {
+            var plan = await _repository.GetByIdAsync(id);
+            if (plan == null)
+                return NotFound();
+
+            plan.Name = dto.Name;
+            plan.Description = dto.Description;
+            plan.Price = dto.Price;
+            plan.DurationMonths = dto.DurationMonths;
+            plan.Features = dto.Features;
+            plan.MaxSessionsPerMonth = dto.MaxSessionsPerMonth;
+            plan.IsActive = dto.IsActive;
+
+            await _repository.UpdateAsync(plan);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _repository.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }

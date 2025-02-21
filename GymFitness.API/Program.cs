@@ -15,6 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using GymFitness.Application.Abstractions.Repositories;
+using GymFitness.Application.Services;
 
 
 namespace GymFitness.API
@@ -28,9 +30,10 @@ namespace GymFitness.API
             // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IStaffService, StaffService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+            builder.Services.AddScoped<SubscriptionPlanService>();           
+
+
 
             // ✅ Thêm DbContext
             builder.Services.AddDbContext<GymbotDbContext>(options =>
@@ -148,6 +151,10 @@ namespace GymFitness.API
             builder.Services.AddHttpClient("ChatGPT");
             builder.Services.AddScoped<IChatCompletionService, ChatCompletionService>();
             builder.Services.AddScoped<IFirebaseAuthService, FirebaseAuthService>();
+            builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
+
+
+
 
             var app = builder.Build();
             app.UseRouting();
