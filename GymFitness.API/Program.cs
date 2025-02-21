@@ -1,8 +1,23 @@
-﻿using Microsoft.OpenApi.Models;
-using Scalar.AspNetCore;
+﻿using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using GymFitness.API.Services;
+using GymFitness.API.Services.Abstractions;
 using GymFitness.Domain.Abstractions.Services;
-using GymFitness.Domain.Services;
 using GymFitness.Domain.Models;
+using GymFitness.Domain.Services;
+using GymFitness.Infrastructure.Data;
+using GymFitness.Infrastructure.Repositories;
+using GymFitness.Infrastructure.Repositories.Abstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Scalar.AspNetCore;
+using Microsoft.EntityFrameworkCore;
+using GymFitness.Application.Abstractions.Repositories;
+using GymFitness.Application.Services;
+
 
 namespace GymFitness.API
 {
@@ -14,6 +29,20 @@ namespace GymFitness.API
 
             // Add services to the container.
             builder.Services.AddControllers();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<SubscriptionPlanService>();           
+
+
+
+            // ✅ Thêm DbContext
+            builder.Services.AddDbContext<GymbotDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+            // other services
+
+
 
             // ✅ Thêm Swagger với cấu hình chi tiết
             builder.Services.AddEndpointsApiExplorer();
@@ -56,6 +85,51 @@ namespace GymFitness.API
                 });
             });
 
+            // ✅ Khởi tạo Firebase Admin SDK
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile("firebase_config.json")
+            });
+
+            // Cấu hình xác thực JWT
+            builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://securetoken.google.com/gymbot-3ddf3";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = "https://securetoken.google.com/gymbot-3ddf3",
+            ValidateAudience = true,
+            ValidAudience = "gymbot-3ddf3",
+            ValidateLifetime = true
+        };
+    });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                // Policy cho Admin
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+
+                // Policy cho Staff
+                options.AddPolicy("StaffOnly", policy => policy.RequireRole("Staff"));
+
+                // Policy cho PT
+                options.AddPolicy("PTOnly", policy => policy.RequireRole("PT"));
+
+                // Policy cho User
+                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+
+                // Policy cho Admin và Staff (Ví dụ: cấp quyền quản lý hệ thống)
+                options.AddPolicy("AdminOrStaff", policy => policy.RequireRole("Admin", "Staff"));
+
+                // Policy cho tất cả các role (nếu bạn muốn cấp quyền truy cập rộng rãi hơn)
+                options.AddPolicy("AnyAuthenticated", policy => policy.RequireAuthenticatedUser());
+            });
+
+
+
             // ✅ CORS: Có thể cấu hình động nếu cần
             builder.Services.AddCors(options =>
             {
@@ -76,8 +150,18 @@ namespace GymFitness.API
             builder.Services.AddSingleton(openAIConfig);
             builder.Services.AddHttpClient("ChatGPT");
             builder.Services.AddScoped<IChatCompletionService, ChatCompletionService>();
+            builder.Services.AddScoped<IFirebaseAuthService, FirebaseAuthService>();
+            builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
+
+
+
 
             var app = builder.Build();
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             // ✅ Luôn hiển thị Swagger (không chỉ trong Development)
             app.UseSwagger(options =>
@@ -94,6 +178,7 @@ namespace GymFitness.API
             // ✅ Middleware
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
 
