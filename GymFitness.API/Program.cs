@@ -31,7 +31,10 @@ namespace GymFitness.API
             builder.Services.AddControllers();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<SubscriptionPlanService>();           
+            builder.Services.AddScoped<SubscriptionPlanService>();
+            builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+            builder.Services.AddScoped<StaffService>();
+
 
 
 
