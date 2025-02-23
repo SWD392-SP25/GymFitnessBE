@@ -1,6 +1,5 @@
-﻿
-
-using GymFitness.Application.Abstractions.Repositories;
+﻿using GymFitness.Application.Abstractions.Repositories;
+using GymFitness.Domain.Entities;
 using GymFitness.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;

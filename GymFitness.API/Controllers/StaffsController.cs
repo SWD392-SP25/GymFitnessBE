@@ -1,39 +1,36 @@
 ﻿using GymFitness.Application.Services;
-using GymFitness.Infrastructure.Data;
+using GymFitness.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GymFitness.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class StaffsController : ControllerBase
+    [Route("api/[controller]")]
+    public class StaffController : ControllerBase
     {
         private readonly StaffService _staffService;
 
-        public StaffsController(StaffService staffService)
+        public StaffController(StaffService staffService)
         {
             _staffService = staffService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllStaffs()
-        {
-            var staffs = await _staffService.GetAllStaffsAsync();
-            return Ok(staffs);
-        }
+        public async Task<IEnumerable<Staff>> GetAllStaffs() =>
+            await _staffService.GetAllStaffsAsync();
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetStaffById(int id)
+        public async Task<ActionResult<Staff>> GetStaffById(int id)
         {
             var staff = await _staffService.GetStaffByIdAsync(id);
             if (staff == null) return NotFound();
-            return Ok(staff);
+            return staff;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateStaff([FromBody] Staff staff)
+        public async Task<IActionResult> AddStaff(Staff staff)
         {
             await _staffService.AddStaffAsync(staff);
             return CreatedAtAction(nameof(GetStaffById), new { id = staff.StaffId }, staff);
@@ -42,10 +39,31 @@ namespace GymFitness.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStaff(int id, [FromBody] Staff staff)
         {
-            if (id != staff.StaffId) return BadRequest();
-            await _staffService.UpdateStaffAsync(staff);
+            if (staff == null || id != staff.StaffId)
+            {
+                return BadRequest("Invalid staff data.");
+            }
+
+            var existingStaff = await _staffService.GetStaffByIdAsync(id);
+            if (existingStaff == null)
+            {
+                return NotFound();
+            }
+
+            // Cập nhật thông tin staff
+            existingStaff.Email = staff.Email;
+            existingStaff.FirstName = staff.FirstName;
+            existingStaff.LastName = staff.LastName;
+            existingStaff.RoleId = staff.RoleId;
+            existingStaff.Phone = staff.Phone;
+            existingStaff.Salary = staff.Salary;    
+            existingStaff.Status = staff.Status;
+            existingStaff.Department = staff.Department;
+
+            await _staffService.UpdateStaffAsync(existingStaff);
             return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStaff(int id)

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using GymFitness.Domain.Entities;
 
 
 namespace GymFitness.Infrastructure.Repositories

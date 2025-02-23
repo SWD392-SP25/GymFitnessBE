@@ -1,4 +1,4 @@
-﻿using GymFitness.Infrastructure.Data;
+﻿using GymFitness.Domain.Entities;
 
 namespace GymFitness.Application.Abstractions.Repositories
 {

@@ -1,4 +1,5 @@
 ﻿using GymFitness.Application.Abstractions.Repositories;
+using GymFitness.Domain.Entities;
 using GymFitness.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -15,15 +16,11 @@ namespace GymFitness.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Staff>> GetAllAsync()
-        {
-            return await _context.Staffs.ToListAsync();
-        }
+        public async Task<IEnumerable<Staff>> GetAllAsync() =>
+            await _context.Staffs.ToListAsync();
 
-        public async Task<Staff?> GetByIdAsync(int id)
-        {
-            return await _context.Staffs.FindAsync(id);
-        }
+        public async Task<Staff?> GetByIdAsync(int id) =>
+            await _context.Staffs.FindAsync(id);
 
         public async Task AddAsync(Staff staff)
         {
@@ -33,7 +30,7 @@ namespace GymFitness.Infrastructure.Repositories
 
         public async Task UpdateAsync(Staff staff)
         {
-            _context.Entry(staff).State = EntityState.Modified;
+            _context.Staffs.Update(staff);
             await _context.SaveChangesAsync();
         }
 

@@ -34,7 +34,24 @@ namespace GymFitness.API
             builder.Services.AddScoped<SubscriptionPlanService>();
             builder.Services.AddScoped<IStaffRepository, StaffRepository>();
             builder.Services.AddScoped<StaffService>();
-
+            builder.Services.AddScoped<IStaffScheduleRepository, StaffScheduleRepository>();
+            builder.Services.AddScoped<StaffScheduleService>();
+            builder.Services.AddScoped<IStaffSpecializationRepository, StaffSpecializationRepository>();
+            builder.Services.AddScoped<StaffSpecializationService>();
+            builder.Services.AddScoped<IMuscleGroupRepository, MuscleGroupRepository>();
+            builder.Services.AddScoped<MuscleGroupService>();
+            builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
+            builder.Services.AddScoped<ExerciseCategoryService>();
+            builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+            builder.Services.AddScoped<ExerciseService>();
+            builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
+            builder.Services.AddScoped<WorkoutPlanService>();
+            builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
+            builder.Services.AddScoped<WorkoutPlanExerciseService>();
+            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            builder.Services.AddScoped<AppointmentService>();
+            builder.Services.AddScoped<IAppointmentTypeRepository, AppointmentTypeRepository>();
+            builder.Services.AddScoped<AppointmentTypeService>();
 
 
 

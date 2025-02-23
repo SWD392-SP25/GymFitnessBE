@@ -1,7 +1,8 @@
-﻿using System;
+﻿using GymFitness.Domain.Entities;
+using System;
 using System.Collections.Generic;
 
-namespace GymFitness.Infrastructure.Data;
+namespace GymFitness.Domain.Entities;
 
 public partial class Role
 {

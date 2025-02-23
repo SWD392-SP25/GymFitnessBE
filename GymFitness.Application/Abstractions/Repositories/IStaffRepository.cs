@@ -1,4 +1,4 @@
-﻿using GymFitness.Infrastructure.Data;
+﻿using GymFitness.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

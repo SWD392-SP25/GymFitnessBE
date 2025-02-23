@@ -1,5 +1,5 @@
 ﻿using GymFitness.API.Services.Abstractions;
-using GymFitness.Infrastructure.Data;
+using GymFitness.Domain.Entities;
 using GymFitness.Infrastructure.Repositories.Abstractions;
 
 namespace GymFitness.API.Services

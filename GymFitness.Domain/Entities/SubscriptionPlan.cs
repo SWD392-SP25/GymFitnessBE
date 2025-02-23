@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GymFitness.Infrastructure.Data;
+namespace GymFitness.Domain.Entities;
 
-public partial class SubscriptionPlan
+public class SubscriptionPlan
 {
     public int PlanId { get; set; }
 

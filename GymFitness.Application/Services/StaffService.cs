@@ -1,5 +1,5 @@
 ﻿using GymFitness.Application.Abstractions.Repositories;
-using GymFitness.Infrastructure.Data;
+using GymFitness.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,29 +14,19 @@ namespace GymFitness.Application.Services
             _staffRepository = staffRepository;
         }
 
-        public async Task<IEnumerable<Staff>> GetAllStaffsAsync()
-        {
-            return await _staffRepository.GetAllAsync();
-        }
+        public async Task<IEnumerable<Staff>> GetAllStaffsAsync() =>
+            await _staffRepository.GetAllAsync();
 
-        public async Task<Staff?> GetStaffByIdAsync(int id)
-        {
-            return await _staffRepository.GetByIdAsync(id);
-        }
+        public async Task<Staff?> GetStaffByIdAsync(int id) =>
+            await _staffRepository.GetByIdAsync(id);
 
-        public async Task AddStaffAsync(Staff staff)
-        {
+        public async Task AddStaffAsync(Staff staff) =>
             await _staffRepository.AddAsync(staff);
-        }
 
-        public async Task UpdateStaffAsync(Staff staff)
-        {
+        public async Task UpdateStaffAsync(Staff staff) =>
             await _staffRepository.UpdateAsync(staff);
-        }
 
-        public async Task DeleteStaffAsync(int id)
-        {
+        public async Task DeleteStaffAsync(int id) =>
             await _staffRepository.DeleteAsync(id);
-        }
     }
 }
