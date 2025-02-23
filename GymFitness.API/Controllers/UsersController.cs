@@ -1,4 +1,5 @@
-﻿using GymFitness.Infrastructure.Data;
+﻿using GymFitness.Domain.Entities;
+using GymFitness.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;

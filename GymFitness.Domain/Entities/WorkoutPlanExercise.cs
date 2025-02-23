@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GymFitness.Infrastructure.Data;
+namespace GymFitness.Domain.Entities;
 
 public partial class WorkoutPlanExercise
 {

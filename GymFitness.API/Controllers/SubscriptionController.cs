@@ -1,5 +1,7 @@
 ﻿using GymFitness.API.Dto;
 using GymFitness.Application.Abstractions.Repositories;
+using GymFitness.Application.Services;
+using GymFitness.Domain.Entities;
 using GymFitness.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,24 +11,25 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class SubscriptionPlanController : ControllerBase
     {
-        private readonly ISubscriptionPlanRepository _repository;
+        private readonly SubscriptionPlanService _planService;
 
-        public SubscriptionPlanController(ISubscriptionPlanRepository repository)
+        public SubscriptionPlanController(SubscriptionPlanService planService)
         {
-            _repository = repository;
+            _planService = planService;
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll()   
         {
-            var plans = await _repository.GetAllAsync();
+            var plans = await _planService.GetAllPlansAsync();
             return Ok(plans);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var plan = await _repository.GetByIdAsync(id);
+            var plan = await _planService.GetPlanByIdAsync(id);
             if (plan == null)
                 return NotFound();
             return Ok(plan);
@@ -47,14 +50,14 @@ namespace GymFitness.API.Controllers
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _repository.AddAsync(plan);
+            await _planService.AddPlanAsync(plan);
             return CreatedAtAction(nameof(GetById), new { id = plan.PlanId }, plan);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] SubscriptionPlanDto dto)
         {
-            var plan = await _repository.GetByIdAsync(id);
+            var plan = await _planService.GetPlanByIdAsync(id);
             if (plan == null)
                 return NotFound();
 
@@ -66,14 +69,14 @@ namespace GymFitness.API.Controllers
             plan.MaxSessionsPerMonth = dto.MaxSessionsPerMonth;
             plan.IsActive = dto.IsActive;
 
-            await _repository.UpdateAsync(plan);
+            await _planService.UpdatePlanAsync(plan);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _repository.DeleteAsync(id);
+            await _planService.DeletePlanAsync(id);
             return NoContent();
         }
     }

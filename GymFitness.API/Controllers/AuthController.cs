@@ -10,6 +10,8 @@ using GymFitness.Domain.Services;
 using GymFitness.Domain.Abstractions.Services;
 using GymFitness.Infrastructure.Data;
 using GymFitness.API.Services.Abstractions;
+using GymFitness.Domain.Entities;
+using GymFitness.Application.Services;
 
 namespace GymFitness.API.Controllers
 {
@@ -20,10 +22,10 @@ namespace GymFitness.API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IFirebaseAuthService _firebaseAuthService;
         private readonly IUserService _userService;
-        private readonly IStaffService _staffService;
+        private readonly StaffService _staffService;
 
         public AuthController(IConfiguration configuration, IFirebaseAuthService firebaseAuthService,
-                              IUserService userService, IStaffService staffService)
+                              IUserService userService, StaffService staffService)
         {
             _configuration = configuration;
             _firebaseAuthService = firebaseAuthService;
