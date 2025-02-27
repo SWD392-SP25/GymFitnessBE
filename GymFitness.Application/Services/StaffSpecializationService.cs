@@ -17,7 +17,7 @@ namespace GymFitness.Application.Services
         public async Task<IEnumerable<StaffSpecialization>> GetAllAsync() =>
             await _repository.GetAllAsync();
 
-        public async Task<StaffSpecialization?> GetByIdAsync(int staffId, int specializationId) =>
+        public async Task<StaffSpecialization?> GetByIdAsync(Guid staffId, int specializationId) =>
             await _repository.GetByIdAsync(staffId, specializationId);
 
         public async Task AddAsync(StaffSpecialization staffSpecialization) =>
@@ -26,7 +26,7 @@ namespace GymFitness.Application.Services
         public async Task UpdateAsync(StaffSpecialization staffSpecialization) =>
             await _repository.UpdateAsync(staffSpecialization);
 
-        public async Task DeleteAsync(int staffId, int specializationId) =>
+        public async Task DeleteAsync(Guid staffId, int specializationId) =>
             await _repository.DeleteAsync(staffId, specializationId);
     }
 }

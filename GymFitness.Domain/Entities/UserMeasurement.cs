@@ -7,7 +7,7 @@ public partial class UserMeasurement
 {
     public int MeasurementId { get; set; }
 
-    public int? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     public DateOnly? Date { get; set; }
 

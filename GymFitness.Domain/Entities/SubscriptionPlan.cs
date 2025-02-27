@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GymFitness.Domain.Entities;
 
-public class SubscriptionPlan
+public partial class SubscriptionPlan
 {
     public int PlanId { get; set; }
 

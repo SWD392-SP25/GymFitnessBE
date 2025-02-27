@@ -5,7 +5,7 @@ namespace GymFitness.Domain.Entities;
 
 public partial class StaffSpecialization
 {
-    public int StaffId { get; set; }
+    public Guid StaffId { get; set; }
 
     public int SpecializationId { get; set; }
 

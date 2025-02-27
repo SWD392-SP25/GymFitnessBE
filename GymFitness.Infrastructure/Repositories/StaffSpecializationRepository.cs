@@ -19,7 +19,7 @@ namespace GymFitness.Infrastructure.Repositories
         public async Task<IEnumerable<StaffSpecialization>> GetAllAsync() =>
             await _context.StaffSpecializations.ToListAsync();
 
-        public async Task<StaffSpecialization?> GetByIdAsync(int staffId, int specializationId) =>
+        public async Task<StaffSpecialization?> GetByIdAsync(Guid staffId, int specializationId) =>
             await _context.StaffSpecializations
                 .FirstOrDefaultAsync(s => s.StaffId == staffId && s.SpecializationId == specializationId);
 
@@ -35,7 +35,7 @@ namespace GymFitness.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int staffId, int specializationId)
+        public async Task DeleteAsync(Guid staffId, int specializationId)
         {
             var staffSpecialization = await _context.StaffSpecializations
                 .FirstOrDefaultAsync(s => s.StaffId == staffId && s.SpecializationId == specializationId);
