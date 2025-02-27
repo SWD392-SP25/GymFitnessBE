@@ -24,5 +24,10 @@ namespace GymFitness.API.Services
         {
              _userRepository.AddUser(user);
         }
+
+        public Task<User> GetUserById(Guid userId)
+        {
+           return _userRepository.GetUserById(userId);
+        }
     }
 }

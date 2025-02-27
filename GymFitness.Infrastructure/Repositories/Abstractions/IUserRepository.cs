@@ -12,5 +12,6 @@ namespace GymFitness.Infrastructure.Repositories.Abstractions
         Task<User> GetUserByEmail(string email);
         void AddUser(User user);
 
+        Task<User> GetUserById(Guid userId);
     }
 }

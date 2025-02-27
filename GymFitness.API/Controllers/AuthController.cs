@@ -12,6 +12,9 @@ using GymFitness.Infrastructure.Data;
 using GymFitness.API.Services.Abstractions;
 using GymFitness.Domain.Entities;
 using GymFitness.Application.Services;
+using GymFitness.Application.Abstractions.Services;
+using Google.Apis.Auth.OAuth2.Requests;
+using System.Security.Cryptography;
 
 namespace GymFitness.API.Controllers
 {
@@ -23,14 +26,17 @@ namespace GymFitness.API.Controllers
         private readonly IFirebaseAuthService _firebaseAuthService;
         private readonly IUserService _userService;
         private readonly StaffService _staffService;
+        private readonly IRedisService _redisService;
 
         public AuthController(IConfiguration configuration, IFirebaseAuthService firebaseAuthService,
-                              IUserService userService, StaffService staffService)
+                                                            IUserService userService, StaffService staffService,
+                                                            IRedisService redisService)
         {
             _configuration = configuration;
             _firebaseAuthService = firebaseAuthService;
             _userService = userService;
             _staffService = staffService;
+            _redisService = redisService;
         }
 
         private string GenerateJwtToken(string id, string email, string role)
@@ -98,8 +104,9 @@ namespace GymFitness.API.Controllers
                     // Nếu email chưa tồn tại trong cả 2 bảng -> Tạo User mới
                     user = new User
                     {
+                        UserId = Guid.NewGuid(),
                         Email = email,
-                      
+                        RoleId = 1
                     };
 
                      _userService.AddUser(user);
@@ -131,15 +138,62 @@ namespace GymFitness.API.Controllers
                 // ✅ Tạo JWT token
                 Console.WriteLine("calling GenerateJwtToken ");
                 string jwtToken = GenerateJwtToken(id, email, role);
+                var refreshToken = GenerateRefreshToken();
+
+                // ✅ Lưu token vào Redis
+                Console.WriteLine("Save token to redis");
+                await _redisService.SetAsync($"refresh:{id}", refreshToken, TimeSpan.FromDays(7));
+
 
                 Console.WriteLine("return jwtToken");
-                return Ok(new { Token = jwtToken, Id = id, Email = email, Role = role });
+                return Ok(new { Token = jwtToken, RefreshToken = refreshToken, Id = id, Email = email, Role = role });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
         }
-        
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
+        {
+            if (string.IsNullOrEmpty(request.RefreshToken)) return BadRequest("Refresh token is required.");
+
+            // ✅ Kiểm tra Access Token có bị thu hồi không
+            var isRevoked = await _redisService.GetAsync($"revoke:{request.AccessToken}");
+            if (!string.IsNullOrEmpty(isRevoked))
+            {
+                return Unauthorized("Access Token has been revoked.");
+            }
+
+            // ✅ Lấy refresh token từ Redis
+            var storedRefreshToken = await _redisService.GetAsync($"refresh:{request.UserId}");
+            if (storedRefreshToken != request.RefreshToken) return Unauthorized("Invalid refresh token.");
+
+            // ✅ Tạo Access Token mới
+            var user = await _userService.GetUserById(request.UserId);
+            if (user == null) return Unauthorized("User not found.");
+
+            string jwtToken = GenerateJwtToken(user.UserId.ToString(), user.Email, user.Role.Name);
+            return Ok(new { Token = jwtToken });
+        }
+
+
+        private string GenerateRefreshToken()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDto request)
+        {
+            // Xoá Refresh Token trong Redis để không thể refresh nữa
+            await _redisService.DeleteAsync($"refresh:{request.UserId}");
+
+            // Đánh dấu Access Token đã bị thu hồi
+            await _redisService.SetAsync($"revoke:{request.AccessToken}", "true", TimeSpan.FromHours(3));
+
+            return Ok(new { message = "Logged out successfully" });
+        }
     }
 }

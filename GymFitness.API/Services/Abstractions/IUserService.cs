@@ -6,5 +6,7 @@ namespace GymFitness.API.Services.Abstractions
     {
         Task<User> GetUserByEmail(string email);
         void AddUser(User user);
+
+        Task<User> GetUserById(Guid userId);
     }
 }
