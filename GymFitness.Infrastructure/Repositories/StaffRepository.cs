@@ -19,7 +19,7 @@ namespace GymFitness.Infrastructure.Repositories
         public async Task<IEnumerable<Staff>> GetAllAsync() =>
             await _context.Staffs.ToListAsync();
 
-        public async Task<Staff?> GetByIdAsync(int id) =>
+        public async Task<Staff?> GetByIdAsync(Guid id) =>
             await _context.Staffs.FindAsync(id);
 
         public async Task AddAsync(Staff staff)
@@ -34,7 +34,7 @@ namespace GymFitness.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var staff = await _context.Staffs.FindAsync(id);
             if (staff != null)

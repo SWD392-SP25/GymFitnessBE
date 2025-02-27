@@ -7,7 +7,7 @@ public partial class PaymentMethod
 {
     public int MethodId { get; set; }
 
-    public int? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     public string? Provider { get; set; }
 

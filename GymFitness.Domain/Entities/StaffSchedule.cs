@@ -7,7 +7,7 @@ public partial class StaffSchedule
 {
     public int ScheduleId { get; set; }
 
-    public int? StaffId { get; set; }
+    public Guid? StaffId { get; set; }
 
     public int? DayOfWeek { get; set; }
 

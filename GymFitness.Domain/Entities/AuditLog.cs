@@ -1,5 +1,4 @@
-﻿using GymFitness.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace GymFitness.Domain.Entities;
@@ -8,9 +7,9 @@ public partial class AuditLog
 {
     public int LogId { get; set; }
 
-    public int? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
-    public int? StaffId { get; set; }
+    public Guid? StaffId { get; set; }
 
     public string? Action { get; set; }
 

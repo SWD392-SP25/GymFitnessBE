@@ -1,5 +1,4 @@
-﻿using GymFitness.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace GymFitness.Domain.Entities;
@@ -8,7 +7,7 @@ public partial class UserSubscription
 {
     public int SubscriptionId { get; set; }
 
-    public int? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     public int? PlanId { get; set; }
 

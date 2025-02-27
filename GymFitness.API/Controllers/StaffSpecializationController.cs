@@ -25,7 +25,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet("{staffId}/{specializationId}")]
-        public async Task<IActionResult> GetById(int staffId, int specializationId)
+        public async Task<IActionResult> GetById(Guid staffId, int specializationId)
         {
             var specialization = await _service.GetByIdAsync(staffId, specializationId);
             if (specialization == null)
@@ -41,7 +41,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpPut("{staffId}/{specializationId}")]
-        public async Task<IActionResult> Update(int staffId, int specializationId, [FromBody] StaffSpecialization staffSpecialization)
+        public async Task<IActionResult> Update(Guid staffId, int specializationId, [FromBody] StaffSpecialization staffSpecialization)
         {
             if (staffId != staffSpecialization.StaffId || specializationId != staffSpecialization.SpecializationId)
                 return BadRequest("Invalid specialization data.");
@@ -51,7 +51,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpDelete("{staffId}/{specializationId}")]
-        public async Task<IActionResult> Delete(int staffId, int specializationId)
+        public async Task<IActionResult> Delete(Guid staffId, int specializationId)
         {
             await _service.DeleteAsync(staffId, specializationId);
             return NoContent();

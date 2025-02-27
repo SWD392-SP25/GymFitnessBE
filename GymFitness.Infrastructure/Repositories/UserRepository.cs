@@ -40,7 +40,7 @@ namespace GymFitness.Infrastructure.Repositories
 
                 // Gán Role cho User
                 user.RoleId = role.RoleId;  // Chỉ cần gán RoleId, không cần RoleName
-                user.PasswordHash = "123456";  // Mật khẩu mặc định
+                
                 // Thêm User vào database
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();

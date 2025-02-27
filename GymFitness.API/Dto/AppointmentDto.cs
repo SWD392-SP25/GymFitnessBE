@@ -3,8 +3,8 @@
     public class AppointmentDto
     {
         public int AppointmentId { get; set; }
-        public int? UserId { get; set; }
-        public int? StaffId { get; set; }
+        public Guid? UserId { get; set; }
+        public Guid? StaffId { get; set; }
         public int? TypeId { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }

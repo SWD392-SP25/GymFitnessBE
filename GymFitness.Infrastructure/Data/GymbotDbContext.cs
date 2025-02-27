@@ -68,7 +68,7 @@ public partial class GymbotDbContext : DbContext
     public virtual DbSet<WorkoutPlanExercise> WorkoutPlanExercises { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString());
+    => optionsBuilder.UseSqlServer(GetConnectionString());
 
     private string GetConnectionString()
     {
@@ -84,7 +84,7 @@ public partial class GymbotDbContext : DbContext
     {
         modelBuilder.Entity<Appointment>(entity =>
         {
-            entity.HasKey(e => e.AppointmentId).HasName("PK__appointm__A50828FC7E35B642");
+            entity.HasKey(e => e.AppointmentId).HasName("PK__appointm__A50828FC9AB63CAA");
 
             entity.ToTable("appointments");
 
@@ -111,20 +111,20 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Staff).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK__appointme__staff__42E1EEFE");
+                .HasConstraintName("FK__appointme__staff__00200768");
 
             entity.HasOne(d => d.Type).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.TypeId)
-                .HasConstraintName("FK__appointme__type___43D61337");
+                .HasConstraintName("FK__appointme__type___01142BA1");
 
             entity.HasOne(d => d.User).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__appointme__user___41EDCAC5");
+                .HasConstraintName("FK__appointme__user___02084FDA");
         });
 
         modelBuilder.Entity<AppointmentType>(entity =>
         {
-            entity.HasKey(e => e.TypeId).HasName("PK__appointm__2C000598A2C391B3");
+            entity.HasKey(e => e.TypeId).HasName("PK__appointm__2C0005984688A6F8");
 
             entity.ToTable("appointment_types");
 
@@ -144,7 +144,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<AuditLog>(entity =>
         {
-            entity.HasKey(e => e.LogId).HasName("PK__audit_lo__9E2397E0E2B221B5");
+            entity.HasKey(e => e.LogId).HasName("PK__audit_lo__9E2397E036BC1435");
 
             entity.ToTable("audit_logs");
 
@@ -172,16 +172,16 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Staff).WithMany(p => p.AuditLogs)
                 .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK__audit_log__staff__57DD0BE4");
+                .HasConstraintName("FK__audit_log__staff__02FC7413");
 
             entity.HasOne(d => d.User).WithMany(p => p.AuditLogs)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__audit_log__user___56E8E7AB");
+                .HasConstraintName("FK__audit_log__user___03F0984C");
         });
 
         modelBuilder.Entity<ChatHistory>(entity =>
         {
-            entity.HasKey(e => e.ChatId).HasName("PK__chat_his__FD040B17C758BB7A");
+            entity.HasKey(e => e.ChatId).HasName("PK__chat_his__FD040B17511D1FC3");
 
             entity.ToTable("chat_histories");
 
@@ -202,16 +202,16 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Staff).WithMany(p => p.ChatHistories)
                 .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK__chat_hist__staff__489AC854");
+                .HasConstraintName("FK__chat_hist__staff__04E4BC85");
 
             entity.HasOne(d => d.User).WithMany(p => p.ChatHistories)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__chat_hist__user___47A6A41B");
+                .HasConstraintName("FK__chat_hist__user___05D8E0BE");
         });
 
         modelBuilder.Entity<Exercise>(entity =>
         {
-            entity.HasKey(e => e.ExerciseId).HasName("PK__exercise__C121418EB747761B");
+            entity.HasKey(e => e.ExerciseId).HasName("PK__exercise__C121418E9332232A");
 
             entity.ToTable("exercises");
 
@@ -252,16 +252,16 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Category).WithMany(p => p.Exercises)
                 .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__exercises__categ__440B1D61");
+                .HasConstraintName("FK__exercises__categ__06CD04F7");
 
             entity.HasOne(d => d.MuscleGroup).WithMany(p => p.Exercises)
                 .HasForeignKey(d => d.MuscleGroupId)
-                .HasConstraintName("FK__exercises__muscl__4316F928");
+                .HasConstraintName("FK__exercises__muscl__07C12930");
         });
 
         modelBuilder.Entity<ExerciseCategory>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__exercise__D54EE9B412BFF32C");
+            entity.HasKey(e => e.CategoryId).HasName("PK__exercise__D54EE9B40A49E256");
 
             entity.ToTable("exercise_categories");
 
@@ -277,7 +277,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Invoice>(entity =>
         {
-            entity.HasKey(e => e.InvoiceId).HasName("PK__invoices__F58DFD49AC325648");
+            entity.HasKey(e => e.InvoiceId).HasName("PK__invoices__F58DFD49623921B3");
 
             entity.ToTable("invoices");
 
@@ -300,20 +300,20 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.PaymentMethod).WithMany(p => p.Invoices)
                 .HasForeignKey(d => d.PaymentMethodId)
-                .HasConstraintName("FK__invoices__paymen__04E4BC85");
+                .HasConstraintName("FK__invoices__paymen__08B54D69");
 
             entity.HasOne(d => d.Subscription).WithMany(p => p.Invoices)
                 .HasForeignKey(d => d.SubscriptionId)
-                .HasConstraintName("FK__invoices__subscr__03F0984C");
+                .HasConstraintName("FK__invoices__subscr__09A971A2");
 
             entity.HasOne(d => d.User).WithMany(p => p.Invoices)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__invoices__user_i__02FC7413");
+                .HasConstraintName("FK__invoices__user_i__0A9D95DB");
         });
 
         modelBuilder.Entity<MuscleGroup>(entity =>
         {
-            entity.HasKey(e => e.MuscleGroupId).HasName("PK__muscle_g__9DFCBF4096B7B60E");
+            entity.HasKey(e => e.MuscleGroupId).HasName("PK__muscle_g__9DFCBF4099690D8A");
 
             entity.ToTable("muscle_groups");
 
@@ -333,7 +333,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__notifica__E059842FA7F90725");
+            entity.HasKey(e => e.NotificationId).HasName("PK__notifica__E059842F9DE14403");
 
             entity.ToTable("notifications");
 
@@ -360,16 +360,16 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Staff).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK__notificat__staff__4D5F7D71");
+                .HasConstraintName("FK__notificat__staff__0B91BA14");
 
             entity.HasOne(d => d.User).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__notificat__user___4C6B5938");
+                .HasConstraintName("FK__notificat__user___0C85DE4D");
         });
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.MethodId).HasName("PK__payment___747727B6A8E83ECC");
+            entity.HasKey(e => e.MethodId).HasName("PK__payment___747727B690CFACA5");
 
             entity.ToTable("payment_methods");
 
@@ -397,16 +397,16 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.PaymentMethods)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__payment_m__user___7E37BEF6");
+                .HasConstraintName("FK__payment_m__user___0D7A0286");
         });
 
         modelBuilder.Entity<Permission>(entity =>
         {
-            entity.HasKey(e => e.PermissionId).HasName("PK__permissi__E5331AFA6F53489C");
+            entity.HasKey(e => e.PermissionId).HasName("PK__permissi__E5331AFA1095096D");
 
             entity.ToTable("permissions");
 
-            entity.HasIndex(e => e.Name, "UQ__permissi__72E12F1B4DE5FFE6").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__permissi__72E12F1B1AD475E5").IsUnique();
 
             entity.Property(e => e.PermissionId).HasColumnName("permission_id");
             entity.Property(e => e.Description)
@@ -420,11 +420,11 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__roles__760965CC2EC4215F");
+            entity.HasKey(e => e.RoleId).HasName("PK__roles__760965CC797107D0");
 
             entity.ToTable("roles");
 
-            entity.HasIndex(e => e.Name, "UQ__roles__72E12F1BA1407571").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__roles__72E12F1B253AD9B6").IsUnique();
 
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.Description)
@@ -441,14 +441,14 @@ public partial class GymbotDbContext : DbContext
                     r => r.HasOne<Permission>().WithMany()
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__role_perm__permi__114A936A"),
+                        .HasConstraintName("FK__role_perm__permi__0E6E26BF"),
                     l => l.HasOne<Role>().WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__role_perm__role___10566F31"),
+                        .HasConstraintName("FK__role_perm__role___0F624AF8"),
                     j =>
                     {
-                        j.HasKey("RoleId", "PermissionId").HasName("PK__role_per__C85A54635C172F36");
+                        j.HasKey("RoleId", "PermissionId").HasName("PK__role_per__C85A54635ABBEE0F");
                         j.ToTable("role_permissions");
                         j.IndexerProperty<int>("RoleId").HasColumnName("role_id");
                         j.IndexerProperty<int>("PermissionId").HasColumnName("permission_id");
@@ -457,7 +457,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Specialization>(entity =>
         {
-            entity.HasKey(e => e.SpecializationId).HasName("PK__speciali__0E5BB650259D19D5");
+            entity.HasKey(e => e.SpecializationId).HasName("PK__speciali__0E5BB650715ACB28");
 
             entity.ToTable("specializations");
 
@@ -473,13 +473,15 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Staff>(entity =>
         {
-            entity.HasKey(e => e.StaffId).HasName("PK__staffs__1963DD9C3D65F60D");
+            entity.HasKey(e => e.StaffId).HasName("PK__staffs__1963DD9C658CB122");
 
             entity.ToTable("staffs");
 
-            entity.HasIndex(e => e.Email, "UQ__staffs__AB6E616468D413C9").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__staffs__AB6E6164CFFE7D40").IsUnique();
 
-            entity.Property(e => e.StaffId).HasColumnName("staff_id");
+            entity.Property(e => e.StaffId)
+                .ValueGeneratedNever()
+                .HasColumnName("staff_id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnName("created_at");
@@ -501,10 +503,6 @@ public partial class GymbotDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("last_name");
-            entity.Property(e => e.PasswordHash)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("password_hash");
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .IsUnicode(false)
@@ -522,16 +520,16 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Role).WithMany(p => p.Staff)
                 .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__staffs__role_id__2180FB33");
+                .HasConstraintName("FK__staffs__role_id__1332DBDC");
 
             entity.HasOne(d => d.Supervisor).WithMany(p => p.InverseSupervisor)
                 .HasForeignKey(d => d.SupervisorId)
-                .HasConstraintName("FK__staffs__supervis__22751F6C");
+                .HasConstraintName("FK__staffs__supervis__14270015");
         });
 
         modelBuilder.Entity<StaffSchedule>(entity =>
         {
-            entity.HasKey(e => e.ScheduleId).HasName("PK__staff_sc__C46A8A6F6AC6EF42");
+            entity.HasKey(e => e.ScheduleId).HasName("PK__staff_sc__C46A8A6F8C41BB1F");
 
             entity.ToTable("staff_schedules");
 
@@ -550,12 +548,12 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Staff).WithMany(p => p.StaffSchedules)
                 .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK__staff_sch__staff__3D2915A8");
+                .HasConstraintName("FK__staff_sch__staff__10566F31");
         });
 
         modelBuilder.Entity<StaffSpecialization>(entity =>
         {
-            entity.HasKey(e => new { e.StaffId, e.SpecializationId }).HasName("PK__staff_sp__098666F93E4A1452");
+            entity.HasKey(e => new { e.StaffId, e.SpecializationId }).HasName("PK__staff_sp__098666F958B05ADF");
 
             entity.ToTable("staff_specializations");
 
@@ -575,17 +573,17 @@ public partial class GymbotDbContext : DbContext
             entity.HasOne(d => d.Specialization).WithMany(p => p.StaffSpecializations)
                 .HasForeignKey(d => d.SpecializationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__staff_spe__speci__3A4CA8FD");
+                .HasConstraintName("FK__staff_spe__speci__114A936A");
 
             entity.HasOne(d => d.Staff).WithMany(p => p.StaffSpecializations)
                 .HasForeignKey(d => d.StaffId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__staff_spe__staff__395884C4");
+                .HasConstraintName("FK__staff_spe__staff__123EB7A3");
         });
 
         modelBuilder.Entity<SubscriptionPlan>(entity =>
         {
-            entity.HasKey(e => e.PlanId).HasName("PK__subscrip__BE9F8F1DDA191449");
+            entity.HasKey(e => e.PlanId).HasName("PK__subscrip__BE9F8F1DF3B27F59");
 
             entity.ToTable("subscription_plans");
 
@@ -613,11 +611,11 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<SystemSetting>(entity =>
         {
-            entity.HasKey(e => e.SettingId).HasName("PK__system_s__256E1E32054907AD");
+            entity.HasKey(e => e.SettingId).HasName("PK__system_s__256E1E3217C3E9C7");
 
             entity.ToTable("system_settings");
 
-            entity.HasIndex(e => e.SystemKey, "UQ__system_s__B599896207CB13C0").IsUnique();
+            entity.HasIndex(e => e.SystemKey, "UQ__system_s__B5998962797A5273").IsUnique();
 
             entity.Property(e => e.SettingId).HasColumnName("setting_id");
             entity.Property(e => e.Description)
@@ -637,12 +635,12 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.SystemSettings)
                 .HasForeignKey(d => d.UpdatedBy)
-                .HasConstraintName("FK__system_se__updat__5CA1C101");
+                .HasConstraintName("FK__system_se__updat__151B244E");
         });
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__transact__85C600AF3742E8DE");
+            entity.HasKey(e => e.TransactionId).HasName("PK__transact__85C600AFA1B503C5");
 
             entity.ToTable("transactions");
 
@@ -666,22 +664,24 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Invoice).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.InvoiceId)
-                .HasConstraintName("FK__transacti__invoi__08B54D69");
+                .HasConstraintName("FK__transacti__invoi__160F4887");
 
             entity.HasOne(d => d.PaymentMethod).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.PaymentMethodId)
-                .HasConstraintName("FK__transacti__payme__09A971A2");
+                .HasConstraintName("FK__transacti__payme__17036CC0");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__users__B9BE370F8B25CF52");
+            entity.HasKey(e => e.UserId).HasName("PK__users__B9BE370FBE21A4EA");
 
             entity.ToTable("users");
 
-            entity.HasIndex(e => e.Email, "UQ__users__AB6E61646C35257F").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__users__AB6E616455C0F3BB").IsUnique();
 
-            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.UserId)
+                .ValueGeneratedNever()
+                .HasColumnName("user_id");
             entity.Property(e => e.AddressLine1)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -727,10 +727,6 @@ public partial class GymbotDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("last_name");
-            entity.Property(e => e.PasswordHash)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("password_hash");
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .IsUnicode(false)
@@ -755,12 +751,12 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__users__role_id__286302EC");
+                .HasConstraintName("FK__users__role_id__1AD3FDA4");
         });
 
         modelBuilder.Entity<UserMeasurement>(entity =>
         {
-            entity.HasKey(e => e.MeasurementId).HasName("PK__user_mea__E3D1E1C15E8811DE");
+            entity.HasKey(e => e.MeasurementId).HasName("PK__user_mea__E3D1E1C18D0B1EEB");
 
             entity.ToTable("user_measurements");
 
@@ -800,12 +796,12 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.UserMeasurements)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__user_meas__user___5535A963");
+                .HasConstraintName("FK__user_meas__user___17F790F9");
         });
 
         modelBuilder.Entity<UserSubscription>(entity =>
         {
-            entity.HasKey(e => e.SubscriptionId).HasName("PK__user_sub__863A7EC11DC67002");
+            entity.HasKey(e => e.SubscriptionId).HasName("PK__user_sub__863A7EC191F5D594");
 
             entity.ToTable("user_subscriptions");
 
@@ -831,16 +827,16 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Plan).WithMany(p => p.UserSubscriptions)
                 .HasForeignKey(d => d.PlanId)
-                .HasConstraintName("FK__user_subs__plan___3A81B327");
+                .HasConstraintName("FK__user_subs__plan___18EBB532");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserSubscriptions)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__user_subs__user___398D8EEE");
+                .HasConstraintName("FK__user_subs__user___19DFD96B");
         });
 
         modelBuilder.Entity<WorkoutLog>(entity =>
         {
-            entity.HasKey(e => e.LogId).HasName("PK__workout___9E2397E07353D43B");
+            entity.HasKey(e => e.LogId).HasName("PK__workout___9E2397E0FDD567F6");
 
             entity.ToTable("workout_logs");
 
@@ -864,16 +860,16 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.Exercise).WithMany(p => p.WorkoutLogs)
                 .HasForeignKey(d => d.ExerciseId)
-                .HasConstraintName("FK__workout_l__exerc__59FA5E80");
+                .HasConstraintName("FK__workout_l__exerc__1BC821DD");
 
             entity.HasOne(d => d.User).WithMany(p => p.WorkoutLogs)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__workout_l__user___59063A47");
+                .HasConstraintName("FK__workout_l__user___1CBC4616");
         });
 
         modelBuilder.Entity<WorkoutPlan>(entity =>
         {
-            entity.HasKey(e => e.PlanId).HasName("PK__workout___BE9F8F1DC659FEF4");
+            entity.HasKey(e => e.PlanId).HasName("PK__workout___BE9F8F1D8CD6D301");
 
             entity.ToTable("workout_plans");
 
@@ -906,12 +902,12 @@ public partial class GymbotDbContext : DbContext
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.WorkoutPlans)
                 .HasForeignKey(d => d.CreatedBy)
-                .HasConstraintName("FK__workout_p__creat__2BFE89A6");
+                .HasConstraintName("FK__workout_p__creat__1F98B2C1");
         });
 
         modelBuilder.Entity<WorkoutPlanExercise>(entity =>
         {
-            entity.HasKey(e => new { e.PlanId, e.ExerciseId, e.WeekNumber, e.DayOfWeek }).HasName("PK__workout___04BCC65631568C94");
+            entity.HasKey(e => new { e.PlanId, e.ExerciseId, e.WeekNumber, e.DayOfWeek }).HasName("PK__workout___04BCC65617FB8D3C");
 
             entity.ToTable("workout_plan_exercises");
 
@@ -929,12 +925,12 @@ public partial class GymbotDbContext : DbContext
             entity.HasOne(d => d.Exercise).WithMany(p => p.WorkoutPlanExercises)
                 .HasForeignKey(d => d.ExerciseId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__workout_p__exerc__30C33EC3");
+                .HasConstraintName("FK__workout_p__exerc__1DB06A4F");
 
             entity.HasOne(d => d.Plan).WithMany(p => p.WorkoutPlanExercises)
                 .HasForeignKey(d => d.PlanId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__workout_p__plan___2FCF1A8A");
+                .HasConstraintName("FK__workout_p__plan___1EA48E88");
         });
 
         OnModelCreatingPartial(modelBuilder);

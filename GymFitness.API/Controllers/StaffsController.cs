@@ -22,7 +22,7 @@ namespace GymFitness.API.Controllers
             await _staffService.GetAllStaffsAsync();
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Staff>> GetStaffById(int id)
+        public async Task<ActionResult<Staff>> GetStaffById(Guid id)
         {
             var staff = await _staffService.GetStaffByIdAsync(id);
             if (staff == null) return NotFound();
@@ -37,7 +37,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStaff(int id, [FromBody] Staff staff)
+        public async Task<IActionResult> UpdateStaff(Guid id, [FromBody] Staff staff)
         {
             if (staff == null || id != staff.StaffId)
             {
@@ -66,7 +66,7 @@ namespace GymFitness.API.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStaff(int id)
+        public async Task<IActionResult> DeleteStaff(Guid id)
         {
             await _staffService.DeleteStaffAsync(id);
             return NoContent();

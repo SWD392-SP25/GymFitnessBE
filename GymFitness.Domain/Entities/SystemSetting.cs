@@ -13,7 +13,7 @@ public partial class SystemSetting
 
     public string? Description { get; set; }
 
-    public int? UpdatedBy { get; set; }
+    public Guid? UpdatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
 

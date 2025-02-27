@@ -15,7 +15,7 @@ public partial class WorkoutPlan
 
     public int? DurationWeeks { get; set; }
 
-    public int? CreatedBy { get; set; }
+    public Guid? CreatedBy { get; set; }
 
     public string? TargetAudience { get; set; }
 

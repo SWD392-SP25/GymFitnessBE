@@ -1,5 +1,4 @@
-﻿using GymFitness.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace GymFitness.Domain.Entities;

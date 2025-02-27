@@ -7,9 +7,9 @@ namespace GymFitness.Application.Abstractions.Repositories
     public interface IStaffRepository
     {
         Task<IEnumerable<Staff>> GetAllAsync();
-        Task<Staff?> GetByIdAsync(int id);
+        Task<Staff?> GetByIdAsync(Guid id);
         Task AddAsync(Staff staff);
         Task UpdateAsync(Staff staff);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
     }
 }
