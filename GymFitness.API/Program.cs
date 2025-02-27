@@ -17,6 +17,7 @@ using Scalar.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using GymFitness.Application.Abstractions.Repositories;
 using GymFitness.Application.Services;
+using GymFitness.Application.Abstractions.Services;
 
 
 namespace GymFitness.API
@@ -52,6 +53,8 @@ namespace GymFitness.API
             builder.Services.AddScoped<AppointmentService>();
             builder.Services.AddScoped<IAppointmentTypeRepository, AppointmentTypeRepository>();
             builder.Services.AddScoped<AppointmentTypeService>();
+
+            builder.Services.AddSingleton<IRedisService, RedisService>();
 
 
 

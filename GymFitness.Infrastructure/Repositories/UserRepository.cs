@@ -64,5 +64,11 @@ namespace GymFitness.Infrastructure.Repositories
 
 
         }
+
+        public Task<User> GetUserById(Guid userId)
+        {
+            return _context.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.UserId == userId);
+
+        }
     }
 }
