@@ -21,12 +21,11 @@ namespace GymFitness.Infrastructure.Repositories
             _context = context;
         }
 
-        public async void AddUser(User user)
+        public async Task AddUser(User user)
         {
             // Kiểm tra User đã tồn tại chưa
             User temp = await _context.Users
                                       .FirstOrDefaultAsync(x => EF.Functions.Like(x.Email, user.Email));
-
 
             if (temp == null)
             {
@@ -39,13 +38,14 @@ namespace GymFitness.Infrastructure.Repositories
                 }
 
                 // Gán Role cho User
-                user.RoleId = role.RoleId;  // Chỉ cần gán RoleId, không cần RoleName
-                
+                user.RoleId = role.RoleId;
+
                 // Thêm User vào database
-                _context.Users.Add(user);
+                await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
             }
         }
+
 
         public async Task<User> GetUserByEmail(string email)
         {

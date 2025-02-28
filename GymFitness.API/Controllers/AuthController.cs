@@ -76,6 +76,7 @@ namespace GymFitness.API.Controllers
                 {
                     return BadRequest(new { message = "ID Token is required" });
                 }
+
                 // ✅ Xác thực ID token từ Firebase
                 FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.IdToken);
                 string email = decodedToken.Claims["email"]?.ToString();
@@ -88,95 +89,94 @@ namespace GymFitness.API.Controllers
 
                 Console.WriteLine($"Email extracted from token: {email}");
 
-                // ✅ Kiểm tra xem user hoặc staff đã tồn tại trong DB chưa
-
-                Console.WriteLine($"Checking user with email: {email}");
+                // ✅ Kiểm tra xem User đã tồn tại trong DB chưa
                 var user = await _userService.GetUserByEmail(email);
-                Console.WriteLine(user != null ? $"User found Auth Layer: {user.UserId}" : "User not found");
+                var staff = user == null ? await _staffService.GetByEmailAsync(email) : null;
 
-                //Console.WriteLine($"Checking staff with email: {email}");
-                //var staff = await _staffService.GetStaffByEmail(email);
-                //Console.WriteLine(staff != null ? $"Staff found: {staff.StaffId}" : "Staff not found");
-
-                Console.WriteLine("Check if user is already exist");
-                if (user == null)
+                if (user == null && staff == null)
                 {
-                    // Nếu email chưa tồn tại trong cả 2 bảng -> Tạo User mới
+                    // ✅ Nếu email chưa tồn tại trong cả 2 bảng -> Tạo User mới
+                    Console.WriteLine("User & Staff not found -> Creating new User");
+
                     user = new User
                     {
                         UserId = Guid.NewGuid(),
                         Email = email,
-                        RoleId = 1
+                        RoleId = 1 // Mặc định là User
                     };
 
-                     _userService.AddUser(user);
+                     await _userService.AddUser(user);
                 }
 
-                // ✅ Xác định đối tượng đăng nhập & lấy thông tin
-                string role;
-                string id;
-
-                Console.WriteLine("Take user from db and transfer data to jwt");
+                // ✅ Xác định thông tin đăng nhập
+                string id, role;
                 if (user != null)
                 {
-                    Console.WriteLine("Adding user to jwt token");
                     id = user.UserId.ToString();
-                    role = user.Role.Name;
+                    role = user?.Role?.Name ?? "User";
                 }
-                //else if(staff != null)
-                //{
-                //    id = staff.StaffId.ToString();
-                //    role = "Staff";
-                //}
                 else
                 {
-                    throw new Exception("User not found");
-
+                    id = staff.StaffId.ToString();
+                    role = "Staff";
                 }
 
-
                 // ✅ Tạo JWT token
-                Console.WriteLine("calling GenerateJwtToken ");
+                Console.WriteLine("Generating JWT token");
                 string jwtToken = GenerateJwtToken(id, email, role);
                 var refreshToken = GenerateRefreshToken();
 
                 // ✅ Lưu token vào Redis
-                Console.WriteLine("Save token to redis");
+                Console.WriteLine("Saving token to Redis");
                 await _redisService.SetAsync($"refresh:{id}", refreshToken, TimeSpan.FromDays(7));
 
-
-                Console.WriteLine("return jwtToken");
+                Console.WriteLine("Returning JWT token");
                 return Ok(new { Token = jwtToken, RefreshToken = refreshToken, Id = id, Email = email, Role = role });
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Login Error: {ex.Message}");
                 return BadRequest(new { message = ex.Message });
             }
         }
 
+
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
         {
-            if (string.IsNullOrEmpty(request.RefreshToken)) return BadRequest("Refresh token is required.");
+            if (string.IsNullOrEmpty(request.RefreshToken))
+                return BadRequest(new { message = "Refresh token is required." });
 
             // ✅ Kiểm tra Access Token có bị thu hồi không
             var isRevoked = await _redisService.GetAsync($"revoke:{request.AccessToken}");
             if (!string.IsNullOrEmpty(isRevoked))
             {
-                return Unauthorized("Access Token has been revoked.");
+                return Unauthorized(new { message = "Access Token has been revoked." });
             }
 
             // ✅ Lấy refresh token từ Redis
             var storedRefreshToken = await _redisService.GetAsync($"refresh:{request.UserId}");
-            if (storedRefreshToken != request.RefreshToken) return Unauthorized("Invalid refresh token.");
+            if (storedRefreshToken != request.RefreshToken)
+                return Unauthorized(new { message = "Invalid refresh token." });
+
+            // ✅ Xóa refresh token cũ khỏi Redis
+            await _redisService.DeleteAsync($"refresh:{request.UserId}");
 
             // ✅ Tạo Access Token mới
             var user = await _userService.GetUserById(request.UserId);
-            if (user == null) return Unauthorized("User not found.");
+            if (user == null) return Unauthorized(new { message = "User not found." });
 
             string jwtToken = GenerateJwtToken(user.UserId.ToString(), user.Email, user.Role.Name);
-            return Ok(new { Token = jwtToken });
+
+            // ✅ Tạo Refresh Token mới
+            string newRefreshToken = GenerateRefreshToken();
+
+            // ✅ Lưu refresh token mới vào Redis (hết hạn sau 7 ngày)
+            await _redisService.SetAsync($"refresh:{request.UserId}", newRefreshToken, TimeSpan.FromDays(7));
+
+            return Ok(new { Token = jwtToken, RefreshToken = newRefreshToken });
         }
+
 
 
         private string GenerateRefreshToken()
@@ -188,7 +188,7 @@ namespace GymFitness.API.Controllers
         public async Task<IActionResult> Logout([FromBody] LogoutRequestDto request)
         {
             // Xoá Refresh Token trong Redis để không thể refresh nữa
-            await _redisService.DeleteAsync($"refresh:{request.UserId}");
+            //await _redisService.DeleteAsync($"refresh:{request.UserId}");
 
             // Đánh dấu Access Token đã bị thu hồi
             await _redisService.SetAsync($"revoke:{request.AccessToken}", "true", TimeSpan.FromHours(3));

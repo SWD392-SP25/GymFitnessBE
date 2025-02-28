@@ -43,5 +43,10 @@ namespace GymFitness.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<Staff?> GetByEmailAsync(string email)
+        {
+            return await _context.Staffs.FirstOrDefaultAsync(x => EF.Functions.Like(x.Email, email));
+        }
     }
 }
