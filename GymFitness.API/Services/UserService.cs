@@ -20,9 +20,9 @@ namespace GymFitness.API.Services
             Console.WriteLine("UserService found with role: ", returnUser.Result.Role);
         }
  
-        public async void AddUser(User user)
+        public async Task AddUser(User user)
         {
-             _userRepository.AddUser(user);
+             await _userRepository.AddUser(user);
         }
 
         public Task<User> GetUserById(Guid userId)

@@ -2,7 +2,7 @@
 {
     public class StaffSpecializationDto
     {
-        public int StaffId { get; set; }
+        public Guid StaffId { get; set; }
         public int SpecializationId { get; set; }
         public string? CertificationNumber { get; set; }
         public DateOnly? CertificationDate { get; set; }

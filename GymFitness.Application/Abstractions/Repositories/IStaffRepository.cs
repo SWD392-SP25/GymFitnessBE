@@ -11,5 +11,7 @@ namespace GymFitness.Application.Abstractions.Repositories
         Task AddAsync(Staff staff);
         Task UpdateAsync(Staff staff);
         Task DeleteAsync(Guid id);
+
+        Task<Staff?> GetByEmailAsync(string email);
     }
 }

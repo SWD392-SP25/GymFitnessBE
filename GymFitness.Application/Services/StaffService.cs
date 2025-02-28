@@ -28,5 +28,8 @@ namespace GymFitness.Application.Services
 
         public async Task DeleteStaffAsync(Guid id) =>
             await _staffRepository.DeleteAsync(id);
+
+        public async Task<Staff?> GetByEmailAsync(string email) =>
+            await _staffRepository.GetByEmailAsync(email);
     }
 }

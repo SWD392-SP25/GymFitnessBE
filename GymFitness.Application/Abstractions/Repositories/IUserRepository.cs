@@ -10,7 +10,7 @@ namespace GymFitness.Infrastructure.Repositories.Abstractions
     public interface IUserRepository
     {
         Task<User> GetUserByEmail(string email);
-        void AddUser(User user);
+        Task AddUser(User user);
 
         Task<User> GetUserById(Guid userId);
     }
