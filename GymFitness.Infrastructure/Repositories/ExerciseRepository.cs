@@ -20,7 +20,7 @@ namespace GymFitness.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Exercise>> GetAllAsync() =>
-            await _context.Exercises.ToListAsync();
+            await _context.Exercises.Include(e => e.Category).Include(e => e.MuscleGroup).ToListAsync();
 
         public async Task<Exercise?> GetByIdAsync(int id) =>
             await _context.Exercises.FindAsync(id);
