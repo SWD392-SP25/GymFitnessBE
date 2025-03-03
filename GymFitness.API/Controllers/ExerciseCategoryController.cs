@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GymFitness.API.Dto;
+using GymFitness.Application.Abstractions.Services;
 
 namespace GymFitness.API.Controllers
 {
@@ -11,9 +12,9 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class ExerciseCategoryController : ControllerBase
     {
-        private readonly ExerciseCategoryService _service;
+        private readonly IExerciseCategoryService _service;
 
-        public ExerciseCategoryController(ExerciseCategoryService service)
+        public ExerciseCategoryController(IExerciseCategoryService service)
         {
             _service = service;
         }

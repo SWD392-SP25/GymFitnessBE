@@ -1,4 +1,5 @@
 ﻿using GymFitness.API.Dto;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,9 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class StaffScheduleController : ControllerBase
     {
-        private readonly StaffScheduleService _service;
+        private readonly IStaffScheduleService _service;
 
-        public StaffScheduleController(StaffScheduleService service)
+        public StaffScheduleController(IStaffScheduleService service)
         {
             _service = service;
         }

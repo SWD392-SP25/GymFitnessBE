@@ -27,34 +27,37 @@ namespace GymFitness.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
             builder.Services.AddControllers();
-            builder.Services.AddScoped<IUserService, UserService>();
+            //Add repository to the container.
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<SubscriptionPlanService>();
-            builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-            builder.Services.AddScoped<StaffService>();
-            builder.Services.AddScoped<IStaffScheduleRepository, StaffScheduleRepository>();
-            builder.Services.AddScoped<StaffScheduleService>();
-            builder.Services.AddScoped<IStaffSpecializationRepository, StaffSpecializationRepository>();
-            builder.Services.AddScoped<StaffSpecializationService>();
-            builder.Services.AddScoped<IMuscleGroupRepository, MuscleGroupRepository>();
-            builder.Services.AddScoped<MuscleGroupService>();
-            builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
-            builder.Services.AddScoped<ExerciseCategoryService>();
-            builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
-            builder.Services.AddScoped<ExerciseService>();
             builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
-            builder.Services.AddScoped<WorkoutPlanService>();
-            builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
-            builder.Services.AddScoped<WorkoutPlanExerciseService>();
             builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-            builder.Services.AddScoped<AppointmentService>();
+            builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
+            builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+            builder.Services.AddScoped<IStaffScheduleRepository, StaffScheduleRepository>();
+            builder.Services.AddScoped<IStaffSpecializationRepository, StaffSpecializationRepository>();
             builder.Services.AddScoped<IAppointmentTypeRepository, AppointmentTypeRepository>();
-            builder.Services.AddScoped<AppointmentTypeService>();
-
+            builder.Services.AddScoped<IMuscleGroupRepository, MuscleGroupRepository>();
+            builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
+            builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+            builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
+            // Add services to the container.
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
+            builder.Services.AddScoped<IStaffService, StaffService>();
+            builder.Services.AddScoped<IStaffScheduleService, StaffScheduleService>();
+            builder.Services.AddScoped<IStaffSpecializationService, StaffSpecializationService>();
+            builder.Services.AddScoped<IMuscleGroupService, MuscleGroupService>();
+            builder.Services.AddScoped<IExerciseCategoryService, ExerciseCategoryService>();
+            builder.Services.AddScoped<IExerciseService, ExerciseService>();
+            builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
+            builder.Services.AddScoped<IWorkoutPlanExerciseService, WorkoutPlanExerciseService>();
+            builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+            builder.Services.AddScoped<IAppointmentTypeService, AppointmentTypeService>();
             builder.Services.AddSingleton<IRedisService, RedisService>();
+            builder.Services.AddHttpClient("ChatGPT");
+            builder.Services.AddScoped<IChatCompletionService, ChatCompletionService>();
+            builder.Services.AddScoped<IFirebaseAuthService, FirebaseAuthService>();
 
 
 
@@ -170,13 +173,9 @@ namespace GymFitness.API
                 ApiKey = builder.Configuration["OpenAIKey"] ?? throw new InvalidOperationException("OpenAI API Key not found in configuration"),
                 BaseUrl = builder.Configuration["OpenAIBaseUrl"] ?? throw new InvalidOperationException("OpenAI Base URL not found in configuration")
             };
+
+
             builder.Services.AddSingleton(openAIConfig);
-            builder.Services.AddHttpClient("ChatGPT");
-            builder.Services.AddScoped<IChatCompletionService, ChatCompletionService>();
-            builder.Services.AddScoped<IFirebaseAuthService, FirebaseAuthService>();
-            builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
-
-
 
 
             var app = builder.Build();

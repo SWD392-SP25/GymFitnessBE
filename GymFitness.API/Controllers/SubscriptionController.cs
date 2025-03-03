@@ -1,5 +1,6 @@
 ﻿using GymFitness.API.Dto;
 using GymFitness.Application.Abstractions.Repositories;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
 using GymFitness.Infrastructure.Data;
@@ -11,9 +12,9 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class SubscriptionPlanController : ControllerBase
     {
-        private readonly SubscriptionPlanService _planService;
+        private readonly ISubscriptionPlanService _planService;
 
-        public SubscriptionPlanController(SubscriptionPlanService planService)
+        public SubscriptionPlanController(ISubscriptionPlanService planService)
         {
             _planService = planService;
         }
