@@ -1,4 +1,5 @@
 ﻿using GymFitness.API.Dto;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,9 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class ExerciseController : ControllerBase
     {
-        private readonly ExerciseService _exerciseService;
+        private readonly IExerciseService _exerciseService;
 
-        public ExerciseController(ExerciseService exerciseService)
+        public ExerciseController(IExerciseService exerciseService)
         {
             _exerciseService = exerciseService;
         }

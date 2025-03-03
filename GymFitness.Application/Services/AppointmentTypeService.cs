@@ -1,32 +1,33 @@
 ﻿using GymFitness.Application.Abstractions.Repositories;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GymFitness.Application.Services
 {
-    public class AppointmentTypeService
+    public class AppointmentTypeService : IAppointmentTypeService
     {
-        private readonly IAppointmentTypeRepository _repository;
+        private readonly IAppointmentTypeRepository _appointmentType;
 
-        public AppointmentTypeService(IAppointmentTypeRepository repository)
+        public AppointmentTypeService(IAppointmentTypeRepository appointmentType)
         {
-            _repository = repository;
+            _appointmentType = appointmentType;
         }
 
         public async Task<IEnumerable<AppointmentType>> GetAllAppointmentTypesAsync() =>
-            await _repository.GetAllAsync();
+            await _appointmentType.GetAllAsync();
 
         public async Task<AppointmentType?> GetAppointmentTypeByIdAsync(int typeId) =>
-            await _repository.GetByIdAsync(typeId);
+            await _appointmentType.GetByIdAsync(typeId);
 
         public async Task AddAppointmentTypeAsync(AppointmentType appointmentType) =>
-            await _repository.AddAsync(appointmentType);
+            await _appointmentType.AddAsync(appointmentType);
 
         public async Task UpdateAppointmentTypeAsync(AppointmentType appointmentType) =>
-            await _repository.UpdateAsync(appointmentType);
+            await _appointmentType.UpdateAsync(appointmentType);
 
         public async Task DeleteAppointmentTypeAsync(int typeId) =>
-            await _repository.DeleteAsync(typeId);
+            await _appointmentType.DeleteAsync(typeId);
     }
 }

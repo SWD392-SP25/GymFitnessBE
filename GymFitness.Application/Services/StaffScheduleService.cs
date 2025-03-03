@@ -1,32 +1,33 @@
 ﻿using GymFitness.Application.Abstractions.Repositories;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GymFitness.Application.Services
 {
-    public class StaffScheduleService
+    public class StaffScheduleService : IStaffScheduleService
     {
-        private readonly IStaffScheduleRepository _repository;
+        private readonly IStaffScheduleRepository _staffSchedule;
 
-        public StaffScheduleService(IStaffScheduleRepository repository)
+        public StaffScheduleService(IStaffScheduleRepository staffSchedule)
         {
-            _repository = repository;
+            _staffSchedule = staffSchedule;
         }
 
         public async Task<IEnumerable<StaffSchedule>> GetAllSchedulesAsync() =>
-            await _repository.GetAllAsync();
+            await _staffSchedule.GetAllAsync();
 
         public async Task<StaffSchedule?> GetScheduleByIdAsync(int id) =>
-            await _repository.GetByIdAsync(id);
+            await _staffSchedule.GetByIdAsync(id);
 
         public async Task AddScheduleAsync(StaffSchedule schedule) =>
-            await _repository.AddAsync(schedule);
+            await _staffSchedule.AddAsync(schedule);
 
         public async Task UpdateScheduleAsync(StaffSchedule schedule) =>
-            await _repository.UpdateAsync(schedule);
+            await _staffSchedule.UpdateAsync(schedule);
 
         public async Task DeleteScheduleAsync(int id) =>
-            await _repository.DeleteAsync(id);
+            await _staffSchedule.DeleteAsync(id);
     }
 }
