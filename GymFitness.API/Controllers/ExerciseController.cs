@@ -14,7 +14,8 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class ExerciseController : ControllerBase
     {
-        private readonly ExerciseService _exerciseService;
+
+        private readonly IExerciseService _exerciseService;
         private readonly IFirebaseStorageService _firebaseStorageService;
         private readonly List<string> _allowedImageExtensions = new() { ".jpg", ".jpeg", ".png", ".gif" };
         private readonly List<string> _allowedVideoExtensions = new() { ".mp4", ".mov", ".avi", ".mkv" };
@@ -24,6 +25,7 @@ namespace GymFitness.API.Controllers
             _exerciseService = exerciseService;
             _firebaseStorageService = firebaseStorageService;
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll()

@@ -1,4 +1,5 @@
-﻿using GymFitness.Application.Services;
+﻿using GymFitness.Application.Abstractions.Services;
+using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -10,9 +11,9 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class StaffSpecializationController : ControllerBase
     {
-        private readonly StaffSpecializationService _service;
+        private readonly IStaffSpecializationService _service;
 
-        public StaffSpecializationController(StaffSpecializationService service)
+        public StaffSpecializationController(IStaffSpecializationService service)
         {
             _service = service;
         }

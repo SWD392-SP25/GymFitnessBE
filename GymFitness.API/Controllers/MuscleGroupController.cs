@@ -1,4 +1,5 @@
 ﻿using GymFitness.API.Dto;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,9 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class MuscleGroupController : ControllerBase
     {
-        private readonly MuscleGroupService _service;
+        private readonly IMuscleGroupService _service;
 
-        public MuscleGroupController(MuscleGroupService service)
+        public MuscleGroupController(IMuscleGroupService service)
         {
             _service = service;
         }

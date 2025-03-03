@@ -1,32 +1,33 @@
 ﻿using GymFitness.Application.Abstractions.Repositories;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GymFitness.Application.Services
 {
-    public class WorkoutPlanService
+    public class WorkoutPlanService : IWorkoutPlanService
     {
-        private readonly IWorkoutPlanRepository _repository;
+        private readonly IWorkoutPlanRepository _workoutPlan;
 
-        public WorkoutPlanService(IWorkoutPlanRepository repository)
+        public WorkoutPlanService(IWorkoutPlanRepository workoutPlan)
         {
-            _repository = repository;
+            _workoutPlan = workoutPlan;
         }
 
         public async Task<IEnumerable<WorkoutPlan>> GetAllWorkoutPlansAsync() =>
-            await _repository.GetAllAsync();
+            await _workoutPlan.GetAllAsync();
 
         public async Task<WorkoutPlan?> GetWorkoutPlanByIdAsync(int id) =>
-            await _repository.GetByIdAsync(id);
+            await _workoutPlan.GetByIdAsync(id);
 
         public async Task AddWorkoutPlanAsync(WorkoutPlan plan) =>
-            await _repository.AddAsync(plan);
+            await _workoutPlan.AddAsync(plan);
 
         public async Task UpdateWorkoutPlanAsync(WorkoutPlan plan) =>
-            await _repository.UpdateAsync(plan);
+            await _workoutPlan.UpdateAsync(plan);
 
         public async Task DeleteWorkoutPlanAsync(int id) =>
-            await _repository.DeleteAsync(id);
+            await _workoutPlan.DeleteAsync(id);
     }
 }

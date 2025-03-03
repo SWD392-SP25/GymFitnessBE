@@ -1,4 +1,5 @@
-﻿using GymFitness.Application.Dtos;
+﻿using GymFitness.Application.Abstractions.Services;
+using GymFitness.Application.Dtos;
 using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,9 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly AppointmentService _service;
+        private readonly IAppointmentService _service;
 
-        public AppointmentController(AppointmentService service)
+        public AppointmentController(IAppointmentService service)
         {
             _service = service;
         }
