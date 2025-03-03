@@ -1,8 +1,11 @@
 ﻿using GymFitness.API.Dto;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GymFitness.API.Controllers
@@ -12,10 +15,14 @@ namespace GymFitness.API.Controllers
     public class ExerciseController : ControllerBase
     {
         private readonly ExerciseService _exerciseService;
+        private readonly IFirebaseStorageService _firebaseStorageService;
+        private readonly List<string> _allowedImageExtensions = new() { ".jpg", ".jpeg", ".png", ".gif" };
+        private readonly List<string> _allowedVideoExtensions = new() { ".mp4", ".mov", ".avi", ".mkv" };
 
-        public ExerciseController(ExerciseService exerciseService)
+        public ExerciseController(ExerciseService exerciseService, IFirebaseStorageService firebaseStorageService)
         {
             _exerciseService = exerciseService;
+            _firebaseStorageService = firebaseStorageService;
         }
 
         [HttpGet]
@@ -35,8 +42,28 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ExerciseDto dto)
+        public async Task<IActionResult> Create([FromForm] ExerciseCreateDto dto)
         {
+            string imageUrl = null, videoUrl = null;
+
+            // Upload ảnh nếu có
+            if (dto.ImageFile != null)
+            {
+                if (!_allowedImageExtensions.Contains(Path.GetExtension(dto.ImageFile.FileName).ToLower()))
+                    return BadRequest("Chỉ hỗ trợ định dạng ảnh: .jpg, .jpeg, .png, .gif");
+
+                imageUrl = await _firebaseStorageService.UploadFileAsync(dto.ImageFile, "exercise_images");
+            }
+
+            // Upload video nếu có
+            if (dto.VideoFile != null)
+            {
+                if (!_allowedVideoExtensions.Contains(Path.GetExtension(dto.VideoFile.FileName).ToLower()))
+                    return BadRequest("Chỉ hỗ trợ định dạng video: .mp4, .mov, .avi, .mkv");
+
+                videoUrl = await _firebaseStorageService.UploadFileAsync(dto.VideoFile, "exercise_videos");
+            }
+
             var exercise = new Exercise
             {
                 Name = dto.Name,
@@ -45,8 +72,8 @@ namespace GymFitness.API.Controllers
                 CategoryId = dto.CategoryId,
                 DifficultyLevel = dto.DifficultyLevel,
                 EquipmentNeeded = dto.EquipmentNeeded,
-                VideoUrl = dto.VideoUrl,
-                ImageUrl = dto.ImageUrl,
+                VideoUrl = videoUrl,
+                ImageUrl = imageUrl,
                 Instructions = dto.Instructions,
                 Precautions = dto.Precautions,
                 CreatedAt = DateTime.UtcNow
@@ -56,8 +83,9 @@ namespace GymFitness.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = exercise.ExerciseId }, exercise);
         }
 
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ExerciseDto dto)
+        public async Task<IActionResult> Update(int id, [FromForm] ExerciseUpdateDto dto)
         {
             var exercise = await _exerciseService.GetExerciseByIdAsync(id);
             if (exercise == null)
@@ -69,14 +97,31 @@ namespace GymFitness.API.Controllers
             exercise.CategoryId = dto.CategoryId;
             exercise.DifficultyLevel = dto.DifficultyLevel;
             exercise.EquipmentNeeded = dto.EquipmentNeeded;
-            exercise.VideoUrl = dto.VideoUrl;
-            exercise.ImageUrl = dto.ImageUrl;
             exercise.Instructions = dto.Instructions;
             exercise.Precautions = dto.Precautions;
+
+            // Cập nhật ảnh nếu có
+            if (dto.ImageFile != null)
+            {
+                if (!_allowedImageExtensions.Contains(Path.GetExtension(dto.ImageFile.FileName).ToLower()))
+                    return BadRequest("Chỉ hỗ trợ định dạng ảnh: .jpg, .jpeg, .png, .gif");
+
+                exercise.ImageUrl = await _firebaseStorageService.UploadFileAsync(dto.ImageFile, "exercise_images");
+            }
+
+            // Cập nhật video nếu có
+            if (dto.VideoFile != null)
+            {
+                if (!_allowedVideoExtensions.Contains(Path.GetExtension(dto.VideoFile.FileName).ToLower()))
+                    return BadRequest("Chỉ hỗ trợ định dạng video: .mp4, .mov, .avi, .mkv");
+
+                exercise.VideoUrl = await _firebaseStorageService.UploadFileAsync(dto.VideoFile, "exercise_videos");
+            }
 
             await _exerciseService.UpdateExerciseAsync(exercise);
             return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

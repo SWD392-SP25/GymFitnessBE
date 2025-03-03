@@ -18,6 +18,8 @@ using Microsoft.EntityFrameworkCore;
 using GymFitness.Application.Abstractions.Repositories;
 using GymFitness.Application.Services;
 using GymFitness.Application.Abstractions.Services;
+using Swashbuckle.AspNetCore.Filters;
+
 
 
 namespace GymFitness.API
@@ -55,6 +57,8 @@ namespace GymFitness.API
             builder.Services.AddScoped<AppointmentTypeService>();
 
             builder.Services.AddSingleton<IRedisService, RedisService>();
+            builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
+
 
 
 
@@ -64,6 +68,8 @@ namespace GymFitness.API
 
 
             // other services
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Path.Combine(Directory.GetCurrentDirectory(), "firebase_config.json"));
+
 
 
 
@@ -106,6 +112,11 @@ namespace GymFitness.API
                         new string[] {}
                     }
                 });
+
+                // ✅ Hỗ trợ Upload File (fix lỗi Swagger không đọc IFormFile)
+               
+
+                c.OperationFilter<FileUploadOperationFilter>(); // Sử dụng custom filter này
             });
 
             // ✅ Khởi tạo Firebase Admin SDK
