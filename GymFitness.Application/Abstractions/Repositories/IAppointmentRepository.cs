@@ -6,7 +6,12 @@ namespace GymFitness.Application.Abstractions.Repositories
 {
     public interface IAppointmentRepository
     {
-        Task<IEnumerable<Appointment>> GetAllAsync();
+        Task<IEnumerable<Appointment>> GetAppointmentsAsync(string? filterOn, 
+                                                            string? filterQuery, 
+                                                            string? sortBy, 
+                                                            bool isAscending, 
+                                                            int pageNumber = 1, 
+                                                            int pageSize = 1000);
         Task<Appointment?> GetByIdAsync(int appointmentId);
         Task AddAsync(Appointment appointment);
         Task UpdateAsync(Appointment appointment);

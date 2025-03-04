@@ -1,4 +1,5 @@
-﻿using GymFitness.Application.Abstractions.Services;
+﻿using GymFitness.API.Services.Abstractions;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Application.Dtos;
 using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
@@ -12,24 +13,34 @@ namespace GymFitness.API.Controllers
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly IAppointmentService _service;
-
-        public AppointmentController(IAppointmentService service)
+        private readonly IAppointmentService _appointmentService;
+        private readonly IUserService _userService;
+        private readonly IStaffService _staffService;
+        public AppointmentController(IAppointmentService appointmentService, IUserService userService, IStaffService staffService)
         {
-            _service = service;
+            _appointmentService = appointmentService;
+            _userService = userService;
+            _staffService = staffService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn,
+                                                [FromQuery] string? filterQuery,
+                                                [FromQuery] string? sortBy,
+                                                [FromQuery] bool? isAscending,
+                                                [FromQuery] int pageNumber = 1,
+                                                [FromQuery] int pageSize = 1000)
         {
-            var appointments = await _service.GetAllAppointmentsAsync();
+            var appointments = await _appointmentService.GetAppointmentsAsync(
+                filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
             return Ok(appointments);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var appointment = await _service.GetAppointmentByIdAsync(id);
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
             if (appointment == null)
                 return NotFound();
             return Ok(appointment);
@@ -38,10 +49,18 @@ namespace GymFitness.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AppointmentDto dto)
         {
+            var user = await _userService.GetUserByEmail(dto.UserEmail);
+            var staff = await _staffService.GetByEmailAsync(dto.StaffEmail);
+
+
+            if (user == null || staff == null)
+            {
+                return BadRequest("User or Staff not found");
+            }
             var appointment = new Appointment
             {
-                UserId = dto.UserId,
-                StaffId = dto.StaffId,
+                UserId = user.UserId,
+                StaffId = staff.StaffId,
                 TypeId = dto.TypeId,
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime,
@@ -51,19 +70,26 @@ namespace GymFitness.API.Controllers
                 CreatedAt = dto.CreatedAt
             };
 
-            await _service.AddAppointmentAsync(appointment);
+            await _appointmentService.AddAppointmentAsync(appointment);
             return CreatedAtAction(nameof(GetById), new { id = appointment.AppointmentId }, appointment);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] AppointmentDto dto)
         {
-            var appointment = await _service.GetAppointmentByIdAsync(id);
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
             if (appointment == null)
                 return NotFound();
 
-            appointment.UserId = dto.UserId;
-            appointment.StaffId = dto.StaffId;
+            var user = await _userService.GetUserByEmail(dto.UserEmail);
+            var staff = await _staffService.GetByEmailAsync(dto.StaffEmail);
+
+            if (user == null || staff == null)
+            {
+                return BadRequest("User or Staff not found");
+            }
+            appointment.UserId = user.UserId;
+            appointment.StaffId = staff.StaffId;
             appointment.TypeId = dto.TypeId;
             appointment.StartTime = dto.StartTime;
             appointment.EndTime = dto.EndTime;
@@ -72,14 +98,14 @@ namespace GymFitness.API.Controllers
             appointment.Location = dto.Location;
             appointment.CreatedAt = dto.CreatedAt;
 
-            await _service.UpdateAppointmentAsync(appointment);
-            return NoContent();
+            await _appointmentService.UpdateAppointmentAsync(appointment);
+            return Ok(appointment);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.DeleteAppointmentAsync(id);
+            await _appointmentService.DeleteAppointmentAsync(id);
             return NoContent();
         }
     }

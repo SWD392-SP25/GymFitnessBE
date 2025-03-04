@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace GymFitness.Domain.Entities;
 
@@ -25,9 +26,12 @@ public partial class Appointment
 
     public DateTime? CreatedAt { get; set; }
 
+    [JsonIgnore]
     public virtual Staff? Staff { get; set; }
 
+    [JsonIgnore]
     public virtual AppointmentType? Type { get; set; }
 
+    [JsonIgnore]
     public virtual User? User { get; set; }
 }
