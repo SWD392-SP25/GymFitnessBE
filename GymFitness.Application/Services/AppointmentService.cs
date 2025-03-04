@@ -28,8 +28,8 @@ namespace GymFitness.Application.Services
             return appointments.Select(a => new AppointmentResponseDto
             {
                 AppointmentId = a.AppointmentId,
-                UserName = a.User.Email,
-                StaffName = a.Staff.Email,
+                UserName = a.User.Email != null ? a.User.Email : null,
+                StaffName = a.Staff.Email != null ? a.Staff.Email : null,
                 Status = a.Status,
                 Notes = a.Notes,
                 Location = a.Location,

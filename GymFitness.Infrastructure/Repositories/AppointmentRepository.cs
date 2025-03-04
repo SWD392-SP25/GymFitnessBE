@@ -97,6 +97,7 @@ namespace GymFitness.Infrastructure.Repositories
 
         public async Task UpdateAsync(Appointment appointment)
         {
+            
             _context.Appointments.Update(appointment);
             await _context.SaveChangesAsync();
         }

@@ -80,11 +80,12 @@ public partial class GymbotDbContext : DbContext
 
         return strConn;
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Appointment>(entity =>
         {
-            entity.HasKey(e => e.AppointmentId).HasName("PK__appointm__A50828FC9AB63CAA");
+            entity.HasKey(e => e.AppointmentId).HasName("PK__appointm__A50828FC78DDC8A4");
 
             entity.ToTable("appointments");
 
@@ -95,16 +96,12 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.EndTime).HasColumnName("end_time");
             entity.Property(e => e.Location)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("location");
-            entity.Property(e => e.Notes)
-                .HasColumnType("text")
-                .HasColumnName("notes");
+            entity.Property(e => e.Notes).HasColumnName("notes");
             entity.Property(e => e.StaffId).HasColumnName("staff_id");
             entity.Property(e => e.StartTime).HasColumnName("start_time");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("status");
             entity.Property(e => e.TypeId).HasColumnName("type_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -124,18 +121,15 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<AppointmentType>(entity =>
         {
-            entity.HasKey(e => e.TypeId).HasName("PK__appointm__2C0005984688A6F8");
+            entity.HasKey(e => e.TypeId).HasName("PK__appointm__2C000598AAACF841");
 
             entity.ToTable("appointment_types");
 
             entity.Property(e => e.TypeId).HasColumnName("type_id");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.DurationMinutes).HasColumnName("duration_minutes");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("name");
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(10, 2)")
@@ -144,14 +138,13 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<AuditLog>(entity =>
         {
-            entity.HasKey(e => e.LogId).HasName("PK__audit_lo__9E2397E036BC1435");
+            entity.HasKey(e => e.LogId).HasName("PK__audit_lo__9E2397E04FFEABCB");
 
             entity.ToTable("audit_logs");
 
             entity.Property(e => e.LogId).HasColumnName("log_id");
             entity.Property(e => e.Action)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("action");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -166,7 +159,6 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.StaffId).HasColumnName("staff_id");
             entity.Property(e => e.TableName)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("table_name");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -181,7 +173,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<ChatHistory>(entity =>
         {
-            entity.HasKey(e => e.ChatId).HasName("PK__chat_his__FD040B17511D1FC3");
+            entity.HasKey(e => e.ChatId).HasName("PK__chat_his__FD040B177E760EA9");
 
             entity.ToTable("chat_histories");
 
@@ -190,12 +182,9 @@ public partial class GymbotDbContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnName("created_at");
             entity.Property(e => e.IsUserMessage).HasColumnName("is_user_message");
-            entity.Property(e => e.MessageText)
-                .HasColumnType("text")
-                .HasColumnName("message_text");
+            entity.Property(e => e.MessageText).HasColumnName("message_text");
             entity.Property(e => e.MessageType)
                 .HasMaxLength(50)
-                .IsUnicode(false)
                 .HasColumnName("message_type");
             entity.Property(e => e.StaffId).HasColumnName("staff_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -211,7 +200,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Exercise>(entity =>
         {
-            entity.HasKey(e => e.ExerciseId).HasName("PK__exercise__C121418E9332232A");
+            entity.HasKey(e => e.ExerciseId).HasName("PK__exercise__C121418E18612C2B");
 
             entity.ToTable("exercises");
 
@@ -220,31 +209,21 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnName("created_at");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.DifficultyLevel)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("difficulty_level");
-            entity.Property(e => e.EquipmentNeeded)
-                .HasColumnType("text")
-                .HasColumnName("equipment_needed");
+            entity.Property(e => e.EquipmentNeeded).HasColumnName("equipment_needed");
             entity.Property(e => e.ImageUrl)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("image_url");
-            entity.Property(e => e.Instructions)
-                .HasColumnType("text")
-                .HasColumnName("instructions");
+            entity.Property(e => e.Instructions).HasColumnName("instructions");
             entity.Property(e => e.MuscleGroupId).HasColumnName("muscle_group_id");
             entity.Property(e => e.Name)
                 .HasMaxLength(200)
-                .IsUnicode(false)
                 .HasColumnName("name");
-            entity.Property(e => e.Precautions)
-                .HasColumnType("text")
-                .HasColumnName("precautions");
+            entity.Property(e => e.Precautions).HasColumnName("precautions");
             entity.Property(e => e.VideoUrl)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -261,23 +240,20 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<ExerciseCategory>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__exercise__D54EE9B40A49E256");
+            entity.HasKey(e => e.CategoryId).HasName("PK__exercise__D54EE9B413B56A8A");
 
             entity.ToTable("exercise_categories");
 
             entity.Property(e => e.CategoryId).HasColumnName("category_id");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("name");
         });
 
         modelBuilder.Entity<Invoice>(entity =>
         {
-            entity.HasKey(e => e.InvoiceId).HasName("PK__invoices__F58DFD49623921B3");
+            entity.HasKey(e => e.InvoiceId).HasName("PK__invoices__F58DFD4959583694");
 
             entity.ToTable("invoices");
 
@@ -293,7 +269,6 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.PaymentMethodId).HasColumnName("payment_method_id");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("status");
             entity.Property(e => e.SubscriptionId).HasColumnName("subscription_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -313,27 +288,24 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<MuscleGroup>(entity =>
         {
-            entity.HasKey(e => e.MuscleGroupId).HasName("PK__muscle_g__9DFCBF4099690D8A");
+            entity.HasKey(e => e.MuscleGroupId).HasName("PK__muscle_g__9DFCBF40F1E2EAF0");
 
             entity.ToTable("muscle_groups");
 
             entity.Property(e => e.MuscleGroupId).HasColumnName("muscle_group_id");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.ImageUrl)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("image_url");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("name");
         });
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__notifica__E059842F9DE14403");
+            entity.HasKey(e => e.NotificationId).HasName("PK__notifica__E059842F0CA94DB9");
 
             entity.ToTable("notifications");
 
@@ -344,17 +316,13 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.IsRead)
                 .HasDefaultValue(false)
                 .HasColumnName("is_read");
-            entity.Property(e => e.Message)
-                .HasColumnType("text")
-                .HasColumnName("message");
+            entity.Property(e => e.Message).HasColumnName("message");
             entity.Property(e => e.StaffId).HasColumnName("staff_id");
             entity.Property(e => e.Title)
                 .HasMaxLength(200)
-                .IsUnicode(false)
                 .HasColumnName("title");
             entity.Property(e => e.Type)
                 .HasMaxLength(50)
-                .IsUnicode(false)
                 .HasColumnName("type");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -369,7 +337,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.MethodId).HasName("PK__payment___747727B690CFACA5");
+            entity.HasKey(e => e.MethodId).HasName("PK__payment___747727B603906422");
 
             entity.ToTable("payment_methods");
 
@@ -383,15 +351,12 @@ public partial class GymbotDbContext : DbContext
                 .HasColumnName("is_default");
             entity.Property(e => e.LastFour)
                 .HasMaxLength(4)
-                .IsUnicode(false)
                 .HasColumnName("last_four");
             entity.Property(e => e.Provider)
                 .HasMaxLength(50)
-                .IsUnicode(false)
                 .HasColumnName("provider");
             entity.Property(e => e.TokenReference)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("token_reference");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -402,37 +367,31 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Permission>(entity =>
         {
-            entity.HasKey(e => e.PermissionId).HasName("PK__permissi__E5331AFA1095096D");
+            entity.HasKey(e => e.PermissionId).HasName("PK__permissi__E5331AFA773BE053");
 
             entity.ToTable("permissions");
 
-            entity.HasIndex(e => e.Name, "UQ__permissi__72E12F1B1AD475E5").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__permissi__72E12F1B29AE3D32").IsUnique();
 
             entity.Property(e => e.PermissionId).HasColumnName("permission_id");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("name");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__roles__760965CC797107D0");
+            entity.HasKey(e => e.RoleId).HasName("PK__roles__760965CC991A1343");
 
             entity.ToTable("roles");
 
-            entity.HasIndex(e => e.Name, "UQ__roles__72E12F1B253AD9B6").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__roles__72E12F1B0EE20AB1").IsUnique();
 
             entity.Property(e => e.RoleId).HasColumnName("role_id");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
-                .IsUnicode(false)
                 .HasColumnName("name");
 
             entity.HasMany(d => d.Permissions).WithMany(p => p.Roles)
@@ -448,7 +407,7 @@ public partial class GymbotDbContext : DbContext
                         .HasConstraintName("FK__role_perm__role___0F624AF8"),
                     j =>
                     {
-                        j.HasKey("RoleId", "PermissionId").HasName("PK__role_per__C85A54635ABBEE0F");
+                        j.HasKey("RoleId", "PermissionId").HasName("PK__role_per__C85A5463C58A847E");
                         j.ToTable("role_permissions");
                         j.IndexerProperty<int>("RoleId").HasColumnName("role_id");
                         j.IndexerProperty<int>("PermissionId").HasColumnName("permission_id");
@@ -457,27 +416,24 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Specialization>(entity =>
         {
-            entity.HasKey(e => e.SpecializationId).HasName("PK__speciali__0E5BB650715ACB28");
+            entity.HasKey(e => e.SpecializationId).HasName("PK__speciali__0E5BB6501ACA1145");
 
             entity.ToTable("specializations");
 
             entity.Property(e => e.SpecializationId).HasColumnName("specialization_id");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("name");
         });
 
         modelBuilder.Entity<Staff>(entity =>
         {
-            entity.HasKey(e => e.StaffId).HasName("PK__staffs__1963DD9C658CB122");
+            entity.HasKey(e => e.StaffId).HasName("PK__staffs__1963DD9CAD81D86B");
 
             entity.ToTable("staffs");
 
-            entity.HasIndex(e => e.Email, "UQ__staffs__AB6E6164CFFE7D40").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__staffs__AB6E6164476952A6").IsUnique();
 
             entity.Property(e => e.StaffId)
                 .ValueGeneratedNever()
@@ -487,7 +443,6 @@ public partial class GymbotDbContext : DbContext
                 .HasColumnName("created_at");
             entity.Property(e => e.Department)
                 .HasMaxLength(50)
-                .IsUnicode(false)
                 .HasColumnName("department");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
@@ -495,13 +450,11 @@ public partial class GymbotDbContext : DbContext
                 .HasColumnName("email");
             entity.Property(e => e.FirstName)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("first_name");
             entity.Property(e => e.HireDate).HasColumnName("hire_date");
             entity.Property(e => e.LastLogin).HasColumnName("last_login");
             entity.Property(e => e.LastName)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("last_name");
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
@@ -513,7 +466,6 @@ public partial class GymbotDbContext : DbContext
                 .HasColumnName("salary");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("status");
             entity.Property(e => e.SupervisorId).HasColumnName("supervisor_id");
             entity.Property(e => e.TerminationDate).HasColumnName("termination_date");
@@ -529,7 +481,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<StaffSchedule>(entity =>
         {
-            entity.HasKey(e => e.ScheduleId).HasName("PK__staff_sc__C46A8A6F8C41BB1F");
+            entity.HasKey(e => e.ScheduleId).HasName("PK__staff_sc__C46A8A6F85CD4A8B");
 
             entity.ToTable("staff_schedules");
 
@@ -541,7 +493,6 @@ public partial class GymbotDbContext : DbContext
                 .HasColumnName("is_available");
             entity.Property(e => e.Location)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("location");
             entity.Property(e => e.StaffId).HasColumnName("staff_id");
             entity.Property(e => e.StartTime).HasColumnName("start_time");
@@ -553,7 +504,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<StaffSpecialization>(entity =>
         {
-            entity.HasKey(e => new { e.StaffId, e.SpecializationId }).HasName("PK__staff_sp__098666F958B05ADF");
+            entity.HasKey(e => new { e.StaffId, e.SpecializationId }).HasName("PK__staff_sp__098666F988951760");
 
             entity.ToTable("staff_specializations");
 
@@ -562,12 +513,10 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.CertificationDate).HasColumnName("certification_date");
             entity.Property(e => e.CertificationNumber)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("certification_number");
             entity.Property(e => e.ExpiryDate).HasColumnName("expiry_date");
             entity.Property(e => e.VerificationStatus)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("verification_status");
 
             entity.HasOne(d => d.Specialization).WithMany(p => p.StaffSpecializations)
@@ -583,7 +532,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<SubscriptionPlan>(entity =>
         {
-            entity.HasKey(e => e.PlanId).HasName("PK__subscrip__BE9F8F1DF3B27F59");
+            entity.HasKey(e => e.PlanId).HasName("PK__subscrip__BE9F8F1D1ED71177");
 
             entity.ToTable("subscription_plans");
 
@@ -591,9 +540,7 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnName("created_at");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.DurationMonths).HasColumnName("duration_months");
             entity.Property(e => e.Features).HasColumnName("features");
             entity.Property(e => e.IsActive)
@@ -602,7 +549,6 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.MaxSessionsPerMonth).HasColumnName("max_sessions_per_month");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("name");
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(10, 2)")
@@ -611,27 +557,22 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<SystemSetting>(entity =>
         {
-            entity.HasKey(e => e.SettingId).HasName("PK__system_s__256E1E3217C3E9C7");
+            entity.HasKey(e => e.SettingId).HasName("PK__system_s__256E1E321F06CE12");
 
             entity.ToTable("system_settings");
 
-            entity.HasIndex(e => e.SystemKey, "UQ__system_s__B5998962797A5273").IsUnique();
+            entity.HasIndex(e => e.SystemKey, "UQ__system_s__B5998962F167B2AE").IsUnique();
 
             entity.Property(e => e.SettingId).HasColumnName("setting_id");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.SystemKey)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("system_key");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
-            entity.Property(e => e.Value)
-                .HasColumnType("text")
-                .HasColumnName("value");
+            entity.Property(e => e.Value).HasColumnName("value");
 
             entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.SystemSettings)
                 .HasForeignKey(d => d.UpdatedBy)
@@ -640,7 +581,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__transact__85C600AFA1B503C5");
+            entity.HasKey(e => e.TransactionId).HasName("PK__transact__85C600AFB6567943");
 
             entity.ToTable("transactions");
 
@@ -655,11 +596,9 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.PaymentMethodId).HasColumnName("payment_method_id");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("status");
             entity.Property(e => e.TransactionReference)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("transaction_reference");
 
             entity.HasOne(d => d.Invoice).WithMany(p => p.Transactions)
@@ -673,30 +612,26 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__users__B9BE370FBE21A4EA");
+            entity.HasKey(e => e.UserId).HasName("PK__users__B9BE370F3B0920CE");
 
             entity.ToTable("users");
 
-            entity.HasIndex(e => e.Email, "UQ__users__AB6E616455C0F3BB").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__users__AB6E616461C2FFF9").IsUnique();
 
             entity.Property(e => e.UserId)
                 .ValueGeneratedNever()
                 .HasColumnName("user_id");
             entity.Property(e => e.AddressLine1)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("address_line1");
             entity.Property(e => e.AddressLine2)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("address_line2");
             entity.Property(e => e.City)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("city");
             entity.Property(e => e.Country)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("country");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(sysdatetime())")
@@ -704,7 +639,6 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.DateOfBirth).HasColumnName("date_of_birth");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("email");
             entity.Property(e => e.EmergencyContactName)
                 .HasMaxLength(100)
@@ -716,20 +650,16 @@ public partial class GymbotDbContext : DbContext
                 .HasColumnName("emergency_contact_phone");
             entity.Property(e => e.FirstName)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("first_name");
             entity.Property(e => e.Gender)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("gender");
             entity.Property(e => e.LastLogin).HasColumnName("last_login");
             entity.Property(e => e.LastName)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("last_name");
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("phone");
             entity.Property(e => e.PostalCode)
                 .HasMaxLength(20)
@@ -742,11 +672,9 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.State)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("state");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("status");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
@@ -756,7 +684,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<UserMeasurement>(entity =>
         {
-            entity.HasKey(e => e.MeasurementId).HasName("PK__user_mea__E3D1E1C18D0B1EEB");
+            entity.HasKey(e => e.MeasurementId).HasName("PK__user_mea__E3D1E1C14B6C1FB7");
 
             entity.ToTable("user_measurements");
 
@@ -780,9 +708,7 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.HipsCm)
                 .HasColumnType("decimal(5, 2)")
                 .HasColumnName("hips_cm");
-            entity.Property(e => e.Notes)
-                .HasColumnType("text")
-                .HasColumnName("notes");
+            entity.Property(e => e.Notes).HasColumnName("notes");
             entity.Property(e => e.ThighsCm)
                 .HasColumnType("decimal(5, 2)")
                 .HasColumnName("thighs_cm");
@@ -801,7 +727,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<UserSubscription>(entity =>
         {
-            entity.HasKey(e => e.SubscriptionId).HasName("PK__user_sub__863A7EC191F5D594");
+            entity.HasKey(e => e.SubscriptionId).HasName("PK__user_sub__863A7EC1DD13FDAE");
 
             entity.ToTable("user_subscriptions");
 
@@ -815,13 +741,11 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.EndDate).HasColumnName("end_date");
             entity.Property(e => e.PaymentFrequency)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("payment_frequency");
             entity.Property(e => e.PlanId).HasColumnName("plan_id");
             entity.Property(e => e.StartDate).HasColumnName("start_date");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("status");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -836,7 +760,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<WorkoutLog>(entity =>
         {
-            entity.HasKey(e => e.LogId).HasName("PK__workout___9E2397E0FDD567F6");
+            entity.HasKey(e => e.LogId).HasName("PK__workout___9E2397E014600D6B");
 
             entity.ToTable("workout_logs");
 
@@ -848,9 +772,7 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.DifficultyRating).HasColumnName("difficulty_rating");
             entity.Property(e => e.DurationMinutes).HasColumnName("duration_minutes");
             entity.Property(e => e.ExerciseId).HasColumnName("exercise_id");
-            entity.Property(e => e.Notes)
-                .HasColumnType("text")
-                .HasColumnName("notes");
+            entity.Property(e => e.Notes).HasColumnName("notes");
             entity.Property(e => e.RepsCompleted).HasColumnName("reps_completed");
             entity.Property(e => e.SetsCompleted).HasColumnName("sets_completed");
             entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -869,7 +791,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<WorkoutPlan>(entity =>
         {
-            entity.HasKey(e => e.PlanId).HasName("PK__workout___BE9F8F1D8CD6D301");
+            entity.HasKey(e => e.PlanId).HasName("PK__workout___BE9F8F1D135611B0");
 
             entity.ToTable("workout_plans");
 
@@ -878,27 +800,17 @@ public partial class GymbotDbContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.DifficultyLevel)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("difficulty_level");
             entity.Property(e => e.DurationWeeks).HasColumnName("duration_weeks");
-            entity.Property(e => e.Goals)
-                .HasColumnType("text")
-                .HasColumnName("goals");
+            entity.Property(e => e.Goals).HasColumnName("goals");
             entity.Property(e => e.Name)
                 .HasMaxLength(200)
-                .IsUnicode(false)
                 .HasColumnName("name");
-            entity.Property(e => e.Prerequisites)
-                .HasColumnType("text")
-                .HasColumnName("prerequisites");
-            entity.Property(e => e.TargetAudience)
-                .HasColumnType("text")
-                .HasColumnName("target_audience");
+            entity.Property(e => e.Prerequisites).HasColumnName("prerequisites");
+            entity.Property(e => e.TargetAudience).HasColumnName("target_audience");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.WorkoutPlans)
                 .HasForeignKey(d => d.CreatedBy)
@@ -907,7 +819,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<WorkoutPlanExercise>(entity =>
         {
-            entity.HasKey(e => new { e.PlanId, e.ExerciseId, e.WeekNumber, e.DayOfWeek }).HasName("PK__workout___04BCC65617FB8D3C");
+            entity.HasKey(e => new { e.PlanId, e.ExerciseId, e.WeekNumber, e.DayOfWeek }).HasName("PK__workout___04BCC65665D6202D");
 
             entity.ToTable("workout_plan_exercises");
 
@@ -915,9 +827,7 @@ public partial class GymbotDbContext : DbContext
             entity.Property(e => e.ExerciseId).HasColumnName("exercise_id");
             entity.Property(e => e.WeekNumber).HasColumnName("week_number");
             entity.Property(e => e.DayOfWeek).HasColumnName("day_of_week");
-            entity.Property(e => e.Notes)
-                .HasColumnType("text")
-                .HasColumnName("notes");
+            entity.Property(e => e.Notes).HasColumnName("notes");
             entity.Property(e => e.Reps).HasColumnName("reps");
             entity.Property(e => e.RestTimeSeconds).HasColumnName("rest_time_seconds");
             entity.Property(e => e.Sets).HasColumnName("sets");
