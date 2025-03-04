@@ -20,7 +20,7 @@ namespace GymFitness.API.Controllers
         private readonly List<string> _allowedImageExtensions = new() { ".jpg", ".jpeg", ".png", ".gif" };
         private readonly List<string> _allowedVideoExtensions = new() { ".mp4", ".mov", ".avi", ".mkv" };
 
-        public ExerciseController(ExerciseService exerciseService, IFirebaseStorageService firebaseStorageService)
+        public ExerciseController(IExerciseService exerciseService, IFirebaseStorageService firebaseStorageService)
         {
             _exerciseService = exerciseService;
             _firebaseStorageService = firebaseStorageService;
