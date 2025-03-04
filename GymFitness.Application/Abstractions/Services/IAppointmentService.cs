@@ -12,11 +12,11 @@ namespace GymFitness.Application.Abstractions.Services
     public interface IAppointmentService
     {
         Task<IEnumerable<AppointmentResponseDto>> GetAppointmentsAsync(string? filterOn,
-                                                            string? filterQuery,
-                                                            string? sortBy,
-                                                            bool? isAscending,
-                                                            int pageNumber = 1,
-                                                            int pageSize = 1000);
+                                                                       string? filterQuery,
+                                                                       string? sortBy,
+                                                                       bool? isAscending,
+                                                                       int pageNumber = 1,
+                                                                       int pageSize = 1000);
         Task<Appointment?> GetAppointmentByIdAsync(int appointmentId);
         Task AddAppointmentAsync(Appointment appointment);
         Task UpdateAppointmentAsync(Appointment appointment);

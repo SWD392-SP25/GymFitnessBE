@@ -9,7 +9,12 @@ namespace GymFitness.Application.Abstractions.Repositories
 {
     public interface IExerciseRepository
     {
-        Task<IEnumerable<Exercise>> GetAllAsync();
+        Task<IEnumerable<Exercise>> GetAllAsync(string? filterOn,
+                                                string? filterQuery,
+                                                string? sortBy,
+                                                bool isAscending,
+                                                int pageNumber = 1,
+                                                int pageSize = 1000);
         Task<Exercise?> GetByIdAsync(int id);
         Task AddAsync(Exercise exercise);
         Task UpdateAsync(Exercise exercise);
