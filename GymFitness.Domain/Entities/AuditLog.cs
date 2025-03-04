@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace GymFitness.Domain.Entities;
 
+//ghi lại lịch sử hoạt động
 public partial class AuditLog
 {
     public int LogId { get; set; }
