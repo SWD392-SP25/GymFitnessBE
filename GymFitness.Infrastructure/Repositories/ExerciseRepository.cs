@@ -24,7 +24,7 @@ namespace GymFitness.Infrastructure.Repositories
         //    throw new NotImplementedException();
         //}
 
-        public async Task<IEnumerable<Exercise>> GetAllAsync(string? filterOn, string? filterQuery, string? sortBy, bool isAscending = true, int pageNumber = 1, int pageSize = 1000)
+        public async Task<IEnumerable<Exercise>> GetAllAsync(string? filterOn, string? filterQuery, string? sortBy, bool isAscending = true, int pageNumber = 1, int pageSize = 10)
         {
             var exercises = _context.Exercises
                 .Include(e => e.Category)

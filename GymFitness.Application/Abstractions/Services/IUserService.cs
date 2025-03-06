@@ -1,4 +1,5 @@
-﻿using GymFitness.Domain.Entities;
+﻿using GymFitness.Application.ResponseDto;
+using GymFitness.Domain.Entities;
 
 namespace GymFitness.API.Services.Abstractions
 {
@@ -8,5 +9,8 @@ namespace GymFitness.API.Services.Abstractions
         Task AddUser(User user);
 
         Task<User> GetUserById(Guid userId);
+        Task<List<UserResponseDto>> GetAll(string? filterOn, string? filterQuery);
+        Task UpdateUser(User user);
+        Task<bool> BanUser(Guid userId);
     }
 }

@@ -20,7 +20,31 @@ namespace GymFitness.Infrastructure.Repositories
         {
             _context = context;
         }
+        public Task<List<User>> GetUsersAsync(string? filterOn, string? filterQuery)
+        {
+            var users = _context.Users
+                .Include(u => u.Role)
+                .AsQueryable();
 
+            // **Lọc theo filterOn và filterQuery**
+            if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
+            {
+                filterOn = filterOn.ToLower();
+                filterQuery = filterQuery.ToLower();
+                users = filterOn switch
+                {
+                    "email" => users.Where(u => u.Email != null && u.Email.ToLower().Contains(filterQuery)),
+                    "phone" => users.Where(u => u.Phone != null && u.Phone.ToLower().Contains(filterQuery)),
+                    "lastname" => users.Where(u => u.LastName != null && u.LastName.ToLower().Contains(filterQuery)),
+                    "gender" => users.Where(u => u.Gender != null && u.Gender.ToLower().Contains(filterQuery)),
+                    "city" => users.Where(u => u.City != null && u.City.ToLower().Contains(filterQuery)),
+                    "status" => users.Where(u => u.Status != null && u.Status.ToLower().Contains(filterQuery)),
+                    
+                    _ => users
+                };
+            }
+            return users.ToListAsync();
+        }
         public async Task AddUser(User user)
         {
             // Kiểm tra User đã tồn tại chưa
@@ -65,10 +89,47 @@ namespace GymFitness.Infrastructure.Repositories
 
         }
 
-        public Task<User> GetUserById(Guid userId)
+        public async Task<User> GetUserById(Guid userId)
         {
-            return _context.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.UserId == userId);
+            return await _context.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.UserId == userId);
 
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            var existingUser = await GetUserById(user.UserId);
+            if (existingUser == null)
+            {
+                throw new Exception("User not found");
+            }
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastName = user.LastName;
+            existingUser.Phone = user.Phone;
+            existingUser.DateOfBirth = user.DateOfBirth;
+            existingUser.ProfilePictureUrl = user.ProfilePictureUrl;
+            existingUser.AddressLine1 = user.AddressLine1;
+            existingUser.AddressLine2 = user.AddressLine2;
+            existingUser.City = user.City;
+            existingUser.State = user.State;
+            existingUser.PostalCode = user.PostalCode;
+            existingUser.Country = user.Country;
+            existingUser.EmergencyContactName = user.EmergencyContactName;
+            existingUser.EmergencyContactPhone = user.EmergencyContactPhone;
+            
+        }
+
+        public async Task<bool> BanUser(Guid userId)
+        {
+            var user = await GetUserById(userId);
+         
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+            user.Status = "Banned";
+            await _context.SaveChangesAsync();
+            return true;
+            
         }
     }
 }

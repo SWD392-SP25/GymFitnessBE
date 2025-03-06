@@ -14,7 +14,7 @@ namespace GymFitness.Application.Abstractions.Repositories
                                                 string? sortBy,
                                                 bool isAscending,
                                                 int pageNumber = 1,
-                                                int pageSize = 1000);
+                                                int pageSize = 10);
         Task<Exercise?> GetByIdAsync(int id);
         Task AddAsync(Exercise exercise);
         Task UpdateAsync(Exercise exercise);

@@ -102,6 +102,7 @@ namespace GymFitness.API.Controllers
                     {
                         UserId = Guid.NewGuid(),
                         Email = email,
+                        Status = "Active",
                         RoleId = 1 // Mặc định là User
                     };
 
@@ -195,5 +196,24 @@ namespace GymFitness.API.Controllers
 
             return Ok(new { message = "Logged out successfully" });
         }
+
+        [HttpPost("{userId}/ban")]
+        public async Task<IActionResult> BanUser(Guid userId)
+        {
+            try
+            {
+                var result = await _userService.BanUser(userId);
+                if (!result)
+                {
+                    return NotFound(new { message = "User not found or already banned." });
+                }
+                return Ok(new { message = "User has been banned successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
+
     }
 }

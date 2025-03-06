@@ -222,6 +222,7 @@ namespace GymFitness.API
             });
 
             // ✅ Middleware
+            app.UseMiddleware<TokenValidationMiddleware>();
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
             app.UseAuthentication();
