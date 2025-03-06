@@ -15,7 +15,13 @@ namespace GymFitness.Application.Services
             _muscleGroup = muscleGroup;
         }
 
-        public async Task<IEnumerable<MuscleGroup>> GetAllAsync() => await _muscleGroup.GetAllAsync();
+        public async Task<IEnumerable<MuscleGroup>> GetAllAsync(string? filterOn,
+                                                                string? filterQuery,
+                                                                int pageNumber = 1,
+                                                                int pageSize = 10)
+        {
+            return await _muscleGroup.GetAllAsync(filterOn, filterQuery, pageNumber, pageSize);
+        }
         public async Task<MuscleGroup?> GetByIdAsync(int id) => await _muscleGroup.GetByIdAsync(id);
         public async Task AddAsync(MuscleGroup muscleGroup) => await _muscleGroup.AddAsync(muscleGroup);
         public async Task UpdateAsync(MuscleGroup muscleGroup) => await _muscleGroup.UpdateAsync(muscleGroup);

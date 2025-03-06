@@ -16,8 +16,30 @@ namespace GymFitness.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<AppointmentType>> GetAllAsync() =>
-            await _context.AppointmentTypes.ToListAsync();
+        public async Task<IEnumerable<AppointmentType>> GetAllAsync(string? filterOn, 
+                                                                    string? filterQuery,
+                                                                    int pageNumber = 1,
+                                                                    int pageSize = 10)
+        {
+            var appointmentTypes = _context.AppointmentTypes.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
+            {
+                filterOn = filterOn.ToLower();
+                filterQuery = filterQuery.ToLower();
+                appointmentTypes = filterOn switch
+                {
+                    "name" => appointmentTypes.Where(a => EF.Functions.Like(a.Name, filterQuery)),
+                    "description" => appointmentTypes.Where(a => EF.Functions.Like(a.Description, filterQuery)),
+                    _ => appointmentTypes
+                };
+            }
+
+            // **Phân trang**
+            appointmentTypes = appointmentTypes.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            return await appointmentTypes.ToListAsync();
+        }
+            
 
         public async Task<AppointmentType?> GetByIdAsync(int typeId) =>
             await _context.AppointmentTypes.FindAsync(typeId);
@@ -42,6 +64,11 @@ namespace GymFitness.Infrastructure.Repositories
                 _context.AppointmentTypes.Remove(entity);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<AppointmentType?> GetByNameAsync(string name)
+        {
+            return await _context.AppointmentTypes.FirstOrDefaultAsync(x => EF.Functions.Like(x.Name, name));
         }
     }
 }
