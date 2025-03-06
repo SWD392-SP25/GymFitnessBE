@@ -20,9 +20,12 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, 
+                                                [FromQuery] string? filterQuery,
+                                                [FromQuery] int pageNumber = 1,
+                                                [FromQuery] int pageSize = 10)
         {
-            var schedules = await _service.GetAllSchedulesAsync();
+            var schedules = await _service.GetAllSchedulesAsync(filterOn, filterQuery, pageNumber, pageSize);
             return Ok(schedules);
         }
 

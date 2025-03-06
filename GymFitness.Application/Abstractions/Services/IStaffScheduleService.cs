@@ -9,7 +9,10 @@ namespace GymFitness.Application.Abstractions.Services
 {
     public interface IStaffScheduleService
     {
-        Task<IEnumerable<StaffSchedule>> GetAllSchedulesAsync();
+        Task<IEnumerable<StaffSchedule>> GetAllSchedulesAsync(string? filterOn,
+                                                              string? filterQuery,
+                                                              int pageNumber = 1,
+                                                              int pageSize = 10);
         Task<StaffSchedule?> GetScheduleByIdAsync(int id);
         Task AddScheduleAsync(StaffSchedule schedule);
         Task UpdateScheduleAsync(StaffSchedule schedule);

@@ -15,7 +15,13 @@ namespace GymFitness.Application.Services
             _exerciseCategory = exerciseCategory;
         }
 
-        public async Task<IEnumerable<ExerciseCategory>> GetAllCategoriesAsync() => await _exerciseCategory.GetAllAsync();
+        public async Task<IEnumerable<ExerciseCategory>> GetAllCategoriesAsync(string? filterOn,
+                                                                               string? filterQuery,
+                                                                               int pageNumber = 1,
+                                                                               int pageSize = 10)
+        {
+            return await _exerciseCategory.GetAllAsync(filterOn, filterQuery, pageNumber, pageSize);
+        }
         public async Task<ExerciseCategory?> GetCategoryByIdAsync(int id) => await _exerciseCategory.GetByIdAsync(id);
         public async Task AddCategoryAsync(ExerciseCategory category) => await _exerciseCategory.AddAsync(category);
         public async Task UpdateCategoryAsync(ExerciseCategory category) => await _exerciseCategory.UpdateAsync(category);

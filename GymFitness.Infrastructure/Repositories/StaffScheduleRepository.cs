@@ -16,6 +16,35 @@ namespace GymFitness.Infrastructure.Repositories
             _context = context;
         }
 
+        public Task<IEnumerable<StaffSchedule>> GetAllAsync(string? filterOn, 
+                                                            string? filterQuery, 
+                                                            int pageNumber = 1, 
+                                                            int pageSize = 10)
+        {
+            var staffSchedules = _context.StaffSchedules.Include(x => x.Staff).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
+            {
+                filterOn = filterOn.ToLower();
+                filterQuery = filterQuery.ToLower();
+
+                staffSchedules = filterOn switch
+                {
+                    "email" => staffSchedules.Where(s => EF.Functions.Like(s.Staff.Email, $"%{filterQuery}%")),
+
+                    "available" => bool.TryParse(filterQuery, out bool isAvailable)
+                        ? staffSchedules.Where(s => s.IsAvailable == isAvailable)
+                        : staffSchedules,
+
+                    "location" => staffSchedules.Where(s => EF.Functions.Like(s.Location.ToString(), $"%{filterQuery}%")),
+
+                   
+
+                    _ => staffSchedules
+                };
+            }
+
+            throw new NotImplementedException();
+        }
         public async Task<IEnumerable<StaffSchedule>> GetAllAsync() =>
             await _context.StaffSchedules.ToListAsync();
 
@@ -43,5 +72,7 @@ namespace GymFitness.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        
     }
 }

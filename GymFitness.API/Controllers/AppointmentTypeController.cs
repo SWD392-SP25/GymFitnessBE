@@ -20,9 +20,12 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn,
+                                                [FromQuery] string? filterQuery,
+                                                [FromQuery] int pageNumber = 1,
+                                                [FromQuery] int pageSize = 10)
         {
-            var appointmentTypes = await _service.GetAllAppointmentTypesAsync();
+            var appointmentTypes = await _service.GetAllAppointmentTypesAsync(filterOn, filterQuery, pageNumber, pageSize);
             return Ok(appointmentTypes);
         }
 
@@ -71,6 +74,15 @@ namespace GymFitness.API.Controllers
         {
             await _service.DeleteAppointmentTypeAsync(id);
             return NoContent();
+        }
+
+        [HttpGet("name/{name}")]
+        public async Task<IActionResult> GetByName(string name)
+        {
+            var appointmentType = await _service.GetAppointmentTypeByNameAsync(name);
+            if (appointmentType == null)
+                return NotFound();
+            return Ok(appointmentType);
         }
     }
 }

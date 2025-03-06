@@ -15,8 +15,13 @@ namespace GymFitness.Application.Services
             _staffSchedule = staffSchedule;
         }
 
-        public async Task<IEnumerable<StaffSchedule>> GetAllSchedulesAsync() =>
-            await _staffSchedule.GetAllAsync();
+        public async Task<IEnumerable<StaffSchedule>> GetAllSchedulesAsync(string? filterOn,
+                                                                           string? filterQuery,
+                                                                           int pageNumber = 1,
+                                                                           int pageSize = 10)
+        {
+            return await _staffSchedule.GetAllAsync(filterOn, filterQuery, pageNumber, pageSize);
+        }
 
         public async Task<StaffSchedule?> GetScheduleByIdAsync(int id) =>
             await _staffSchedule.GetByIdAsync(id);
