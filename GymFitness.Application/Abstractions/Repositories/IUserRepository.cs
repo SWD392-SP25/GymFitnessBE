@@ -13,5 +13,8 @@ namespace GymFitness.Infrastructure.Repositories.Abstractions
         Task AddUser(User user);
 
         Task<User> GetUserById(Guid userId);
+        Task<List<User>> GetUsersAsync(string? filterOn, string? filterQuery);
+        Task UpdateUser(User user);
+        Task<bool> BanUser(Guid userId);
     }
 }

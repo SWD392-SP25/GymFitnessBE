@@ -44,6 +44,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
             builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<IUserMeasurementRepository, UserMeasurementRepository>();            
             // Add services to the container.
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
@@ -59,7 +60,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IAppointmentTypeService, AppointmentTypeService>();
             builder.Services.AddSingleton<IRedisService, RedisService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
-
+            builder.Services.AddScoped<IUserMeasurementService, UserMeasurementService>();
 
             builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
                       builder.Services.AddHttpClient("ChatGPT");
@@ -222,6 +223,7 @@ namespace GymFitness.API
             });
 
             // ✅ Middleware
+            app.UseMiddleware<TokenValidationMiddleware>();
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
             app.UseAuthentication();

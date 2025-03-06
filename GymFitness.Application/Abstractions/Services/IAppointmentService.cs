@@ -16,7 +16,7 @@ namespace GymFitness.Application.Abstractions.Services
                                                                        string? sortBy,
                                                                        bool? isAscending,
                                                                        int pageNumber = 1,
-                                                                       int pageSize = 1000);
+                                                                       int pageSize = 10);
         Task<Appointment?> GetAppointmentByIdAsync(int appointmentId);
         Task AddAppointmentAsync(Appointment appointment);
         Task UpdateAppointmentAsync(Appointment appointment);

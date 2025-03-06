@@ -33,7 +33,7 @@ namespace GymFitness.API.Controllers
                                                 [FromQuery] string? sortBy,
                                                 [FromQuery] bool? isAscending,
                                                 [FromQuery] int pageNumber = 1,
-                                                [FromQuery] int pageSize = 1000)
+                                                [FromQuery] int pageSize = 10)
         {
             var exercises = await _exerciseService.GetAllExercisesAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
             return Ok(exercises);

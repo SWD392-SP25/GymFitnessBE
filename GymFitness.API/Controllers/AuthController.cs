@@ -25,11 +25,11 @@ namespace GymFitness.API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IFirebaseAuthService _firebaseAuthService;
         private readonly IUserService _userService;
-        private readonly StaffService _staffService;
+        private readonly IStaffService _staffService;
         private readonly IRedisService _redisService;
 
         public AuthController(IConfiguration configuration, IFirebaseAuthService firebaseAuthService,
-                                                            IUserService userService, StaffService staffService,
+                                                            IUserService userService, IStaffService staffService,
                                                             IRedisService redisService)
         {
             _configuration = configuration;
@@ -102,6 +102,7 @@ namespace GymFitness.API.Controllers
                     {
                         UserId = Guid.NewGuid(),
                         Email = email,
+                        Status = "Active",
                         RoleId = 1 // Mặc định là User
                     };
 
@@ -119,6 +120,10 @@ namespace GymFitness.API.Controllers
                 {
                     id = staff.StaffId.ToString();
                     role = "Staff";
+                }
+                if(user.Status == "Banned")
+                {
+                    return Unauthorized("User has been banned, please contact staff for more info.");
                 }
 
                 // ✅ Tạo JWT token
@@ -195,5 +200,8 @@ namespace GymFitness.API.Controllers
 
             return Ok(new { message = "Logged out successfully" });
         }
+
+
+
     }
 }
