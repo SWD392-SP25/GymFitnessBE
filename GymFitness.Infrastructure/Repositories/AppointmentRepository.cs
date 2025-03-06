@@ -42,6 +42,7 @@ namespace GymFitness.Infrastructure.Repositories
                 {
                     "email" => appointments.Where(a => a.User != null && a.User.Email.ToLower().Contains(filterQuery)),
                     "status" => appointments.Where(a => a.Status != null && a.Status.ToLower().Contains(filterQuery)),
+                    "location" => appointments.Where(a => a.Location != null && a.Location.ToLower().Contains(filterQuery)),
                     _ => appointments
                 };
             }

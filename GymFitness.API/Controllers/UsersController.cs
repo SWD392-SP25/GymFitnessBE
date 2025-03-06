@@ -1,5 +1,6 @@
 ﻿using GymFitness.API.RequestDto;
 using GymFitness.API.Services.Abstractions;
+using GymFitness.Application.Abstractions.Services;
 using GymFitness.Domain.Entities;
 using GymFitness.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{userId}")]
-    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequestDto dto, Guid userId)
+    public async Task<IActionResult> UpdateUser([FromForm] UpdateUserRequestDto dto, Guid userId)
     {
         var user = await _userService.GetUserById(userId);
         if (user == null)
@@ -54,7 +55,6 @@ public class UsersController : ControllerBase
         user.LastName = dto.LastName;
         user.Phone = dto.Phone;
         user.DateOfBirth = dto.DateOfBirth;
-        user.ProfilePictureUrl = dto.ProfilePictureUrl.ToString();
         user.AddressLine1 = dto.AddressLine1;
         user.AddressLine2 = dto.AddressLine2;
         user.City = dto.City;
@@ -64,9 +64,43 @@ public class UsersController : ControllerBase
         user.EmergencyContactName = dto.EmergencyContactName;
         user.EmergencyContactPhone = dto.EmergencyContactPhone;
 
+        // Xử lý upload ảnh nếu có ảnh mới
+        if (dto.ProfilePictureUrl != null)
+        {
+            var firebaseService = HttpContext.RequestServices.GetRequiredService<IFirebaseStorageService>();
+
+            // Xóa ảnh cũ nếu có
+            if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+            {
+                await firebaseService.DeleteFileAsync(user.ProfilePictureUrl);
+            }
+
+            // Upload ảnh mới
+            var newProfilePicUrl = await firebaseService.UploadFileAsync(dto.ProfilePictureUrl, "profile_pictures");
+            user.ProfilePictureUrl = newProfilePicUrl;
+        }
+
         await _userService.UpdateUser(user);
-        return Ok("Update user successful");
+        return Ok(new { message = "Update user successful", profilePictureUrl = user.ProfilePictureUrl });
     }
 
+
+    [HttpPost("{userId}/ban")]
+    public async Task<IActionResult> BanUser(Guid userId)
+    {
+        try
+        {
+            var result = await _userService.BanUser(userId);
+            if (!result)
+            {
+                return NotFound(new { message = "User not found or already banned." });
+            }
+            return Ok(new { message = "User has been banned successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+        }
+    }
 
 }

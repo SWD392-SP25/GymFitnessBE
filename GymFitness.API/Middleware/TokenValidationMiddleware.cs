@@ -6,13 +6,13 @@ public class TokenValidationMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IRedisService _redisService;
-    private readonly IUserService _userService; // ✅ Thêm UserService để kiểm tra trạng thái user
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public TokenValidationMiddleware(RequestDelegate next, IRedisService redisService, IUserService userService)
+    public TokenValidationMiddleware(RequestDelegate next, IRedisService redisService, IServiceScopeFactory scopeFactory)
     {
         _next = next;
         _redisService = redisService;
-        _userService = userService;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task Invoke(HttpContext context)
@@ -37,13 +37,18 @@ public class TokenValidationMiddleware
                     return;
                 }
 
-                // ✅ Kiểm tra nếu user bị ban
-                var user = await _userService.GetUserById(Guid.Parse(userId));
-                if (user != null && user.Status == "Banned")
+                using (var scope = _scopeFactory.CreateScope())
                 {
-                    context.Response.StatusCode = 403; // Forbidden
-                    await context.Response.WriteAsync("Your account has been banned.");
-                    return;
+                    var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+
+                    // ✅ Kiểm tra nếu user bị ban
+                    var user = await userService.GetUserById(Guid.Parse(userId));
+                    if (user != null && user.Status == "Banned")
+                    {
+                        context.Response.StatusCode = 403;
+                        await context.Response.WriteAsync("Your account has been banned.");
+                        return;
+                    }
                 }
             }
         }

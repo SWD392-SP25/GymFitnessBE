@@ -25,11 +25,11 @@ namespace GymFitness.API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IFirebaseAuthService _firebaseAuthService;
         private readonly IUserService _userService;
-        private readonly StaffService _staffService;
+        private readonly IStaffService _staffService;
         private readonly IRedisService _redisService;
 
         public AuthController(IConfiguration configuration, IFirebaseAuthService firebaseAuthService,
-                                                            IUserService userService, StaffService staffService,
+                                                            IUserService userService, IStaffService staffService,
                                                             IRedisService redisService)
         {
             _configuration = configuration;
@@ -121,6 +121,10 @@ namespace GymFitness.API.Controllers
                     id = staff.StaffId.ToString();
                     role = "Staff";
                 }
+                if(user.Status == "Banned")
+                {
+                    return Unauthorized("User has been banned, please contact staff for more info.");
+                }
 
                 // ✅ Tạo JWT token
                 Console.WriteLine("Generating JWT token");
@@ -197,23 +201,7 @@ namespace GymFitness.API.Controllers
             return Ok(new { message = "Logged out successfully" });
         }
 
-        [HttpPost("{userId}/ban")]
-        public async Task<IActionResult> BanUser(Guid userId)
-        {
-            try
-            {
-                var result = await _userService.BanUser(userId);
-                if (!result)
-                {
-                    return NotFound(new { message = "User not found or already banned." });
-                }
-                return Ok(new { message = "User has been banned successfully." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
-            }
-        }
+
 
     }
 }
