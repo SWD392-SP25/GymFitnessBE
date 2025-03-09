@@ -27,7 +27,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "User,Staff")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn,
                                                 [FromQuery] string? filterQuery,
                                                 [FromQuery] string? sortBy,
