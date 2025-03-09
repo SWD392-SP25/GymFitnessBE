@@ -1,4 +1,5 @@
-﻿using GymFitness.Domain.Entities;
+﻿using GymFitness.Application.ResponseDto;
+using GymFitness.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace GymFitness.Application.Abstractions.Services
 {
     public interface IExerciseCategoryService
     {
-        Task<IEnumerable<ExerciseCategory>> GetAllCategoriesAsync(string? filterOn, 
+        Task<IEnumerable<ExerciseCategoryResponseDto>> GetAllCategoriesAsync(string? filterOn, 
                                                                   string? filterQuery, 
                                                                   int pageNumber = 1, 
                                                                   int pageSize = 10);

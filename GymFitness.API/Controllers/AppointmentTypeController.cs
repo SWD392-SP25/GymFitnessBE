@@ -76,13 +76,6 @@ namespace GymFitness.API.Controllers
             return NoContent();
         }
 
-        [HttpGet("name/{name}")]
-        public async Task<IActionResult> GetByName(string name)
-        {
-            var appointmentType = await _service.GetAppointmentTypeByNameAsync(name);
-            if (appointmentType == null)
-                return NotFound();
-            return Ok(appointmentType);
-        }
+
     }
 }

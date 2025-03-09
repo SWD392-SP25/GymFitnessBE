@@ -35,23 +35,17 @@ public partial class Staff
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-    public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
-
     public virtual ICollection<ChatHistory> ChatHistories { get; set; } = new List<ChatHistory>();
 
     public virtual ICollection<Staff> InverseSupervisor { get; set; } = new List<Staff>();
 
-    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    public virtual ICollection<RegisteredDevice> RegisteredDevices { get; set; } = new List<RegisteredDevice>();
 
     public virtual Role? Role { get; set; }
-
-    public virtual ICollection<StaffSchedule> StaffSchedules { get; set; } = new List<StaffSchedule>();
 
     public virtual ICollection<StaffSpecialization> StaffSpecializations { get; set; } = new List<StaffSpecialization>();
 
     public virtual Staff? Supervisor { get; set; }
-
-    public virtual ICollection<SystemSetting> SystemSettings { get; set; } = new List<SystemSetting>();
 
     public virtual ICollection<WorkoutPlan> WorkoutPlans { get; set; } = new List<WorkoutPlan>();
 }

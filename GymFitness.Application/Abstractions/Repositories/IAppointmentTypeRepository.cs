@@ -11,6 +11,5 @@ namespace GymFitness.Application.Abstractions.Repositories
         Task AddAsync(AppointmentType appointmentType);
         Task UpdateAsync(AppointmentType appointmentType);
         Task DeleteAsync(int typeId);
-        Task<AppointmentType?> GetByNameAsync(string name);
     }
 }

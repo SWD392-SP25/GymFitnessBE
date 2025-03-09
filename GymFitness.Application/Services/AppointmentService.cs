@@ -27,7 +27,7 @@ namespace GymFitness.Application.Services
             // Chuyển đổi từ Entity -> DTO trước khi trả về Controller
             return appointments.Select(a => new AppointmentResponseDto
             {
-                AppointmentId = a.AppointmentId,
+                //AppointmentId = a.AppointmentId,
                 UserName = a.User.Email != null ? a.User.Email : null,
                 StaffName = a.Staff.Email != null ? a.Staff.Email : null,
                 Status = a.Status,
@@ -46,18 +46,19 @@ namespace GymFitness.Application.Services
 
         public async Task<Appointment?> GetAppointmentByIdAsync(int appointmentId)
         {
-            var existingAppointment = _appointment.GetByIdAsync(appointmentId);
+            var existingAppointment = await _appointment.GetByIdAsync(appointmentId);
             if (existingAppointment == null)
                 return null;
-            return await existingAppointment;
+            return existingAppointment;
         }
             
 
         public async Task AddAppointmentAsync(Appointment appointment) =>
             await _appointment.AddAsync(appointment);
 
-        public async Task UpdateAppointmentAsync(Appointment appointment) =>
-            await _appointment.UpdateAsync(appointment);
+        public async Task UpdateAppointmentAsync(Appointment appointment, List<string> updatedProperties) =>
+            await _appointment.UpdateAsync(appointment, updatedProperties);
+
 
         public async Task DeleteAppointmentAsync(int appointmentId) =>
             await _appointment.DeleteAsync(appointmentId);

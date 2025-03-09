@@ -17,20 +17,20 @@ namespace GymFitness.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task AddNotificationAsync(Notification notification)
+        public async Task AddNotificationAsync(RegisteredDevice notification)
         {
-            await _context.Notifications.AddAsync(notification);
+            await _context.RegisteredDevices.AddAsync(notification);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteNotificationAsync(int input)
         {
-            var entity = _context.Notifications.Find(input);
+            var entity = _context.RegisteredDevices.Find(input);
             if (entity == null)
             {
                 throw new Exception("Entity not found");
             }
-            _context.Notifications.Remove(entity);
+            _context.RegisteredDevices.Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

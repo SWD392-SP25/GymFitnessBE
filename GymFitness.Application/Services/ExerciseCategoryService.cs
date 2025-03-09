@@ -1,5 +1,6 @@
 ﻿using GymFitness.Application.Abstractions.Repositories;
 using GymFitness.Application.Abstractions.Services;
+using GymFitness.Application.ResponseDto;
 using GymFitness.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,12 +16,17 @@ namespace GymFitness.Application.Services
             _exerciseCategory = exerciseCategory;
         }
 
-        public async Task<IEnumerable<ExerciseCategory>> GetAllCategoriesAsync(string? filterOn,
+        public async Task<IEnumerable<ExerciseCategoryResponseDto>> GetAllCategoriesAsync(string? filterOn,
                                                                                string? filterQuery,
                                                                                int pageNumber = 1,
                                                                                int pageSize = 10)
         {
-            return await _exerciseCategory.GetAllAsync(filterOn, filterQuery, pageNumber, pageSize);
+            var categories = await _exerciseCategory.GetAllAsync(filterOn, filterQuery, pageNumber, pageSize);
+            return categories.Select(c => new ExerciseCategoryResponseDto
+            {
+                Description = c.Description,
+                CategoryName = c.Name
+            }).ToList();
         }
         public async Task<ExerciseCategory?> GetCategoryByIdAsync(int id) => await _exerciseCategory.GetByIdAsync(id);
         public async Task AddCategoryAsync(ExerciseCategory category) => await _exerciseCategory.AddAsync(category);

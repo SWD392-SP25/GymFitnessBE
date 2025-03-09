@@ -66,9 +66,6 @@ namespace GymFitness.Infrastructure.Repositories
             }
         }
 
-        public async Task<AppointmentType?> GetByNameAsync(string name)
-        {
-            return await _context.AppointmentTypes.FirstOrDefaultAsync(x => EF.Functions.Like(x.Name, name));
-        }
+
     }
 }

@@ -19,6 +19,7 @@ using GymFitness.Application.Abstractions.Repositories;
 using GymFitness.Application.Services;
 using GymFitness.Application.Abstractions.Services;
 using Swashbuckle.AspNetCore.Filters;
+using Azure;
 
 
 
@@ -36,7 +37,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
             builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-            builder.Services.AddScoped<IStaffScheduleRepository, StaffScheduleRepository>();
+
             builder.Services.AddScoped<IStaffSpecializationRepository, StaffSpecializationRepository>();
             builder.Services.AddScoped<IAppointmentTypeRepository, AppointmentTypeRepository>();
             builder.Services.AddScoped<IMuscleGroupRepository, MuscleGroupRepository>();
@@ -49,7 +50,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
             builder.Services.AddScoped<IStaffService, StaffService>();
-            builder.Services.AddScoped<IStaffScheduleService, StaffScheduleService>();
+
             builder.Services.AddScoped<IStaffSpecializationService, StaffSpecializationService>();
             builder.Services.AddScoped<IMuscleGroupService, MuscleGroupService>();
             builder.Services.AddScoped<IExerciseCategoryService, ExerciseCategoryService>();
@@ -71,6 +72,12 @@ namespace GymFitness.API
             builder.Services.AddHttpClient("ChatGPT");
             builder.Services.AddScoped<IChatCompletionService, ChatCompletionService>();
             builder.Services.AddScoped<IFirebaseAuthService, FirebaseAuthService>();
+            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+                                             {
+                                                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                                             });
+
+
 
 
 
@@ -134,6 +141,8 @@ namespace GymFitness.API
                
 
                 c.OperationFilter<FileUploadOperationFilter>(); // Sử dụng custom filter này
+                c.MapType<JsonPatchDocument>(() => new OpenApiSchema { Type = "object" });
+                c.OperationFilter<JsonPatchDocumentOperationFilter>(); // Sử dụng custom filter này
             });
 
             // ✅ Khởi tạo Firebase Admin SDK
@@ -150,9 +159,9 @@ namespace GymFitness.API
         options.Authority = "https://securetoken.google.com/gymbot-3ddf3";
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
+            ValidateIssuer = false,
             ValidIssuer = "https://securetoken.google.com/gymbot-3ddf3",
-            ValidateAudience = true,
+            ValidateAudience = false,
             ValidAudience = "gymbot-3ddf3",
             ValidateLifetime = true
         };
@@ -205,10 +214,7 @@ namespace GymFitness.API
 
             var app = builder.Build();
             app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            
 
             // ✅ Luôn hiển thị Swagger (không chỉ trong Development)
             app.UseSwagger(options =>
@@ -228,6 +234,10 @@ namespace GymFitness.API
             app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
             app.MapControllers();
 
             // ✅ Nếu Scalar API được sử dụng

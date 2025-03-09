@@ -24,8 +24,4 @@
     <ProjectReference Include="..\GymFitness.Application\GymFitness.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
-
 </Project>

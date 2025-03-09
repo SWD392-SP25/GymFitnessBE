@@ -16,8 +16,39 @@ namespace GymFitness.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Staff>> GetAllAsync() =>
-            await _context.Staffs.ToListAsync();
+        public async Task<IEnumerable<Staff>> GetAllAsync(string? filterOn = null,
+                                                          string? filterQuery = null,
+                                                          string? sortBy = null,
+                                                          bool? isAscending = true,
+                                                          int pageNumber = 1,
+                                                          int pageSize = 10)
+        {
+            var query = _context.Staffs.Include(x => x.Role).AsQueryable();
+            // **Lọc theo filterOn và filterQuery**
+            if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
+            {
+                query = filterOn switch
+                {
+                    "name" => query.Where(x => EF.Functions.Like(x.LastName, filterQuery)),
+                    "email" => query.Where(x => EF.Functions.Like(x.Email, filterQuery)),
+                    _ => query
+                };
+            }
+            // **Sắp xếp**
+            if (!string.IsNullOrWhiteSpace(sortBy))
+            {
+                query = sortBy switch
+                {
+                    "salary" => isAscending == true ? query.OrderBy(x => x.Salary) : query.OrderByDescending(x => x.Salary),
+                    
+                    _ => query
+                };
+            }
+            // **Phân trang**
+            return await query.Skip((pageNumber - 1) * pageSize)
+                              .Take(pageSize)
+                              .ToListAsync();
+        }
 
         public async Task<Staff?> GetByIdAsync(Guid id) =>
             await _context.Staffs.FindAsync(id);

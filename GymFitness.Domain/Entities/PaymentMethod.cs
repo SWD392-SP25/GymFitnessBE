@@ -7,23 +7,11 @@ public partial class PaymentMethod
 {
     public int MethodId { get; set; }
 
-    public Guid? UserId { get; set; }
+    public string? MethodName { get; set; }
 
-    public string? Provider { get; set; }
-
-    public string? TokenReference { get; set; }
-
-    public string? LastFour { get; set; }
-
-    public DateOnly? ExpiryDate { get; set; }
-
-    public bool? IsDefault { get; set; }
-
-    public DateTime? CreatedAt { get; set; }
+    public string? Detail { get; set; }
 
     public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-
-    public virtual User? User { get; set; }
 }

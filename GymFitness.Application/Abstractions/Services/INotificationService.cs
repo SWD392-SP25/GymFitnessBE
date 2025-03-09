@@ -10,6 +10,6 @@ namespace GymFitness.Application.Abstractions.Services
 {
     public interface INotificationService
     {
-        Task<bool> SendNotificationAsync(Notification notification, string deviceToken);
+        Task<bool> SendNotificationAsync(RegisteredDevice notification, string deviceToken);
     }
 }
