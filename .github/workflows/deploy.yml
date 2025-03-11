@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: SSH vào VPS và deploy container
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -20,38 +17,37 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            echo "🚀 Đang deploy GymFitness API..."
+            echo "🚀 Bắt đầu deploy GymFitness API..."
 
-            # Tạo thư mục /app nếu chưa tồn tại
-            mkdir -p /app/config
+            # Xóa code cũ và pull code mới
+            echo "🗑️ Xóa code cũ..."
+            rm -rf /app
 
-            # Ghi file config từ GitHub Secrets
-            echo '${{ secrets.APPSETTINGS_JSON }}' > /app/config/appsettings.json
-            echo '${{ secrets.APPSETTINGS_DEVELOPMENT_JSON }}' > /app/config/appsettings.Development.json
-            echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > /app/config/firebase_config.json
+            echo "📥 Pull code mới..."
+            git clone -b main https://github.com/SWD392-SP25/GymFitnessBE.git /app
+
+            # Di chuyển vào thư mục GymFitness.API chứa Dockerfile và docker-compose.yml
+            cd /app/GymFitness.API
 
             # Dừng và xóa container cũ (nếu có)
-            docker stop gymfitness_api || true
-            docker rm gymfitness_api || true
-            docker stop gymfitnessapi_redis_1 || true
-            docker rm gymfitnessapi_redis_1 || true
+            echo "🛑 Dừng và xóa container cũ..."
+            docker-compose down
 
-            # Pull image mới từ Docker Hub
-            docker pull nguyenanhquan23324/gymfitness-api:latest
+            # Xóa image cũ để tránh lỗi cache
+            echo "🗑️ Xóa image cũ..."
+            docker rmi $(docker images -q) -f || true
 
-            # Chạy Redis
-            docker run -d --name gymfitnessapi_redis_1 -p 6379:6379 redis:alpine
+            # Tạo thư mục config nếu chưa có
+            mkdir -p /app/GymFitness.API
 
-            # Chạy API
-            docker run -d --name gymfitness_api \
-              -p 8080:8080 -p 8000:80 -p 8001:443 \
-              --restart always \
-              --env ASPNETCORE_ENVIRONMENT=Production \
-              --env ASPNETCORE_URLS=http://+:80 \
-              --link gymfitnessapi_redis_1 \
-              -v /app/config/appsettings.json:/app/appsettings.json \
-              -v /app/config/appsettings.Development.json:/app/appsettings.Development.json \
-              -v /app/config/firebase_config.json:/app/firebase_config.json \
-              nguyenanhquan23324/gymfitness-api:latest
+            # Ghi file config từ GitHub Secrets
+            echo "📝 Ghi file config..."
+            echo '${{ secrets.APPSETTINGS_JSON }}' > /app/GymFitness.API/appsettings.json
+            echo '${{ secrets.APPSETTINGS_DEVELOPMENT_JSON }}' > /app/GymFitness.API/appsettings.Development.json
+            echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > /app/GymFitness.API/firebase_config.json
+
+            # Build và chạy container từ docker-compose.yml
+            echo "🚀 Build và chạy container mới..."
+            docker-compose up -d --build
 
             echo "✅ Deployment hoàn tất!"
