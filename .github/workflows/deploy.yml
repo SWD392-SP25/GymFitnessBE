@@ -35,7 +35,8 @@ jobs:
 
             # Xóa image cũ để tránh lỗi cache
             echo "🗑️ Xóa image cũ..."
-            docker rmi $(docker images -q) -f || true
+            docker rmi gymfitness_api:latest || true
+            docker image prune -f --filter "dangling=true"
 
             # Tạo thư mục config nếu chưa có
             mkdir -p /app/GymFitness.API
