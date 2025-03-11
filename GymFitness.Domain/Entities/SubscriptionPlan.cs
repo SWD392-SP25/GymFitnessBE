@@ -24,4 +24,6 @@ public partial class SubscriptionPlan
     public DateTime? CreatedAt { get; set; }
 
     public virtual ICollection<UserSubscription> UserSubscriptions { get; set; } = new List<UserSubscription>();
+
+    public virtual ICollection<WorkoutPlan> WorkoutPlans { get; set; } = new List<WorkoutPlan>();
 }
