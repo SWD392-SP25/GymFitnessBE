@@ -13,45 +13,45 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Verify docker-compose.yml exists
-        run: |
-          if [ ! -f docker-compose.yml ]; then
-            echo "Error: docker-compose.yml not found in repository root"
-            exit 1
-          fi
-
       - name: SSH vào VPS và deploy container
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "docker-compose.yml"  # Update this if the file isn’t in the root
-          target: "/tmp"
           script: |
-            echo "Đang deploy GymFitness API..."
+            echo "🚀 Đang deploy GymFitness API..."
 
             # Tạo thư mục /app nếu chưa tồn tại
-            mkdir -p /app
-
-            # Kiểm tra xem file đã được sao chép chưa
-            if [ -f /tmp/docker-compose.yml ]; then
-              mv /tmp/docker-compose.yml /app/
-            else
-              echo "Lỗi: Không tìm thấy docker-compose.yml trong /tmp"
-              exit 1
-            fi
-
-            # Di chuyển vào thư mục /app
-            cd /app
+            mkdir -p /app/config
 
             # Ghi file config từ GitHub Secrets
             echo '${{ secrets.APPSETTINGS_JSON }}' > /app/config/appsettings.json
             echo '${{ secrets.APPSETTINGS_DEVELOPMENT_JSON }}' > /app/config/appsettings.Development.json
             echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > /app/config/firebase_config.json
 
+            # Dừng và xóa container cũ (nếu có)
+            docker stop gymfitness_api || true
+            docker rm gymfitness_api || true
+            docker stop gymfitnessapi_redis_1 || true
+            docker rm gymfitnessapi_redis_1 || true
+
             # Pull image mới từ Docker Hub
             docker pull nguyenanhquan23324/gymfitness-api:latest
 
-            # Khởi động lại toàn bộ dịch vụ
-            docker-compose up -d --build
+            # Chạy Redis
+            docker run -d --name gymfitnessapi_redis_1 -p 6379:6379 redis:alpine
+
+            # Chạy API
+            docker run -d --name gymfitness_api \
+              -p 8080:8080 -p 8000:80 -p 8001:443 \
+              --restart always \
+              --env ASPNETCORE_ENVIRONMENT=Production \
+              --env ASPNETCORE_URLS=http://+:80 \
+              --link gymfitnessapi_redis_1 \
+              -v /app/config/appsettings.json:/app/appsettings.json \
+              -v /app/config/appsettings.Development.json:/app/appsettings.Development.json \
+              -v /app/config/firebase_config.json:/app/firebase_config.json \
+              nguyenanhquan23324/gymfitness-api:latest
+
+            echo "✅ Deployment hoàn tất!"
