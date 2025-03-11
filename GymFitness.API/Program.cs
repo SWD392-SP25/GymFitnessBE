@@ -165,6 +165,10 @@ namespace GymFitness.API
             });
 
             var jwtKey = builder.Configuration["JwtSettings:Key"];
+            Console.WriteLine(jwtKey);
+            Console.WriteLine($"Issuer: {builder.Configuration["JwtSettings:Issuer"]}");
+            Console.WriteLine($"Redis: {builder.Configuration["Redis:ConnectionString"]}");
+            Console.WriteLine($"Connection Strings: {builder.Configuration["ConnectionStrings:DefaultConnection"]}");
             if (string.IsNullOrEmpty(jwtKey))
             {
                 throw new ArgumentNullException("JwtSettings:Key", "JWT key is not configured.");
