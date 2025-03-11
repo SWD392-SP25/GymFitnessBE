@@ -10,21 +10,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Verify docker-compose.yml exists
+        run: |
+          if [ ! -f docker-compose.yml ]; then
+            echo "Error: docker-compose.yml not found in repository root"
+            exit 1
+          fi
+
       - name: SSH vào VPS và deploy container
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "docker-compose.yml"
-          target: "/tmp"  # Change target to /tmp, which always exists
+          source: "docker-compose.yml"  # Update this if the file isn’t in the root
+          target: "/tmp"
           script: |
             echo "Đang deploy GymFitness API..."
 
             # Tạo thư mục /app nếu chưa tồn tại
             mkdir -p /app
 
-            # Di chuyển docker-compose.yml từ /tmp sang /app
+            # Kiểm tra xem file đã được sao chép chưa
             if [ -f /tmp/docker-compose.yml ]; then
               mv /tmp/docker-compose.yml /app/
             else
@@ -34,18 +44,6 @@ jobs:
 
             # Di chuyển vào thư mục /app
             cd /app
-
-            # Kiểm tra xem docker-compose.yml có tồn tại không
-            if [ ! -f docker-compose.yml ]; then
-              echo "Lỗi: Không tìm thấy docker-compose.yml trong /app"
-              exit 1
-            fi
-
-            # Dừng và xóa container cũ
-            docker-compose down
-
-            # Tạo thư mục config nếu chưa có
-            mkdir -p /app/config
 
             # Ghi file config từ GitHub Secrets
             echo '${{ secrets.APPSETTINGS_JSON }}' > /app/config/appsettings.json
