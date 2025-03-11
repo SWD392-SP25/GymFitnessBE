@@ -36,3 +36,4 @@ Desktop.ini
 *.log
 appsettings.json
 appsettings.Development.json
+firebase_config.json

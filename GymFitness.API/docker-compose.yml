@@ -1,0 +1,26 @@
+version: '3.4'
+services:
+  gymfitness_api:
+    build:
+      context: ../
+      dockerfile: GymFitness.API/Dockerfile
+    container_name: gymfitness_api
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "8080:8080"
+      - "8000:80"
+      - "8001:443"
+    depends_on:
+      - redis
+  redis:
+    image: redis:alpine
+    container_name: gymfitnessapi_redis_1
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+volumes:
+  redis_data:

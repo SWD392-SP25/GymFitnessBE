@@ -1,0 +1,43 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH vào VPS và deploy container
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "Đang deploy GymFitness API..."
+
+            # Dừng và xóa container cũ
+            docker stop gymfitness_api || true
+            docker rm gymfitness_api || true
+
+            # Pull image mới từ Docker Hub
+            docker pull nguyenanhquan23324/gymfitness-api:latest
+
+            # Tạo thư mục config nếu chưa có
+            mkdir -p /app/config
+
+            # Ghi file config từ GitHub Secrets
+            echo '${{ secrets.APPSETTINGS_JSON }}' > /app/config/appsettings.json
+            echo '${{ secrets.APPSETTINGS_DEVELOPMENT_JSON }}' > /app/config/appsettings.Development.json
+            echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > /app/config/firebase_config.json
+
+            # Chạy container mới với file cấu hình
+            docker run -d -p 8080:80 \
+              --name gymfitness_api \
+              -v /app/config/appsettings.json:/app/appsettings.json \
+              -v /app/config/appsettings.Development.json:/app/appsettings.Development.json \
+              -v /app/config/firebase_config.json:/app/firebase_config.json \
+              nguyenanhquan23324/gymfitness-api:latest
