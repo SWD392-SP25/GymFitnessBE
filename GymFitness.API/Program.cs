@@ -19,6 +19,8 @@ using GymFitness.Application.Abstractions.Repositories;
 using GymFitness.Application.Services;
 using GymFitness.Application.Abstractions.Services;
 using Swashbuckle.AspNetCore.Filters;
+using Azure;
+using System.Text;
 
 
 
@@ -36,7 +38,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
             builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-            builder.Services.AddScoped<IStaffScheduleRepository, StaffScheduleRepository>();
+
             builder.Services.AddScoped<IStaffSpecializationRepository, StaffSpecializationRepository>();
             builder.Services.AddScoped<IAppointmentTypeRepository, AppointmentTypeRepository>();
             builder.Services.AddScoped<IMuscleGroupRepository, MuscleGroupRepository>();
@@ -49,7 +51,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
             builder.Services.AddScoped<IStaffService, StaffService>();
-            builder.Services.AddScoped<IStaffScheduleService, StaffScheduleService>();
+
             builder.Services.AddScoped<IStaffSpecializationService, StaffSpecializationService>();
             builder.Services.AddScoped<IMuscleGroupService, MuscleGroupService>();
             builder.Services.AddScoped<IExerciseCategoryService, ExerciseCategoryService>();
@@ -71,6 +73,12 @@ namespace GymFitness.API
             builder.Services.AddHttpClient("ChatGPT");
             builder.Services.AddScoped<IChatCompletionService, ChatCompletionService>();
             builder.Services.AddScoped<IFirebaseAuthService, FirebaseAuthService>();
+            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+                                             {
+                                                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                                             });
+
+
 
 
 
@@ -110,9 +118,11 @@ namespace GymFitness.API
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
-                    Description = "Nhập token dạng: Bearer {your_token}",
+                    Description = "Nhập token mà không cần 'Bearer '",
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
                 });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -134,29 +144,65 @@ namespace GymFitness.API
                
 
                 c.OperationFilter<FileUploadOperationFilter>(); // Sử dụng custom filter này
+                c.MapType<JsonPatchDocument>(() => new OpenApiSchema { Type = "object" });
+                c.OperationFilter<JsonPatchDocumentOperationFilter>(); // Sử dụng custom filter này
             });
 
             // ✅ Khởi tạo Firebase Admin SDK
-            FirebaseApp.Create(new AppOptions()
+            FirebaseApp.Create(new AppOptions
             {
                 Credential = GoogleCredential.FromFile("firebase_config.json")
             });
 
-            // Cấu hình xác thực JWT
+            var jwtKey = builder.Configuration["JwtSettings:Key"];
+            Console.WriteLine(jwtKey);
+            Console.WriteLine($"Issuer: {builder.Configuration["JwtSettings:Issuer"]}");
+            Console.WriteLine($"Audience: {builder.Configuration["JwtSettings:Audience"]}");
+            if (string.IsNullOrEmpty(jwtKey))
+            {
+                throw new ArgumentNullException("JwtSettings:Key", "JWT key is not configured.");
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+
+
             builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = "https://securetoken.google.com/gymbot-3ddf3";
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = "https://securetoken.google.com/gymbot-3ddf3",
-            ValidateAudience = true,
-            ValidAudience = "gymbot-3ddf3",
-            ValidateLifetime = true
-        };
-    });
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+
+                        ValidateAudience = true,
+                        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero, // Không cho phép thời gian trễ
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = key
+                    };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            Console.WriteLine($"❌ JWT Authentication Failed: {context.Exception.Message}");
+                            return Task.CompletedTask;
+                        },
+                        OnChallenge = context =>
+                        {
+                            Console.WriteLine($"⚠️ JWT Challenge: {context.Error}, {context.ErrorDescription}");
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
+
 
             builder.Services.AddAuthorization(options =>
             {
@@ -205,10 +251,7 @@ namespace GymFitness.API
 
             var app = builder.Build();
             app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            
 
             // ✅ Luôn hiển thị Swagger (không chỉ trong Development)
             app.UseSwagger(options =>
@@ -228,10 +271,21 @@ namespace GymFitness.API
             app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
             app.MapControllers();
 
             // ✅ Nếu Scalar API được sử dụng
             app.MapScalarApiReference();
+            app.Use(async (context, next) =>
+            {
+                var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                Console.WriteLine($"🔍 Token nhận được: {token}");
+
+                await next();
+            });
 
             app.Run();
         }

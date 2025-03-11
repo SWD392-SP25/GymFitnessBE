@@ -1,4 +1,5 @@
-﻿using GymFitness.Domain.Entities;
+﻿using GymFitness.Application.ResponseDto;
+using GymFitness.Domain.Entities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace GymFitness.Application.Abstractions.Services
 {
     public interface IMuscleGroupService
     {
-        Task<IEnumerable<MuscleGroup>> GetAllAsync(string? filterOn, 
+        Task<IEnumerable<MuscleGroupResponseDto>> GetAllAsync(string? filterOn, 
                                                    string? filterQuery, 
                                                    int pageNumber = 1,
                                                    int pageSize = 10);

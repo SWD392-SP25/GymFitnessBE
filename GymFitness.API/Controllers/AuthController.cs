@@ -15,6 +15,7 @@ using GymFitness.Application.Services;
 using GymFitness.Application.Abstractions.Services;
 using Google.Apis.Auth.OAuth2.Requests;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GymFitness.API.Controllers
 {
@@ -58,8 +59,8 @@ namespace GymFitness.API.Controllers
             };
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(3),
                 signingCredentials: creds);
@@ -121,10 +122,10 @@ namespace GymFitness.API.Controllers
                     id = staff.StaffId.ToString();
                     role = "Staff";
                 }
-                if(user.Status == "Banned")
-                {
-                    return Unauthorized("User has been banned, please contact staff for more info.");
-                }
+                //if(user.Status == "Banned")
+                //{
+                //    return Unauthorized("User has been banned, please contact staff for more info.");
+                //}
 
                 // ✅ Tạo JWT token
                 Console.WriteLine("Generating JWT token");
@@ -201,6 +202,13 @@ namespace GymFitness.API.Controllers
             return Ok(new { message = "Logged out successfully" });
         }
 
+        [HttpGet]
+        [Authorize]
+        public IActionResult TestAuth()
+        {
+            var claims = User.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
+            return Ok(new { Message = "Authenticated!", Claims = claims });
+        }
 
 
     }

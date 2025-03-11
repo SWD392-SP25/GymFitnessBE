@@ -11,7 +11,7 @@ namespace GymFitness.Application.Abstractions.Repositories
      public interface INotificationRepository
     {
        
-        Task AddNotificationAsync(Notification notification);
+        Task AddNotificationAsync(RegisteredDevice notification);
         
         Task DeleteNotificationAsync(int input);
 

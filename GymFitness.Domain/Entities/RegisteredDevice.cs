@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GymFitness.Domain.Entities;
 
-public partial class Notification
+public partial class RegisteredDevice
 {
     public int NotificationId { get; set; }
 

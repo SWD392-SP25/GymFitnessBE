@@ -96,12 +96,22 @@ namespace GymFitness.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Appointment appointment)
+        public async Task UpdateAsync(Appointment appointment, List<string> updatedProperties)
         {
-            
-            _context.Appointments.Update(appointment);
+            var entry = _context.Entry(appointment);
+
+            foreach (var property in updatedProperties)
+            {
+                // Chỉ cập nhật nếu property tồn tại trong entity
+                if (_context.Entry(appointment).Properties.Any(p => p.Metadata.Name == property))
+                {
+                    entry.Property(property).IsModified = true;
+                }
+            }
+
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteAsync(int appointmentId)
         {

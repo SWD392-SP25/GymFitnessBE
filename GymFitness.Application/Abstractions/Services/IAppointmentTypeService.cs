@@ -1,4 +1,5 @@
-﻿using GymFitness.Domain.Entities;
+﻿using GymFitness.Application.ResponseDto;
+using GymFitness.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace GymFitness.Application.Abstractions.Services
 {
     public interface IAppointmentTypeService
     {
-        Task<IEnumerable<AppointmentType>> GetAllAppointmentTypesAsync(string? filterOn, 
+        Task<IEnumerable<AppointmentTypeResponseDto>> GetAllAppointmentTypesAsync(string? filterOn, 
                                                                        string filterQuery, 
                                                                        int pageNumber = 1, 
                                                                        int pageSize =10);
@@ -17,6 +18,6 @@ namespace GymFitness.Application.Abstractions.Services
         Task AddAppointmentTypeAsync(AppointmentType appointmentType);
         Task UpdateAppointmentTypeAsync(AppointmentType appointmentType);
         Task DeleteAppointmentTypeAsync(int typeId);
-        Task<AppointmentType?> GetAppointmentTypeByNameAsync(string name);
+      
     }
 }

@@ -18,7 +18,7 @@ namespace GymFitness.Application.Services
             _notificationRepository = notificationRepository;
         }
 
-        public async Task<bool> SendNotificationAsync(GymFitness.Domain.Entities.Notification notification, string deviceToken)
+        public async Task<bool> SendNotificationAsync(GymFitness.Domain.Entities.RegisteredDevice notification, string deviceToken)
         {
             if (string.IsNullOrEmpty(deviceToken))
                 return false;

@@ -24,7 +24,7 @@ namespace GymFitness.API.Controllers
             if (request == null || string.IsNullOrEmpty(request.DeviceToken))
                 return BadRequest("Invalid request.");
 
-            var notification = new Notification
+            var notification = new RegisteredDevice
             {
                 UserId = request.UserId,
                 StaffId = request.StaffId,

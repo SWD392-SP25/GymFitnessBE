@@ -7,7 +7,6 @@ namespace GymFitness.API.Services.Abstractions
     {
         Task<User> GetUserByEmail(string email);
         Task AddUser(User user);
-
         Task<User> GetUserById(Guid userId);
         Task<List<UserResponseDto>> GetAll(string? filterOn, string? filterQuery);
         Task UpdateUser(User user);

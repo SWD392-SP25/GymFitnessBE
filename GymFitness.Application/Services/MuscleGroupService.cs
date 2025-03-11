@@ -1,5 +1,6 @@
 ﻿using GymFitness.Application.Abstractions.Repositories;
 using GymFitness.Application.Abstractions.Services;
+using GymFitness.Application.ResponseDto;
 using GymFitness.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,12 +16,18 @@ namespace GymFitness.Application.Services
             _muscleGroup = muscleGroup;
         }
 
-        public async Task<IEnumerable<MuscleGroup>> GetAllAsync(string? filterOn,
+        public async Task<IEnumerable<MuscleGroupResponseDto>> GetAllAsync(string? filterOn,
                                                                 string? filterQuery,
                                                                 int pageNumber = 1,
                                                                 int pageSize = 10)
         {
-            return await _muscleGroup.GetAllAsync(filterOn, filterQuery, pageNumber, pageSize);
+            var muscleGroups = await _muscleGroup.GetAllAsync(filterOn, filterQuery, pageNumber, pageSize);
+            return muscleGroups.Select(m => new MuscleGroupResponseDto
+            {
+                Description = m.Description,
+                Name = m.Name,
+                ImageUrl = m.ImageUrl
+            }).ToList();
         }
         public async Task<MuscleGroup?> GetByIdAsync(int id) => await _muscleGroup.GetByIdAsync(id);
         public async Task AddAsync(MuscleGroup muscleGroup) => await _muscleGroup.AddAsync(muscleGroup);

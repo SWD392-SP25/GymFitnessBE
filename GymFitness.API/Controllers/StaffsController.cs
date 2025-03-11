@@ -2,6 +2,7 @@
 using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,8 +20,17 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Staff>> GetAllStaffs() =>
-            await _staffService.GetAllStaffsAsync();
+        public async Task<IActionResult> GetAllStaffs([FromQuery] string? filterOn, 
+                                                      [FromQuery] string? filterQuery,
+                                                      [FromQuery] string? sortOn,
+                                                      [FromQuery] bool? isAscending,
+                                                      [FromQuery] int pageNumber = 1,
+                                                      [FromQuery] int pageSize = 10)
+        {
+            var staff =  await _staffService.GetAllStaffsAsync(filterOn, filterQuery,sortOn, isAscending ?? true, pageNumber, pageSize);
+            return Ok(staff);
+        }
+            
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Staff>> GetStaffById(Guid id)
