@@ -15,7 +15,7 @@ public partial class Exercise
 
     public int? CategoryId { get; set; }
 
-    public string? DifficultyLevel { get; set; }
+    public int? DifficultyLevel { get; set; }
 
     public string? EquipmentNeeded { get; set; }
 
