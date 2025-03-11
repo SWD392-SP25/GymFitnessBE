@@ -31,6 +31,19 @@ namespace GymFitness.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Xác định môi trường (Development hoặc Production)
+            var env = builder.Environment.EnvironmentName;
+            Console.WriteLine($"Running in {env} mode"); // In ra console để kiểm tra   
+
+            // Load appsettings.json và appsettings.{ENV}.json
+            builder.Configuration
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("firebase_config.json", optional: false, reloadOnChange: true) // Firebase luôn cố định
+                .AddEnvironmentVariables(); // Load thêm biến môi trường nếu có
+
             builder.Services.AddControllers();
             //Add repository to the container.
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -46,7 +59,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
             builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
-            builder.Services.AddScoped<IUserMeasurementRepository, UserMeasurementRepository>();            
+            builder.Services.AddScoped<IUserMeasurementRepository, UserMeasurementRepository>();
             // Add services to the container.
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
@@ -65,7 +78,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IUserMeasurementService, UserMeasurementService>();
 
             builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
-                      builder.Services.AddHttpClient("ChatGPT");
+            builder.Services.AddHttpClient("ChatGPT");
             builder.Services.AddScoped<IChatCompletionService, ChatCompletionService>();
             builder.Services.AddScoped<IFirebaseAuthService, FirebaseAuthService>();
 
@@ -75,11 +88,8 @@ namespace GymFitness.API
             builder.Services.AddScoped<IFirebaseAuthService, FirebaseAuthService>();
             builder.Services.AddControllers().AddNewtonsoftJson(options =>
                                              {
-                                                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                                                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                                              });
-
-
-
 
 
 
@@ -141,7 +151,7 @@ namespace GymFitness.API
                 });
 
                 // ✅ Hỗ trợ Upload File (fix lỗi Swagger không đọc IFormFile)
-               
+
 
                 c.OperationFilter<FileUploadOperationFilter>(); // Sử dụng custom filter này
                 c.MapType<JsonPatchDocument>(() => new OpenApiSchema { Type = "object" });
@@ -155,9 +165,6 @@ namespace GymFitness.API
             });
 
             var jwtKey = builder.Configuration["JwtSettings:Key"];
-            Console.WriteLine(jwtKey);
-            Console.WriteLine($"Issuer: {builder.Configuration["JwtSettings:Issuer"]}");
-            Console.WriteLine($"Audience: {builder.Configuration["JwtSettings:Audience"]}");
             if (string.IsNullOrEmpty(jwtKey))
             {
                 throw new ArgumentNullException("JwtSettings:Key", "JWT key is not configured.");
@@ -251,7 +258,7 @@ namespace GymFitness.API
 
             var app = builder.Build();
             app.UseRouting();
-            
+
 
             // ✅ Luôn hiển thị Swagger (không chỉ trong Development)
             app.UseSwagger(options =>
