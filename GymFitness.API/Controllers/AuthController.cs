@@ -122,7 +122,7 @@ namespace GymFitness.API.Controllers
                     id = staff.StaffId.ToString();
                     role = "Staff";
                 }
-                //if(user.Status == "Banned")
+                //if (user.Status == "Banned" || staff.Status == "Banned")
                 //{
                 //    return Unauthorized("User has been banned, please contact staff for more info.");
                 //}

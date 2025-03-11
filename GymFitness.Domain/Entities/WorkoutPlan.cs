@@ -11,7 +11,7 @@ public partial class WorkoutPlan
 
     public string? Description { get; set; }
 
-    public string? DifficultyLevel { get; set; }
+    public int? DifficultyLevel { get; set; }
 
     public int? DurationWeeks { get; set; }
 
@@ -25,7 +25,11 @@ public partial class WorkoutPlan
 
     public DateTime? CreatedAt { get; set; }
 
+    public int? SubscriptionId { get; set; }
+
     public virtual Staff? CreatedByNavigation { get; set; }
+
+    public virtual SubscriptionPlan? Subscription { get; set; }
 
     public virtual ICollection<WorkoutPlanExercise> WorkoutPlanExercises { get; set; } = new List<WorkoutPlanExercise>();
 }
