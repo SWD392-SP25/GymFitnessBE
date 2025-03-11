@@ -10,9 +10,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
     ports:
-      - "8080:8080"
-      - "8000:80"
-      - "8001:443"
+      - "8080:80"
     depends_on:
       - redis
   redis:

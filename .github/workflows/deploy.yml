@@ -16,27 +16,39 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "docker-compose.yml"
-          target: "/app"
           script: |
-            echo "Đang deploy GymFitness API..."
+            echo "🚀 Bắt đầu deploy GymFitness API..."
 
-            # Di chuyển vào thư mục chứa docker-compose.yml
-            cd /app
+            # Xóa code cũ và pull code mới
+            echo "🗑️ Xóa code cũ..."
+            rm -rf /app
 
-            # Dừng và xóa container cũ
+            echo "📥 Pull code mới..."
+            git clone -b main https://github.com/SWD392-SP25/GymFitnessBE.git /app
+
+            # Di chuyển vào thư mục GymFitness.API chứa Dockerfile và docker-compose.yml
+            cd /app/GymFitness.API
+
+            # Dừng và xóa container cũ (nếu có)
+            echo "🛑 Dừng và xóa container cũ..."
             docker-compose down
 
+            # Xóa image cũ để tránh lỗi cache
+            echo "🗑️ Xóa image cũ..."
+            docker rmi gymfitness_api:latest || true
+            docker image prune -f --filter "dangling=true"
+
             # Tạo thư mục config nếu chưa có
-            mkdir -p /app/config
+            mkdir -p /app/GymFitness.API
 
             # Ghi file config từ GitHub Secrets
-            echo '${{ secrets.APPSETTINGS_JSON }}' > /app/config/appsettings.json
-            echo '${{ secrets.APPSETTINGS_DEVELOPMENT_JSON }}' > /app/config/appsettings.Development.json
-            echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > /app/config/firebase_config.json
+            echo "📝 Ghi file config..."
+            echo '${{ secrets.APPSETTINGS_JSON }}' > /app/GymFitness.API/appsettings.json
+            echo '${{ secrets.APPSETTINGS_DEVELOPMENT_JSON }}' > /app/GymFitness.API/appsettings.Development.json
+            echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > /app/GymFitness.API/firebase_config.json
 
-            # Pull image mới từ Docker Hub
-            docker pull nguyenanhquan23324/gymfitness-api:latest
-
-            # Restart toàn bộ dịch vụ
+            # Build và chạy container từ docker-compose.yml
+            echo "🚀 Build và chạy container mới..."
             docker-compose up -d --build
+
+            echo "✅ Deployment hoàn tất!"
