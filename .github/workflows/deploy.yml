@@ -1,38 +1,52 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Copy docker-compose.yml lên VPS
-        uses: appleboy/scp-action@master
+      - name: SSH vào VPS và deploy container
+        uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "docker-compose.yml"
-          target: "/app"
-
-      - name: SSH vào VPS và deploy container
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          target: "/tmp"  # Change target to /tmp, which always exists
           script: |
             echo "Đang deploy GymFitness API..."
-            
-            # Kiểm tra xem file docker-compose.yml có tồn tại không
-            ls -lah /app/docker-compose.yml
-            
+
+            # Tạo thư mục /app nếu chưa tồn tại
+            mkdir -p /app
+
+            # Di chuyển docker-compose.yml từ /tmp sang /app
+            if [ -f /tmp/docker-compose.yml ]; then
+              mv /tmp/docker-compose.yml /app/
+            else
+              echo "Lỗi: Không tìm thấy docker-compose.yml trong /tmp"
+              exit 1
+            fi
+
             # Di chuyển vào thư mục /app
             cd /app
 
+            # Kiểm tra xem docker-compose.yml có tồn tại không
+            if [ ! -f docker-compose.yml ]; then
+              echo "Lỗi: Không tìm thấy docker-compose.yml trong /app"
+              exit 1
+            fi
+
             # Dừng và xóa container cũ
             docker-compose down
-            
+
             # Tạo thư mục config nếu chưa có
             mkdir -p /app/config
-            
+
             # Ghi file config từ GitHub Secrets
             echo '${{ secrets.APPSETTINGS_JSON }}' > /app/config/appsettings.json
             echo '${{ secrets.APPSETTINGS_DEVELOPMENT_JSON }}' > /app/config/appsettings.Development.json
@@ -41,5 +55,5 @@ jobs:
             # Pull image mới từ Docker Hub
             docker pull nguyenanhquan23324/gymfitness-api:latest
 
-            # Restart toàn bộ dịch vụ
+            # Khởi động lại toàn bộ dịch vụ
             docker-compose up -d --build
