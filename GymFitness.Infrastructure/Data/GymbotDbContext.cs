@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using GymFitness.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace GymFitness.Infrastructure.Data;
 
@@ -22,6 +21,8 @@ public partial class GymbotDbContext : DbContext
     public virtual DbSet<AppointmentType> AppointmentTypes { get; set; }
 
     public virtual DbSet<ChatHistory> ChatHistories { get; set; }
+
+    public virtual DbSet<DeviceToken> DeviceTokens { get; set; }
 
     public virtual DbSet<Exercise> Exercises { get; set; }
 
@@ -60,24 +61,14 @@ public partial class GymbotDbContext : DbContext
     public virtual DbSet<WorkoutPlanExercise> WorkoutPlanExercises { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-=> optionsBuilder.UseSqlServer(GetConnectionString());
-
-    private string GetConnectionString()
-    {
-        IConfiguration config = new ConfigurationBuilder()
-             .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", true, true)
-                    .Build();
-        var strConn = config["ConnectionStrings:DefaultConnection"];
-
-        return strConn;
-    }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=(local);Database=GymbotDb;Uid=sa;Pwd=12345;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Appointment>(entity =>
         {
-            entity.HasKey(e => e.AppointmentId).HasName("PK__appointm__A50828FCC87AF910");
+            entity.HasKey(e => e.AppointmentId).HasName("PK__appointm__A50828FCB1A4825C");
 
             entity.ToTable("appointments");
 
@@ -113,7 +104,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<AppointmentType>(entity =>
         {
-            entity.HasKey(e => e.TypeId).HasName("PK__appointm__2C000598B9776B1E");
+            entity.HasKey(e => e.TypeId).HasName("PK__appointm__2C000598F77D4FEE");
 
             entity.ToTable("appointment_types");
 
@@ -130,7 +121,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<ChatHistory>(entity =>
         {
-            entity.HasKey(e => e.ChatId).HasName("PK__chat_his__FD040B179AF55D16");
+            entity.HasKey(e => e.ChatId).HasName("PK__chat_his__FD040B175246D0CA");
 
             entity.ToTable("chat_histories");
 
@@ -155,9 +146,21 @@ public partial class GymbotDbContext : DbContext
                 .HasConstraintName("FK__chat_hist__user___73BA3083");
         });
 
+        modelBuilder.Entity<DeviceToken>(entity =>
+        {
+            entity.ToTable("device_token");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.DeviceToken1)
+                .IsUnicode(false)
+                .HasColumnName("device_token");
+        });
+
         modelBuilder.Entity<Exercise>(entity =>
         {
-            entity.HasKey(e => e.ExerciseId).HasName("PK__exercise__C121418E85E6061D");
+            entity.HasKey(e => e.ExerciseId).HasName("PK__exercise__C121418E6783CA8E");
 
             entity.ToTable("exercises");
 
@@ -167,9 +170,7 @@ public partial class GymbotDbContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnName("created_at");
             entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.DifficultyLevel)
-                .HasMaxLength(20)
-                .HasColumnName("difficulty_level");
+            entity.Property(e => e.DifficultyLevel).HasColumnName("difficulty_level");
             entity.Property(e => e.EquipmentNeeded).HasColumnName("equipment_needed");
             entity.Property(e => e.ImageUrl)
                 .HasMaxLength(255)
@@ -197,7 +198,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<ExerciseCategory>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__exercise__D54EE9B4365C8830");
+            entity.HasKey(e => e.CategoryId).HasName("PK__exercise__D54EE9B437F22F59");
 
             entity.ToTable("exercise_categories");
 
@@ -210,7 +211,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Invoice>(entity =>
         {
-            entity.HasKey(e => e.InvoiceId).HasName("PK__invoices__F58DFD49A972C771");
+            entity.HasKey(e => e.InvoiceId).HasName("PK__invoices__F58DFD497AD0946F");
 
             entity.ToTable("invoices");
 
@@ -245,7 +246,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<MuscleGroup>(entity =>
         {
-            entity.HasKey(e => e.MuscleGroupId).HasName("PK__muscle_g__9DFCBF406B80728F");
+            entity.HasKey(e => e.MuscleGroupId).HasName("PK__muscle_g__9DFCBF40C6768674");
 
             entity.ToTable("muscle_groups");
 
@@ -262,7 +263,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.MethodId).HasName("PK__payment___747727B6427AD05A");
+            entity.HasKey(e => e.MethodId).HasName("PK__payment___747727B65389AD09");
 
             entity.ToTable("payment_methods");
 
@@ -277,7 +278,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<RegisteredDevice>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__register__E059842F330A0023");
+            entity.HasKey(e => e.NotificationId).HasName("PK__register__E059842F96233C23");
 
             entity.ToTable("registered_devices");
 
@@ -309,11 +310,11 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__roles__760965CC9208E519");
+            entity.HasKey(e => e.RoleId).HasName("PK__roles__760965CCF5F414A0");
 
             entity.ToTable("roles");
 
-            entity.HasIndex(e => e.Name, "UQ__roles__72E12F1B11B2385E").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__roles__72E12F1BA338B36D").IsUnique();
 
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.Description).HasColumnName("description");
@@ -324,7 +325,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Specialization>(entity =>
         {
-            entity.HasKey(e => e.SpecializationId).HasName("PK__speciali__0E5BB650F6CBD6CE");
+            entity.HasKey(e => e.SpecializationId).HasName("PK__speciali__0E5BB6502F2034B6");
 
             entity.ToTable("specializations");
 
@@ -337,11 +338,11 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Staff>(entity =>
         {
-            entity.HasKey(e => e.StaffId).HasName("PK__staffs__1963DD9C570C6C22");
+            entity.HasKey(e => e.StaffId).HasName("PK__staffs__1963DD9CEF8E9FB8");
 
             entity.ToTable("staffs");
 
-            entity.HasIndex(e => e.Email, "UQ__staffs__AB6E6164783C906E").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__staffs__AB6E6164F1515C71").IsUnique();
 
             entity.Property(e => e.StaffId)
                 .ValueGeneratedNever()
@@ -389,7 +390,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<StaffSpecialization>(entity =>
         {
-            entity.HasKey(e => new { e.StaffId, e.SpecializationId }).HasName("PK__staff_sp__098666F9E3260CD3");
+            entity.HasKey(e => new { e.StaffId, e.SpecializationId }).HasName("PK__staff_sp__098666F9A4522C12");
 
             entity.ToTable("staff_specializations");
 
@@ -417,7 +418,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<SubscriptionPlan>(entity =>
         {
-            entity.HasKey(e => e.PlanId).HasName("PK__subscrip__BE9F8F1DCE822703");
+            entity.HasKey(e => e.PlanId).HasName("PK__subscrip__BE9F8F1DC857033A");
 
             entity.ToTable("subscription_plans");
 
@@ -442,7 +443,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__transact__85C600AF7164AC9A");
+            entity.HasKey(e => e.TransactionId).HasName("PK__transact__85C600AFFD892CCF");
 
             entity.ToTable("transactions");
 
@@ -473,11 +474,11 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__users__B9BE370FCF0D6B99");
+            entity.HasKey(e => e.UserId).HasName("PK__users__B9BE370FDC73AE61");
 
             entity.ToTable("users");
 
-            entity.HasIndex(e => e.Email, "UQ__users__AB6E6164188E2636").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__users__AB6E6164170F3215").IsUnique();
 
             entity.Property(e => e.UserId)
                 .ValueGeneratedNever()
@@ -545,7 +546,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<UserMeasurement>(entity =>
         {
-            entity.HasKey(e => e.MeasurementId).HasName("PK__user_mea__E3D1E1C1C07CE0EA");
+            entity.HasKey(e => e.MeasurementId).HasName("PK__user_mea__E3D1E1C14C33D4D7");
 
             entity.ToTable("user_measurements");
 
@@ -588,7 +589,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<UserSubscription>(entity =>
         {
-            entity.HasKey(e => e.SubscriptionId).HasName("PK__user_sub__863A7EC128318828");
+            entity.HasKey(e => e.SubscriptionId).HasName("PK__user_sub__863A7EC199008AB3");
 
             entity.ToTable("user_subscriptions");
 
@@ -621,7 +622,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<WorkoutLog>(entity =>
         {
-            entity.HasKey(e => e.LogId).HasName("PK__workout___9E2397E0011C2080");
+            entity.HasKey(e => e.LogId).HasName("PK__workout___9E2397E0AFD0DDC1");
 
             entity.ToTable("workout_logs");
 
@@ -652,7 +653,7 @@ public partial class GymbotDbContext : DbContext
 
         modelBuilder.Entity<WorkoutPlan>(entity =>
         {
-            entity.HasKey(e => e.PlanId).HasName("PK__workout___BE9F8F1DB294E402");
+            entity.HasKey(e => e.PlanId).HasName("PK__workout___BE9F8F1DF9722B45");
 
             entity.ToTable("workout_plans");
 
@@ -662,25 +663,28 @@ public partial class GymbotDbContext : DbContext
                 .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.DifficultyLevel)
-                .HasMaxLength(20)
-                .HasColumnName("difficulty_level");
+            entity.Property(e => e.DifficultyLevel).HasColumnName("difficulty_level");
             entity.Property(e => e.DurationWeeks).HasColumnName("duration_weeks");
             entity.Property(e => e.Goals).HasColumnName("goals");
             entity.Property(e => e.Name)
                 .HasMaxLength(200)
                 .HasColumnName("name");
             entity.Property(e => e.Prerequisites).HasColumnName("prerequisites");
+            entity.Property(e => e.SubscriptionId).HasColumnName("subscription_id");
             entity.Property(e => e.TargetAudience).HasColumnName("target_audience");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.WorkoutPlans)
                 .HasForeignKey(d => d.CreatedBy)
                 .HasConstraintName("FK__workout_p__creat__08B54D69");
+
+            entity.HasOne(d => d.Subscription).WithMany(p => p.WorkoutPlans)
+                .HasForeignKey(d => d.SubscriptionId)
+                .HasConstraintName("FK_workout_plans_subscription_plans");
         });
 
         modelBuilder.Entity<WorkoutPlanExercise>(entity =>
         {
-            entity.HasKey(e => new { e.PlanId, e.ExerciseId, e.WeekNumber, e.DayOfWeek }).HasName("PK__workout___04BCC6561A9FCEF5");
+            entity.HasKey(e => new { e.PlanId, e.ExerciseId, e.WeekNumber, e.DayOfWeek }).HasName("PK__workout___04BCC65613570ED9");
 
             entity.ToTable("workout_plan_exercises");
 

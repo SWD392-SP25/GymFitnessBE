@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace GymFitness.Domain.Entities;
+
 public partial class UserSubscription
 {
     public int SubscriptionId { get; set; }
