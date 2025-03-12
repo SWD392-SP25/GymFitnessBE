@@ -2,7 +2,7 @@
 {
     public class AppointmentResponseDto
     {
-        //public int AppointmentId { get; set; }
+        public int AppointmentId { get; set; }
         public string? UserName { get; set; } // Lấy từ bảng User
         public string? StaffName { get; set; } // Lấy từ bảng Staff
         public string? Status { get; set; }
