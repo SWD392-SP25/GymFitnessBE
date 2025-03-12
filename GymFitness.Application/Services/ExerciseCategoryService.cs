@@ -30,7 +30,17 @@ namespace GymFitness.Application.Services
         }
         public async Task<ExerciseCategory?> GetCategoryByIdAsync(int id) => await _exerciseCategory.GetByIdAsync(id);
         public async Task AddCategoryAsync(ExerciseCategory category) => await _exerciseCategory.AddAsync(category);
-        public async Task UpdateCategoryAsync(ExerciseCategory category) => await _exerciseCategory.UpdateAsync(category);
+        public async Task<ExerciseCategoryResponseDto?> UpdateCategoryAsync(ExerciseCategory category)
+        {
+            var updatedCategory = await _exerciseCategory.UpdateAsync(category);
+            return updatedCategory == null ? null : new ExerciseCategoryResponseDto
+            {
+                CategoryId = updatedCategory.CategoryId,
+                CategoryName = updatedCategory.Name,
+                Description = updatedCategory.Description
+            };
+
+        }
         public async Task DeleteCategoryAsync(int id) => await _exerciseCategory.DeleteAsync(id);
     }
 }

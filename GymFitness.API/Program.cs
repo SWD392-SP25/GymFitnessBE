@@ -21,6 +21,7 @@ using GymFitness.Application.Abstractions.Services;
 using Swashbuckle.AspNetCore.Filters;
 using Azure;
 using System.Text;
+using Microsoft.OpenApi.Any;
 
 
 
@@ -144,7 +145,8 @@ namespace GymFitness.API
                
 
                 c.OperationFilter<FileUploadOperationFilter>(); // Sử dụng custom filter này
-                c.MapType<JsonPatchDocument>(() => new OpenApiSchema { Type = "object" });
+                                                                // Cấu hình để Swagger hiển thị đúng JsonPatchDocument
+                
                 c.OperationFilter<JsonPatchDocumentOperationFilter>(); // Sử dụng custom filter này
             });
 

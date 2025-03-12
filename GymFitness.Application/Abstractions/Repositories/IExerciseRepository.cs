@@ -17,7 +17,7 @@ namespace GymFitness.Application.Abstractions.Repositories
                                                 int pageSize = 10);
         Task<Exercise?> GetByIdAsync(int id);
         Task AddAsync(Exercise exercise);
-        Task UpdateAsync(Exercise exercise);
+        Task UpdateAsync(Exercise exercise, List<string> updatedProperties);
         Task DeleteAsync(int id);
     }
 }

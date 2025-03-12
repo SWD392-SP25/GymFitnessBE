@@ -1,1 +1,1 @@
-Scaffold-DbContext "Server=(local);Database=GymbotDb;Uid=sa;Pwd=12345;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir ./
+Scaffold-DbContext "Server=(local);Database=GymbotDb;Uid=sa;Pwd=12345;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entities

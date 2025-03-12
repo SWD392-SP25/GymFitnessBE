@@ -22,7 +22,7 @@ namespace GymFitness.Application.Services
             var exercises = await _exercise.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
             return exercises.Select(a => new ExerciseResponseDto
             {
-                
+                ExerciseId = a.ExerciseId,
                 Name = a.Name,
                 Description = a.Description,
                 CategoryName = a.Category != null ? a.Category.Name : null,
@@ -39,7 +39,7 @@ namespace GymFitness.Application.Services
        
         public async Task<Exercise?> GetExerciseByIdAsync(int id) => await _exercise.GetByIdAsync(id);
         public async Task AddExerciseAsync(Exercise exercise) => await _exercise.AddAsync(exercise);
-        public async Task UpdateExerciseAsync(Exercise exercise) => await _exercise.UpdateAsync(exercise);
+        public async Task UpdateExerciseAsync(Exercise exercise, List<string> updatedProperties) => await _exercise.UpdateAsync(exercise, updatedProperties);
         public async Task DeleteExerciseAsync(int id) => await _exercise.DeleteAsync(id);
     }
 }

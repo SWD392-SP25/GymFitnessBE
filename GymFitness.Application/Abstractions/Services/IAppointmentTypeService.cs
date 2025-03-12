@@ -16,7 +16,7 @@ namespace GymFitness.Application.Abstractions.Services
                                                                        int pageSize =10);
         Task<AppointmentType?> GetAppointmentTypeByIdAsync(int typeId);
         Task AddAppointmentTypeAsync(AppointmentType appointmentType);
-        Task UpdateAppointmentTypeAsync(AppointmentType appointmentType);
+        Task<AppointmentTypeResponseDto> UpdateAppointmentTypeAsync(AppointmentType appointmentType);
         Task DeleteAppointmentTypeAsync(int typeId);
       
     }
