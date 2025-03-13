@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GymFitness.Domain.Entities;
+namespace SeedingDataProject.Entities;
 
 public partial class MuscleGroup
 {
