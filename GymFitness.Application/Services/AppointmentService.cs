@@ -27,7 +27,7 @@ namespace GymFitness.Application.Services
             // Chuyển đổi từ Entity -> DTO trước khi trả về Controller
             return appointments.Select(a => new AppointmentResponseDto
             {
-                //AppointmentId = a.AppointmentId,
+                AppointmentId = a.AppointmentId,
                 UserName = a.User.Email != null ? a.User.Email : null,
                 StaffName = a.Staff.Email != null ? a.Staff.Email : null,
                 Status = a.Status,

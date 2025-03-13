@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace GymFitness.Domain.Entities;
+
 public partial class UserMeasurement
 {
     public int MeasurementId { get; set; }

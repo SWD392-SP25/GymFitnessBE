@@ -9,7 +9,7 @@ namespace GymFitness.Application.Abstractions.Repositories
         Task<IEnumerable<AppointmentType>> GetAllAsync(string? filterOn, string? filterQuery, int pageNumber, int pageSize);
         Task<AppointmentType?> GetByIdAsync(int typeId);
         Task AddAsync(AppointmentType appointmentType);
-        Task UpdateAsync(AppointmentType appointmentType);
+        Task<AppointmentType?> UpdateAsync(AppointmentType appointmentType);
         Task DeleteAsync(int typeId);
     }
 }

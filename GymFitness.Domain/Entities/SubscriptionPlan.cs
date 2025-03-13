@@ -5,7 +5,7 @@ namespace GymFitness.Domain.Entities;
 
 public partial class SubscriptionPlan
 {
-    public int PlanId { get; set; }
+    public int SubscriptionPlanId { get; set; }
 
     public string Name { get; set; } = null!;
 

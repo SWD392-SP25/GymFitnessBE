@@ -50,12 +50,13 @@ namespace GymFitness.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(AppointmentType appointmentType)
+        public async Task<AppointmentType?> UpdateAsync(AppointmentType appointmentType)
         {
             _context.AppointmentTypes.Update(appointmentType);
             await _context.SaveChangesAsync();
+            return appointmentType;
         }
-
+        
         public async Task DeleteAsync(int typeId)
         {
             var entity = await _context.AppointmentTypes.FindAsync(typeId);
@@ -66,6 +67,6 @@ namespace GymFitness.Infrastructure.Repositories
             }
         }
 
-
+        
     }
 }

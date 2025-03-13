@@ -12,22 +12,24 @@ namespace GymFitness.API.Controllers
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
+        private readonly IDeviceTokenService _deviceTokenService;
 
-        public NotificationController(INotificationService notificationService)
+        public NotificationController(INotificationService notificationService, IDeviceTokenService deviceTokenService)
         {
             _notificationService = notificationService;
+            _deviceTokenService = deviceTokenService;
         }
 
-        [HttpPost("send")]
-        public async Task<IActionResult> SendNotification([FromBody] NotificationRequestDto request)
+        [HttpPost("sendindividual")]
+        public async Task<IActionResult> SendIndividualNotification([FromBody] NotificationRequestDto request)
         {
             if (request == null || string.IsNullOrEmpty(request.DeviceToken))
                 return BadRequest("Invalid request.");
 
             var notification = new RegisteredDevice
             {
-                UserId = request.UserId,
-                StaffId = request.StaffId,
+                //UserId = request.UserId,
+                //StaffId = request.StaffId,
                 Title = request.Title,
                 Message = request.Message,
                 Type = request.Type
@@ -40,7 +42,43 @@ namespace GymFitness.API.Controllers
 
             return StatusCode(500, "Failed to send notification.");
         }
+
+        [HttpPost("sendall")]
+        public async Task<IActionResult> SendAllNotification([FromBody] NotificationRequestDto request)
+        {
+            if (request == null)
+                return BadRequest("Invalid request.");
+
+            // Lấy tất cả device tokens từ DeviceTokenService
+            var deviceTokens = await _deviceTokenService.GetDeviceTokensAsync();
+
+            if (deviceTokens == null || !deviceTokens.Any())
+                return BadRequest("No registered device tokens found.");
+
+            var notification = new RegisteredDevice
+            {
+                //UserId = request.UserId,
+                //StaffId = request.StaffId,
+                Title = request.Title,
+                Message = request.Message,
+                Type = request.Type
+            };
+
+            // Gửi thông báo đến từng device token
+            var sendResults = new List<bool>();
+            foreach (var token in deviceTokens)
+            {
+                bool isSent = await _notificationService.SendNotificationAsync(notification, token);
+                sendResults.Add(isSent);
+            }
+
+            if (sendResults.All(result => result))
+                return Ok(new { message = "Notification sent successfully to all devices." });
+
+            return StatusCode(500, "Failed to send notification to some devices.");
+        }
+
     }
 
-    
+
 }

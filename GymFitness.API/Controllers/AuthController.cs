@@ -122,10 +122,19 @@ namespace GymFitness.API.Controllers
                     id = staff.StaffId.ToString();
                     role = "Staff";
                 }
-                //if (user.Status == "Banned" || staff.Status == "Banned")
-                //{
-                //    return Unauthorized("User has been banned, please contact staff for more info.");
-                //}
+
+                // ✅ Kiểm tra xem User hoặc Staff có bị banned không
+                if ((user != null && user.Status?.ToLower() == "banned") || (staff != null && staff.Status?.ToLower() == "banned"))
+                {
+                    return Unauthorized(new { message = "User has been banned, please contact staff for more info." });
+                }
+
+
+                // Chỉ cho phép đăng nhập nếu Status là "Active"
+                if ((user != null && user.Status?.ToLower() != "active") || (staff != null && staff.Status?.ToLower() != "active"))
+                {
+                    return Unauthorized(new { message = "Your account is not active. Please contact support." });
+                }
 
                 // ✅ Tạo JWT token
                 Console.WriteLine("Generating JWT token");

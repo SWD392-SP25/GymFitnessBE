@@ -1,20 +1,48 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.AspNetCore.JsonPatch;
+using System.Collections.Generic;
 
 public class JsonPatchDocumentOperationFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        if (context.MethodInfo.GetParameters().Any(p => p.ParameterType == typeof(JsonPatchDocument)))
+        // Chỉ áp dụng cho HTTP PATCH
+        if (!context.ApiDescription.HttpMethod.Equals("PATCH", StringComparison.OrdinalIgnoreCase))
         {
-            operation.RequestBody = new OpenApiRequestBody
+            return;
+        }
+
+        if (operation.RequestBody?.Content?.ContainsKey("application/json-patch+json") == true)
+        {
+            operation.RequestBody.Content["application/json-patch+json"].Schema = new OpenApiSchema
             {
-                Content = new Dictionary<string, OpenApiMediaType>
+                Type = "array",
+                Items = new OpenApiSchema
                 {
-                    ["application/json-patch+json"] = new OpenApiMediaType
+                    Type = "object",
+                    Properties = new Dictionary<string, OpenApiSchema>
                     {
-                        Schema = new OpenApiSchema { Type = "object" }
+                        ["op"] = new OpenApiSchema
+                        {
+                            Type = "string",
+                            Enum = new List<IOpenApiAny>
+                            {
+                                new OpenApiString("replace"),
+                                new OpenApiString("add"),
+                                new OpenApiString("remove")
+                            }
+                        },
+                        ["path"] = new OpenApiSchema
+                        {
+                            Type = "string",
+                            Example = new OpenApiString("/DtoParameter")
+                        },
+                        ["value"] = new OpenApiSchema
+                        {
+                            Type = "string",
+                            Example = new OpenApiString("99.99")
+                        }
                     }
                 }
             };

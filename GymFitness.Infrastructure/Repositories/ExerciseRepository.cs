@@ -79,11 +79,24 @@ namespace GymFitness.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Exercise exercise)
+        public async Task UpdateAsync(Exercise exercise, List<string> updatedProperties)
         {
-            _context.Exercises.Update(exercise);
+            if (exercise == null || updatedProperties == null || !updatedProperties.Any())
+                return; // Không có gì để cập nhật, thoát luôn
+
+            var entry = _context.Entry(exercise);
+            var entityProperties = entry.Properties.Select(p => p.Metadata.Name).ToHashSet(); // Tạo HashSet để tìm nhanh hơn
+
+            foreach (var property in updatedProperties)
+            {
+                if (entityProperties.Contains(property)) // Kiểm tra trong HashSet thay vì duyệt danh sách
+                {
+                    entry.Property(property).IsModified = true;
+                }
+            }
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteAsync(int id)
         {

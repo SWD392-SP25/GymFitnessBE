@@ -1,7 +1,10 @@
-﻿using GymFitness.API.Dto;
+﻿using Azure;
+using GymFitness.API.Dto;
 using GymFitness.Application.Abstractions.Services;
 using GymFitness.Application.Services;
 using GymFitness.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +15,7 @@ namespace GymFitness.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ExerciseController : ControllerBase
     {
 
@@ -28,6 +32,7 @@ namespace GymFitness.API.Controllers
 
 
         [HttpGet]
+        [Authorize (Roles = "Admin,User,Staff")]
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn,
                                                 [FromQuery] string? filterQuery,
                                                 [FromQuery] string? sortBy,
@@ -40,6 +45,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetById(int id)
         {
             var exercise = await _exerciseService.GetExerciseByIdAsync(id);
@@ -49,6 +55,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Create([FromForm] ExerciseCreateDto dto)
         {
             string imageUrl = null, videoUrl = null;
@@ -91,46 +98,143 @@ namespace GymFitness.API.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] ExerciseUpdateDto dto)
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> Update(int id, [FromForm] ExerciseUpdateDto dto)
+        //{
+        //    var exercise = await _exerciseService.GetExerciseByIdAsync(id);
+        //    if (exercise == null)
+        //        return NotFound();
+
+        //    exercise.Name = dto.Name;
+        //    exercise.Description = dto.Description;
+        //    exercise.MuscleGroupId = dto.MuscleGroupId;
+        //    exercise.CategoryId = dto.CategoryId;
+        //    exercise.DifficultyLevel = dto.DifficultyLevel;
+        //    exercise.EquipmentNeeded = dto.EquipmentNeeded;
+        //    exercise.Instructions = dto.Instructions;
+        //    exercise.Precautions = dto.Precautions;
+
+        //    // Cập nhật ảnh nếu có
+        //    if (dto.ImageFile != null)
+        //    {
+        //        if (!_allowedImageExtensions.Contains(Path.GetExtension(dto.ImageFile.FileName).ToLower()))
+        //            return BadRequest("Chỉ hỗ trợ định dạng ảnh: .jpg, .jpeg, .png, .gif");
+
+        //        exercise.ImageUrl = await _firebaseStorageService.UploadFileAsync(dto.ImageFile, "exercise_images");
+        //    }
+
+        //    // Cập nhật video nếu có
+        //    if (dto.VideoFile != null)
+        //    {
+        //        if (!_allowedVideoExtensions.Contains(Path.GetExtension(dto.VideoFile.FileName).ToLower()))
+        //            return BadRequest("Chỉ hỗ trợ định dạng video: .mp4, .mov, .avi, .mkv");
+
+        //        exercise.VideoUrl = await _firebaseStorageService.UploadFileAsync(dto.VideoFile, "exercise_videos");
+        //    }
+
+        //    await _exerciseService.UpdateExerciseAsync(exercise);
+        //    return NoContent();
+        //}
+
+        [HttpPatch("{id}")]
+        [Consumes("application/json-patch+json")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<ExercisePatchDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest("Patch document is null");
+            }
+
+            var exercise = await _exerciseService.GetExerciseByIdAsync(id);
+            if (exercise == null)
+            {
+                return NotFound();
+            }
+
+            var exercisePatch = new ExercisePatchDto
+            {
+                Name = exercise.Name,
+                Description = exercise.Description,
+                MuscleGroupId = exercise.MuscleGroupId,
+                CategoryId = exercise.CategoryId,
+                DifficultyLevel = exercise.DifficultyLevel,
+                EquipmentNeeded = exercise.EquipmentNeeded,
+                Instructions = exercise.Instructions,
+                Precautions = exercise.Precautions
+            };
+
+            patchDoc.ApplyTo(exercisePatch, error =>
+            {
+                ModelState.AddModelError(error.AffectedObject.ToString(), error.ErrorMessage);
+            });
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            exercise.Name = exercisePatch.Name;
+            exercise.Description = exercisePatch.Description;
+            exercise.MuscleGroupId = exercisePatch.MuscleGroupId;
+            exercise.CategoryId = exercisePatch.CategoryId;
+            exercise.DifficultyLevel = exercisePatch.DifficultyLevel;
+            exercise.EquipmentNeeded = exercisePatch.EquipmentNeeded;
+            exercise.Instructions = exercisePatch.Instructions;
+            exercise.Precautions = exercisePatch.Precautions;
+
+            // Chặn cập nhật CreatedAt
+            var updatedProperties = patchDoc.Operations
+                .Select(o => o.path.TrimStart('/'))
+                .Where(p => p != "CreatedAt")
+                .ToList();
+
+            await _exerciseService.UpdateExerciseAsync(exercise, updatedProperties);
+            return Ok();
+        }
+
+        [HttpPatch("{id}/upload")]
+        [Consumes("multipart/form-data")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> PatchUpload(int id, [FromForm] ExerciseFileDto dto)
         {
             var exercise = await _exerciseService.GetExerciseByIdAsync(id);
             if (exercise == null)
                 return NotFound();
 
-            exercise.Name = dto.Name;
-            exercise.Description = dto.Description;
-            exercise.MuscleGroupId = dto.MuscleGroupId;
-            exercise.CategoryId = dto.CategoryId;
-            exercise.DifficultyLevel = dto.DifficultyLevel;
-            exercise.EquipmentNeeded = dto.EquipmentNeeded;
-            exercise.Instructions = dto.Instructions;
-            exercise.Precautions = dto.Precautions;
+            var updatedProperties = new List<string>();
 
-            // Cập nhật ảnh nếu có
+            // Xử lý ảnh
             if (dto.ImageFile != null)
             {
                 if (!_allowedImageExtensions.Contains(Path.GetExtension(dto.ImageFile.FileName).ToLower()))
                     return BadRequest("Chỉ hỗ trợ định dạng ảnh: .jpg, .jpeg, .png, .gif");
 
                 exercise.ImageUrl = await _firebaseStorageService.UploadFileAsync(dto.ImageFile, "exercise_images");
+                updatedProperties.Add(nameof(exercise.ImageUrl));
             }
-
-            // Cập nhật video nếu có
+                
+            // Xử lý video
             if (dto.VideoFile != null)
             {
                 if (!_allowedVideoExtensions.Contains(Path.GetExtension(dto.VideoFile.FileName).ToLower()))
                     return BadRequest("Chỉ hỗ trợ định dạng video: .mp4, .mov, .avi, .mkv");
 
                 exercise.VideoUrl = await _firebaseStorageService.UploadFileAsync(dto.VideoFile, "exercise_videos");
+                updatedProperties.Add(nameof(exercise.VideoUrl));
             }
 
-            await _exerciseService.UpdateExerciseAsync(exercise);
-            return NoContent();
+            // Nếu không có gì thay đổi, trả về lỗi
+            if (!updatedProperties.Any())
+                return BadRequest("Không có tệp nào được tải lên");
+
+            await _exerciseService.UpdateExerciseAsync(exercise, updatedProperties);
+            return Ok(new { exercise.ImageUrl, exercise.VideoUrl });
         }
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Staff")]  
         public async Task<IActionResult> Delete(int id)
         {
             await _exerciseService.DeleteExerciseAsync(id);

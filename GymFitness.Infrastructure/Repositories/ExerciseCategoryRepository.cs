@@ -49,10 +49,11 @@ namespace GymFitness.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(ExerciseCategory category)
+        public async Task<ExerciseCategory?> UpdateAsync(ExerciseCategory category)
         {
             _context.ExerciseCategories.Update(category);
             await _context.SaveChangesAsync();
+            return category;
         }
 
         public async Task DeleteAsync(int id)

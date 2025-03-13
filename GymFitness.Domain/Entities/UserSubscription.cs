@@ -9,7 +9,7 @@ public partial class UserSubscription
 
     public Guid? UserId { get; set; }
 
-    public int? PlanId { get; set; }
+    public int? SubscriptionPlanId { get; set; }
 
     public DateOnly StartDate { get; set; }
 
@@ -23,9 +23,11 @@ public partial class UserSubscription
 
     public DateTime? CreatedAt { get; set; }
 
+    public string? Sub { get; set; }
+
     public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
 
-    public virtual SubscriptionPlan? Plan { get; set; }
+    public virtual SubscriptionPlan? SubscriptionPlan { get; set; }
 
     public virtual User? User { get; set; }
 }
