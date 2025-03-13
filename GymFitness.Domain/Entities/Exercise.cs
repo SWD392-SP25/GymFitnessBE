@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SeedingDataProject.Entities;
+namespace GymFitness.Domain.Entities;
 
 public partial class Exercise
 {

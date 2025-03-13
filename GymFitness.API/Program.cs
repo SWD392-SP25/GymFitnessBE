@@ -48,9 +48,9 @@ namespace GymFitness.API
             builder.Services.AddControllers();
             //Add repository to the container.
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
+            //builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
             builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-            builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
+            //builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
             builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 
             builder.Services.AddScoped<IStaffSpecializationRepository, StaffSpecializationRepository>();
@@ -58,7 +58,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IMuscleGroupRepository, MuscleGroupRepository>();
             builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
             builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
-            builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
+            //builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<IUserMeasurementRepository, UserMeasurementRepository>();
 
@@ -66,15 +66,15 @@ namespace GymFitness.API
 
             // Add services to the container.
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
+            //builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
             builder.Services.AddScoped<IStaffService, StaffService>();
 
             builder.Services.AddScoped<IStaffSpecializationService, StaffSpecializationService>();
             builder.Services.AddScoped<IMuscleGroupService, MuscleGroupService>();
             builder.Services.AddScoped<IExerciseCategoryService, ExerciseCategoryService>();
             builder.Services.AddScoped<IExerciseService, ExerciseService>();
-            builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
-            builder.Services.AddScoped<IWorkoutPlanExerciseService, WorkoutPlanExerciseService>();
+            //builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
+            //builder.Services.AddScoped<IWorkoutPlanExerciseService, WorkoutPlanExerciseService>();
             builder.Services.AddScoped<IAppointmentService, AppointmentService>();
             builder.Services.AddScoped<IAppointmentTypeService, AppointmentTypeService>();
             builder.Services.AddSingleton<IRedisService, RedisService>();
