@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GymFitness.Domain.Entities;
+namespace SeedingDataProject.Entities;
 
 public partial class SubscriptionPlan
 {
-    public int PlanId { get; set; }
+    public int SubscriptionPlanId { get; set; }
 
     public string Name { get; set; } = null!;
 

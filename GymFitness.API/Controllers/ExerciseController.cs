@@ -213,7 +213,7 @@ namespace GymFitness.API.Controllers
                 exercise.ImageUrl = await _firebaseStorageService.UploadFileAsync(dto.ImageFile, "exercise_images");
                 updatedProperties.Add(nameof(exercise.ImageUrl));
             }
-
+                
             // Xử lý video
             if (dto.VideoFile != null)
             {
@@ -234,7 +234,7 @@ namespace GymFitness.API.Controllers
 
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]  
         public async Task<IActionResult> Delete(int id)
         {
             await _exerciseService.DeleteExerciseAsync(id);

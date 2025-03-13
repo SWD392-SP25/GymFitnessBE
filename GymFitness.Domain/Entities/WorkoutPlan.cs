@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GymFitness.Domain.Entities;
+namespace SeedingDataProject.Entities;
 
 public partial class WorkoutPlan
 {
@@ -25,11 +25,11 @@ public partial class WorkoutPlan
 
     public DateTime? CreatedAt { get; set; }
 
-    public int? SubscriptionId { get; set; }
+    public int? SubscriptionPlanId { get; set; }
 
     public virtual Staff? CreatedByNavigation { get; set; }
 
-    public virtual SubscriptionPlan? Subscription { get; set; }
+    public virtual SubscriptionPlan? SubscriptionPlan { get; set; }
 
     public virtual ICollection<WorkoutPlanExercise> WorkoutPlanExercises { get; set; } = new List<WorkoutPlanExercise>();
 }

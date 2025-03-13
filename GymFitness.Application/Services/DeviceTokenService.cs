@@ -23,10 +23,12 @@ namespace GymFitness.Application.Services
             return await _deviceTokenRepository.AddDeviceTokenAsync(deviceToken);
         }
 
-        public async Task<List<DeviceTokenResponseDto>> GetDeviceTokensAsync()
+        public async Task<List<string>> GetDeviceTokensAsync()
         {
             var deviceTokens = await _deviceTokenRepository.GetDeviceTokensAsync();
-            return deviceTokens.Select(x => new DeviceTokenResponseDto {Token = x.DeviceToken1 }).ToList();
+            return new List<string>(deviceTokens.Select(x => x.DeviceToken1));
         }
+
+     
     }
 }
