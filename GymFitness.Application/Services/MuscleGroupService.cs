@@ -24,6 +24,7 @@ namespace GymFitness.Application.Services
             var muscleGroups = await _muscleGroup.GetAllAsync(filterOn, filterQuery, pageNumber, pageSize);
             return muscleGroups.Select(m => new MuscleGroupResponseDto
             {
+                MuscleGroupId = m.MuscleGroupId,
                 Description = m.Description,
                 Name = m.Name,
                 ImageUrl = m.ImageUrl
