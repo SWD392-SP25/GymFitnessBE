@@ -102,12 +102,12 @@ namespace GymFitness.API
 
 
             //// ✅ Thêm DbContext
-            builder.Services.AddDbContext<GymbotDbContext>(options =>
-               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            //builder.Services.AddDbContext<GymbotDbContext>(options =>
+            //   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             //Azure Db
-            // builder.Services.AddDbContext<GymbotDbContext>(options =>
-            //     options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
+            builder.Services.AddDbContext<GymbotDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
 
 
 
