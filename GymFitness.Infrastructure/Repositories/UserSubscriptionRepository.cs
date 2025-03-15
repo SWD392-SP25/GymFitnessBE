@@ -32,12 +32,14 @@ namespace GymFitness.Infrastructure.Repositories
         public async Task<UserSubscription?> GetUserSubscriptionById(int id)
         {
             return await _context.UserSubscriptions.Include(x => x.SubscriptionPlan)
+                                                   .Include(x => x.Invoices)
                                                    .FirstOrDefaultAsync(x => x.SubscriptionId == id);
         }
 
         public Task<List<UserSubscription>> GetUserSubscriptions(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10)
         {
             var userSubscriptions = _context.UserSubscriptions.Include(x => x.SubscriptionPlan)
+                                                              .Include(x => x.Invoices)
                                                               .AsQueryable();
 
             // **Lọc theo filterOn và filterQuery**
