@@ -1,5 +1,6 @@
 ﻿using GymFitness.Application.Abstractions.Repositories;
 using GymFitness.Application.Abstractions.Services;
+using GymFitness.Application.ResponseDto;
 using GymFitness.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -27,14 +28,32 @@ namespace GymFitness.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<UserSubscription?> GetUserSubscriptionById(int id)
+        public Task<UserSubscriptionResponseDto?> GetUserSubscriptionById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<UserSubscription>> GetUserSubscriptions(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10)
+        public async Task<IEnumerable<UserSubscriptionResponseDto>> GetUserSubscriptions(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10)
         {
-            throw new NotImplementedException();
+            var userSubscriptions = await _userSubscriptionRepository.GetUserSubscriptions(filterOn, filterQuery, pageNumber, pageSize);
+
+            return userSubscriptions.Select(x => new UserSubscriptionResponseDto
+            {
+                SubscriptionId = x.SubscriptionId,
+                UserEmail = x.User.Email,
+                SubscriptionPlanId = x.SubscriptionPlanId,
+                SubscriptionPlanName = x.SubscriptionPlan.Name,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                Status = x.Status,
+                PaymentFrequency = x.PaymentFrequency,
+                AutoRenew = x.AutoRenew,
+                CreatedAt = x.CreatedAt,
+                Sub = x.Sub,
+                InvoiceId = x.Invoices.FirstOrDefault().InvoiceId,
+                InvoiceStatus = x.Invoices.FirstOrDefault().Status
+            });
+
         }
 
         public Task UpdateUserSubscription(UserSubscription userSubscription)

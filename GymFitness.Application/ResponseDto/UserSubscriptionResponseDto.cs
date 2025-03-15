@@ -12,11 +12,12 @@ namespace GymFitness.Application.ResponseDto
 
         public string UserEmail { get; set; }
 
-        public SubscriptionPlanResponseDto SubscriptionPlan { get; set; } = null!;
+        public int? SubscriptionPlanId { get; set; }
+        public string? SubscriptionPlanName { get; set; }
 
-        public DateOnly StartDate { get; set; }
+        public DateOnly? StartDate { get; set; }
 
-        public DateOnly EndDate { get; set; }
+        public DateOnly? EndDate { get; set; }
 
         public string Status { get; set; } = null!;
 
@@ -27,5 +28,7 @@ namespace GymFitness.Application.ResponseDto
         public DateTime? CreatedAt { get; set; }
 
         public string? Sub { get; set; }
+        public int InvoiceId { get; set; }
+        public string? InvoiceStatus { get; set; }
     }
 }
