@@ -24,6 +24,7 @@ namespace GymFitness.Application.Services
             var categories = await _exerciseCategory.GetAllAsync(filterOn, filterQuery, pageNumber, pageSize);
             return categories.Select(c => new ExerciseCategoryResponseDto
             {
+                CategoryId = c.CategoryId,
                 Description = c.Description,
                 CategoryName = c.Name
             }).ToList();
