@@ -3,6 +3,7 @@ using GymFitness.API.RequestDto;
 using GymFitness.API.Services.Abstractions;
 using GymFitness.Application.Abstractions.Services;
 using GymFitness.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace GymFitness.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserSubscriptionController : Controller
     {
         private readonly IUserSubscriptionService _userSubscriptionService;
@@ -22,6 +24,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetUserSubscriptions([FromQuery] string? filterOn,
                                                              [FromQuery] string? filterQuery,
                                                              [FromQuery] int pageNumber = 1,
@@ -32,6 +35,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> GetUserSubscriptionById(int id)
         {
             var userSubscription = await _userSubscriptionService.GetUserSubscriptionById(id);
@@ -42,6 +46,7 @@ namespace GymFitness.API.Controllers
 
         [HttpPatch("{id}")]
         [Consumes("application/json-patch+json")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<UserSubscriptionDto> patchDoc)
         {
             if(patchDoc == null)
@@ -90,6 +95,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> Create([FromBody] UserSubscriptionCreateDto dto)
         {
             var user = await _userService.GetUserByEmail(dto.Email);
@@ -112,6 +118,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> Delete(int id)
         {
             var userSubscription = await _userSubscriptionService.GetUserSubscriptionById(id);
