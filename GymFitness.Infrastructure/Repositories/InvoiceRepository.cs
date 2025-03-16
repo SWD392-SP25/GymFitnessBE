@@ -32,17 +32,23 @@ namespace GymFitness.Infrastructure.Repositories
 
         public async Task<Invoice?> GetInvoiceById(int id)
         {
-            return await _context.Invoices.FindAsync(id);
+            return await _context.Invoices.Include(x => x.PaymentMethod)
+                                          .Include(x => x.User)
+                                          .FirstOrDefaultAsync(x => x.InvoiceId.Equals(id));
         }
 
-        public Task<List<Invoice?>> GetInvoiceByUser(string email)
+        public async Task<List<Invoice?>> GetInvoiceByUser(string email)
         {
-            return Task.FromResult(_context.Invoices.Where(x => x.User.Email.ToLower() == email.ToLower()).ToList());
+            return await _context.Invoices.Include(x => x.PaymentMethod)
+                                          .Include(x => x.User)
+                                                    .Where(x => x.User.Email.ToLower() == email.ToLower()).ToListAsync();
         }
 
         public async Task<List<Invoice>> GetInvoices(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10)
         {
-            var invoices = _context.Invoices.Include(x => x.PaymentMethod).AsQueryable();
+            var invoices = _context.Invoices.Include(x => x.PaymentMethod)
+                                            .Include(x => x.User)
+                                            .AsQueryable();
             // **Lọc theo filterOn và filterQuery**
             if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
             {
@@ -64,10 +70,16 @@ namespace GymFitness.Infrastructure.Repositories
             return await invoices.ToListAsync();
         }
 
-        public async Task UpdateInvoice(Invoice invoice)
+        public async Task UpdateInvoice(Invoice invoice, List<string> updatedProperties)
         {
-
-            _context.Invoices.Update(invoice);
+            var entry = _context.Entry(invoice);
+            foreach (var property in updatedProperties)
+            {
+                if (_context.Entry(invoice).Properties.Any(p => p.Metadata.Name == property))
+                {
+                    entry.Property(property).IsModified = true;
+                }
+            }
             await _context.SaveChangesAsync();
         }
     }
