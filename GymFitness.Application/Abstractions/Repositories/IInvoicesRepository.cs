@@ -12,7 +12,7 @@ namespace GymFitness.Application.Abstractions.Repositories
         Task<Invoice?> GetInvoiceById(int id);
         Task<List<Invoice>> GetInvoices(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10);
         Task AddInvoice(Invoice invoice);
-        Task UpdateInvoice(Invoice invoice);
+        Task UpdateInvoice(Invoice invoice, List<string> updatedProperties);
         Task DeleteInvoice(Invoice invoice);
         Task<List<Invoice?>> GetInvoiceByUser(string email);
     }
