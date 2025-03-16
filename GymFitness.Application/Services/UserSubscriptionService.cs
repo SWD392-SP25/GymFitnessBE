@@ -10,34 +10,41 @@ using System.Threading.Tasks;
 
 namespace GymFitness.Application.Services
 {
-    class UserSubscriptionService : IUserSubscriptionService
+    public class UserSubscriptionService : IUserSubscriptionService
     {
         private readonly IUserSubscriptionRepository _userSubscriptionRepository;
+        private readonly IInvoicesRepository _invoicesRepository;
 
-        public UserSubscriptionService(IUserSubscriptionRepository userSubscriptionRepository)
+        public UserSubscriptionService(IUserSubscriptionRepository userSubscriptionRepository, IInvoicesRepository invoicesRepository)
         {
             _userSubscriptionRepository = userSubscriptionRepository;
+            _invoicesRepository = invoicesRepository;
         }
-        public Task AddUserSubcription(UserSubscription userSubscription)
+        public async Task AddUserSubcription(UserSubscription userSubscription)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteUserSubscription(UserSubscription userSubscription)
-        {
-            throw new NotImplementedException();
+            await _userSubscriptionRepository.AddUserSubcription(userSubscription);
         }
 
-        public Task<UserSubscriptionResponseDto?> GetUserSubscriptionById(int id)
+        public async Task DeleteUserSubscription(UserSubscription userSubscription)
         {
-            throw new NotImplementedException();
+            await _userSubscriptionRepository.DeleteUserSubscription(userSubscription);
+        }
+
+        public async Task<UserSubscription?> GetUserSubscriptionById(int id)
+        {
+            var userSubscription = await _userSubscriptionRepository.GetUserSubscriptionById(id);
+
+            if (userSubscription == null) return null;
+
+            return userSubscription;
         }
 
         public async Task<IEnumerable<UserSubscriptionResponseDto>> GetUserSubscriptions(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10)
         {
             var userSubscriptions = await _userSubscriptionRepository.GetUserSubscriptions(filterOn, filterQuery, pageNumber, pageSize);
+            
 
-            return userSubscriptions.Select(x => new UserSubscriptionResponseDto
+            return  userSubscriptions.Select(x => new UserSubscriptionResponseDto
             {
                 SubscriptionId = x.SubscriptionId,
                 UserEmail = x.User.Email,
@@ -50,15 +57,23 @@ namespace GymFitness.Application.Services
                 AutoRenew = x.AutoRenew,
                 CreatedAt = x.CreatedAt,
                 Sub = x.Sub,
-                InvoiceId = x.Invoices.FirstOrDefault().InvoiceId,
-                InvoiceStatus = x.Invoices.FirstOrDefault().Status
-            });
+                Invoices = x.Invoices?.Select(invoice => new InvoiceResponseDto
+                {
+                    InvoiceId = invoice.InvoiceId,
+                    Amount = invoice.Amount,
+                    Status = invoice.Status,
+                    DueDate = invoice.DueDate,
+                    PaidDate = invoice.PaidDate,
+                    PaymentMethod = invoice.PaymentMethod?.MethodName,
+                    CreatedAt = invoice.CreatedAt
+                }).ToList() ?? new List<InvoiceResponseDto>() // Tránh null list
+            }).ToList();
 
         }
 
-        public Task UpdateUserSubscription(UserSubscription userSubscription)
+        public async Task UpdateUserSubscription(UserSubscription userSubscription, List<string> updatedProperties)
         {
-            throw new NotImplementedException();
+            await _userSubscriptionRepository.UpdateUserSubscription(userSubscription, updatedProperties);
         }
     }
 }

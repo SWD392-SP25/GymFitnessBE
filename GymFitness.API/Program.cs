@@ -61,8 +61,9 @@ namespace GymFitness.API
             //builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<IUserMeasurementRepository, UserMeasurementRepository>();
-
+            builder.Services.AddScoped<IUserSubscriptionRepository, UserSubscriptionRepository>();
             builder.Services.AddScoped<IDeviceTokenRepository, DeviceTokenRepository>();
+            builder.Services.AddScoped<IInvoicesRepository, InvoiceRepository>();
 
             // Add services to the container.
             builder.Services.AddScoped<IUserService, UserService>();
@@ -81,6 +82,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<IUserMeasurementService, UserMeasurementService>();
             builder.Services.AddScoped<IDeviceTokenService, DeviceTokenService>();
+            builder.Services.AddScoped<IUserSubscriptionService, UserSubscriptionService>();
 
             builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
             builder.Services.AddHttpClient("ChatGPT");
@@ -105,12 +107,12 @@ namespace GymFitness.API
 
 
             // ✅ Thêm DbContext
-            builder.Services.AddDbContext<GymbotDbContext>(options =>
-               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            //builder.Services.AddDbContext<GymbotDbContext>(options =>
+            //   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             ////Azure Db
-            //builder.Services.AddDbContext<GymbotDbContext>(options =>
-            //    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
+            builder.Services.AddDbContext<GymbotDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
 
 
 
