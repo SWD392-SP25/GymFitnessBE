@@ -10,6 +10,6 @@ namespace GymFitness.API.Services.Abstractions
         Task<User> GetUserById(Guid userId);
         Task<List<UserResponseDto>> GetAll(string? filterOn, string? filterQuery);
         Task UpdateUser(User user);
-        Task<bool> BanUser(Guid userId);
+        Task<bool> BanUser(string email);
     }
 }

@@ -118,9 +118,9 @@ namespace GymFitness.Infrastructure.Repositories
             
         }
 
-        public async Task<bool> BanUser(Guid userId)
+        public async Task<bool> BanUser(string email)
         {
-            var user = await GetUserById(userId);
+            var user = await GetUserByEmail(email);
          
             if (user == null)
             {
