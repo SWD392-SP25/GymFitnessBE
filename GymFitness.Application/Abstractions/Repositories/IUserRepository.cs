@@ -15,6 +15,6 @@ namespace GymFitness.Infrastructure.Repositories.Abstractions
         Task<User> GetUserById(Guid userId);
         Task<List<User>> GetUsersAsync(string? filterOn, string? filterQuery);
         Task UpdateUser(User user);
-        Task<bool> BanUser(Guid userId);
+        Task<bool> BanUser(string email);
     }
 }
