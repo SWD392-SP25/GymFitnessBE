@@ -11,9 +11,9 @@ namespace GymFitness.Application.Abstractions.Services
     public interface IUserSubscriptionService
     {
         Task AddUserSubcription(UserSubscription userSubscription);
-        Task UpdateUserSubscription(UserSubscription userSubscription);
+        Task UpdateUserSubscription(UserSubscription userSubscription, List<string> updatedProperties);
         Task DeleteUserSubscription(UserSubscription userSubscription);
-        Task<UserSubscriptionResponseDto?> GetUserSubscriptionById(int id);
+        Task<UserSubscription?> GetUserSubscriptionById(int id);
         Task<IEnumerable<UserSubscriptionResponseDto>> GetUserSubscriptions(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10);
     }
 }

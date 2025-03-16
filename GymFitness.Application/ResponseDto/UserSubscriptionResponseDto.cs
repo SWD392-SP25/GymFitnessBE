@@ -28,7 +28,6 @@ namespace GymFitness.Application.ResponseDto
         public DateTime? CreatedAt { get; set; }
 
         public string? Sub { get; set; }
-        public int InvoiceId { get; set; }
-        public string? InvoiceStatus { get; set; }
+        public List<InvoiceResponseDto> Invoices { get; set; }
     }
 }

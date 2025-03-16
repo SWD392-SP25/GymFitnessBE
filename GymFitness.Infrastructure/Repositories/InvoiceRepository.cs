@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GymFitness.Infrastructure.Repositories
 {
-    class InvoiceRepository : IInvoicesRepository
+    public class InvoiceRepository : IInvoicesRepository
     {
         private readonly GymbotDbContext _context;
 
