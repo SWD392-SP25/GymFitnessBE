@@ -26,17 +26,17 @@ namespace GymFitness.Application.Services
 
         }
 
-        public async Task<bool> BanUser(Guid userId)
+        public async Task<bool> BanUser(string email)
         {
-            var user = await _userRepository.GetUserById(userId);
+            var user = await _userRepository.GetUserByEmail(email);
             if (user == null || user.Status == "Banned")
             {
                 return false;
             }
 
             // ✅ Revoke token sau khi ban user
-            await _redisService.SetAsync($"revoke:{userId}", "true", TimeSpan.FromHours(3));
-            return await _userRepository.BanUser(userId);
+            await _redisService.SetAsync($"revoke:{user.UserId}", "true", TimeSpan.FromHours(3));
+            return await _userRepository.BanUser(email);
         }
 
         public async Task<List<UserResponseDto>> GetAll(string? filterOn, string? filterQuery)

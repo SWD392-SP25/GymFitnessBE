@@ -85,12 +85,13 @@ public class UsersController : ControllerBase
     }
 
 
-    [HttpPost("{userId}/ban")]
-    public async Task<IActionResult> BanUser(Guid userId)
+    [HttpPost("ban/{email}")]
+    public async Task<IActionResult> BanUser(string email)
     {
         try
         {
-            var result = await _userService.BanUser(userId);
+            
+            var result = await _userService.BanUser(email);
             if (!result)
             {
                 return NotFound(new { message = "User not found or already banned." });
