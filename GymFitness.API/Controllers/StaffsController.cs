@@ -39,6 +39,13 @@ namespace GymFitness.API.Controllers
             if (staff == null) return NotFound();
             return staff;
         }
+        [HttpGet("/email/{email}")]
+        public async Task<ActionResult<Staff>> GetStaffByEmail(string email)
+        {
+            var staff = await _staffService.GetByEmailAsync(email);
+            if (staff == null) return NotFound();
+            return staff;
+        }
 
         [HttpPost]
         public async Task<IActionResult> AddStaff(Staff staff)
