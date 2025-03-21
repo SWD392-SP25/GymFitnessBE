@@ -15,5 +15,6 @@ namespace GymFitness.Application.Abstractions.Services
         Task DeleteUserSubscription(UserSubscription userSubscription);
         Task<UserSubscription?> GetUserSubscriptionById(int id);
         Task<IEnumerable<UserSubscriptionResponseDto>> GetUserSubscriptions(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10);
+        Task<UserSubscription?> GetPendingSubscriptionBySubscriptionId(int subscriptionId);
     }
 }

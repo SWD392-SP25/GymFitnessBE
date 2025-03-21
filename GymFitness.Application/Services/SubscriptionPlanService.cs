@@ -21,5 +21,10 @@ namespace GymFitness.Application.Services
         {
             return await _subscriptionPlanRepository.GetSubscriptionPlan(filterOn, filterQuery, sortBy, isAscending, pageNumber, pageSize);
         }
+
+        public async Task<SubscriptionPlan?> GetSubscriptionPlanById(int id)
+        {
+            return await _subscriptionPlanRepository.GetSubscriptionPlanById(id);
+        }
     }
 }
