@@ -67,5 +67,11 @@ namespace GymFitness.Infrastructure.Repositories
             return await subscriptionPlan.ToListAsync();
 
         }
+
+        public async Task<SubscriptionPlan?> GetSubscriptionPlanById(int id)
+        {
+            return await _context.SubscriptionPlans
+                     .FirstOrDefaultAsync(sp => sp.SubscriptionPlanId == id);
+        }
     }
 }

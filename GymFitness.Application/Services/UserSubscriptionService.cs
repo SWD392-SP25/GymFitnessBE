@@ -30,6 +30,12 @@ namespace GymFitness.Application.Services
             await _userSubscriptionRepository.DeleteUserSubscription(userSubscription);
         }
 
+        public async Task<UserSubscription?> GetPendingSubscriptionBySubscriptionId(int subscriptionId)
+        {
+            return await _userSubscriptionRepository.GetPendingSubscriptionBySubscriptionId(subscriptionId);
+        }
+
+
         public async Task<UserSubscription?> GetUserSubscriptionById(int id)
         {
             var userSubscription = await _userSubscriptionRepository.GetUserSubscriptionById(id);

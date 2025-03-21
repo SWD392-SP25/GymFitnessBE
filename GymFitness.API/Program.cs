@@ -22,6 +22,7 @@ using Swashbuckle.AspNetCore.Filters;
 using Azure;
 using System.Text;
 using Microsoft.OpenApi.Any;
+using Microsoft.AspNetCore.Authorization;
 
 
 
@@ -65,6 +66,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IDeviceTokenRepository, DeviceTokenRepository>();
             builder.Services.AddScoped<IInvoicesRepository, InvoiceRepository>();
             builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
+            builder.Services.AddScoped<IPaymentMethodRepository, PaymentMehodRepository>();
 
             // Add services to the container.
             builder.Services.AddScoped<IUserService, UserService>();
@@ -85,6 +87,11 @@ namespace GymFitness.API
             builder.Services.AddScoped<IDeviceTokenService, DeviceTokenService>();
             builder.Services.AddScoped<IUserSubscriptionService, UserSubscriptionService>();
             builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
+
+            // Add services for Payment.
+            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            builder.Services.AddScoped<IPaymentGatewayService, PayPalService>();
+
             builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
             builder.Services.AddHttpClient("ChatGPT");
             builder.Services.AddScoped<IChatCompletionService, ChatCompletionService>();
@@ -108,12 +115,12 @@ namespace GymFitness.API
 
 
             // ✅ Thêm DbContext
-            builder.Services.AddDbContext<GymbotDbContext>(options =>
-               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            //builder.Services.AddDbContext<GymbotDbContext>(options =>
+            //   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             ////Azure Db
-            //builder.Services.AddDbContext<GymbotDbContext>(options =>
-            //    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
+            builder.Services.AddDbContext<GymbotDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
 
 
 

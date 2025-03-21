@@ -15,5 +15,7 @@ namespace GymFitness.Application.Abstractions.Repositories
                                                    bool? isAscending = true,
                                                    int pageNumber = 1,
                                                    int pageSize = 10);
+
+        Task<SubscriptionPlan?> GetSubscriptionPlanById(int id);
     }
 }
