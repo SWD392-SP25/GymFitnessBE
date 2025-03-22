@@ -18,17 +18,28 @@ namespace GymFitness.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<SubscriptionPlan>> GetSubscriptionPlan(string? filterOn, string? filterQuery, string sortBy = "price", bool? isAscending = true, int pageNumber = 1, int pageSize = 10)
+
+        public async Task Add(SubscriptionPlan input)
+        {
+            await _context.SubscriptionPlans.AddAsync(input);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Delete(int id)
+        {
+            var isExist = await GetSubscriptionPlanById(id);
+            if(isExist != null)
+            {
+                isExist.IsActive = false;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<IEnumerable<SubscriptionPlan>> GetSubscriptionPlan(string? filterOn, string? filterQuery, string sortBy = "price", bool? isAscending = true , int pageNumber = 1, int pageSize = 10)
         {
             var subscriptionPlan = _context.SubscriptionPlans
-                                                    .Include(x => x.WorkoutPlans)
-                                                    .ThenInclude(x => x.WorkoutPlanExercises)
-                                                    .ThenInclude(x => x.Exercise)
-                                                    .ThenInclude(x => x.MuscleGroup)
-                                                    .Include(x => x.WorkoutPlans)
-                                                    .ThenInclude(x => x.WorkoutPlanExercises)
-                                                    .ThenInclude(x => x.Exercise)
-                                                    .ThenInclude(x => x.Category) // Bổ sung Include ExerciseCategory
+                                                
+                                                    
                                                     .AsQueryable();
 
             // **Lọc theo filterOn và filterQuery**
@@ -40,10 +51,7 @@ namespace GymFitness.Infrastructure.Repositories
                 {
                     "name" => subscriptionPlan.Where(x => x.Name != null && x.Name.ToLower().Contains(filterQuery)),
                     "description" => subscriptionPlan.Where(x => x.Description != null && x.Description.ToString().Contains(filterQuery)),
-                    "musclegroup" => subscriptionPlan.Where(x =>
-                    x.WorkoutPlans.Any(x => 
-                    x.WorkoutPlanExercises.Any(x =>
-                    x.Exercise.MuscleGroup.Name.ToLower().Contains(filterQuery)))),
+                    "features" => subscriptionPlan.Where(x => x.Features != null && x.Features.ToLower().Contains(filterQuery)),
 
                     _ => subscriptionPlan
                 };
@@ -66,6 +74,25 @@ namespace GymFitness.Infrastructure.Repositories
                                                .Take(pageSize);
             return await subscriptionPlan.ToListAsync();
 
+        }
+
+        public async Task<SubscriptionPlan?> GetSubscriptionPlanById(int id)
+        {
+            return await _context.SubscriptionPlans
+                                            .FirstOrDefaultAsync(x => x.SubscriptionPlanId.Equals(id));
+        }
+
+        public async Task Update(SubscriptionPlan input, List<string> updatedProperties)
+        {
+            var entry = _context.Entry(input);
+            foreach (var property in updatedProperties)
+            {
+                if(_context.Entry(input).Properties.Any(p => p.Metadata.Name == property))
+                {
+                    entry.Property(property).IsModified = true;
+                }
+            }
+            await _context.SaveChangesAsync();
         }
     }
 }
