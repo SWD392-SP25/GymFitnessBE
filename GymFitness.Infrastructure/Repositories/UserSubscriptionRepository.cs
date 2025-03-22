@@ -30,6 +30,12 @@ namespace GymFitness.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<UserSubscription?> GetPendingSubscriptionBySubscriptionId(int subscriptionId)
+        {
+            return await _context.UserSubscriptions
+                .FirstOrDefaultAsync(us => us.SubscriptionId == subscriptionId && us.Status == "Pending");
+        }
+
         public async Task<UserSubscription?> GetUserSubscriptionById(int id)
         {
             return await _context.UserSubscriptions.Include(x => x.SubscriptionPlan)

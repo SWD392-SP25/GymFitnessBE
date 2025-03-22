@@ -41,6 +41,7 @@ namespace GymFitness.Application.Services
             });
         }
 
+
         public async Task<SubscriptionPlan> GetSubscriptionPlanById(int id)
         {
             return await _subscriptionPlanRepository.GetSubscriptionPlanById(id);
@@ -52,5 +53,11 @@ namespace GymFitness.Application.Services
         }
 
       
+
+        public async Task<SubscriptionPlan?> GetSubscriptionPlanById(int id)
+        {
+            return await _subscriptionPlanRepository.GetSubscriptionPlanById(id);
+        }
+
     }
 }
