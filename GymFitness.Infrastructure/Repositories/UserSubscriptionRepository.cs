@@ -47,15 +47,11 @@ namespace GymFitness.Infrastructure.Repositories
         {
             var userSubscriptions = _context.UserSubscriptions.Include(x => x.SubscriptionPlan)
                                                               .Include(x => x.Invoices)
-                                                                .ThenInclude(x => x.PaymentMethod)
-                                                                .Include(x => x.User)
-                                                                
                                                               .AsQueryable();
 
             var userSubscriptionCount = await _context.UserSubscriptions.Include(x => x.SubscriptionPlan)
-                                                              .Include(x => x.Invoices)
-                                                                .ThenInclude(x => x.PaymentMethod)
-                                                                .Include(x => x.User).ToListAsync();
+                                                                        .Include(x => x.Invoices)
+                                                                        .ToListAsync();
 
             Console.WriteLine($"Số lượng UserSubscriptions: {userSubscriptionCount.Count}");
 

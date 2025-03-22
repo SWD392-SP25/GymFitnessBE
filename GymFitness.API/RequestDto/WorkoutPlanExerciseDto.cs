@@ -2,7 +2,7 @@
 {
     public class WorkoutPlanExerciseDto
     {
-        public int PlanId { get; set; }
+        //public int PlanId { get; set; }
         public int ExerciseId { get; set; }
         public int WeekNumber { get; set; }
         public int DayOfWeek { get; set; }

@@ -10,9 +10,11 @@ namespace GymFitness.Application.ResponseDto
     {
         public int InvoiceId { get; set; }
 
-        //public Guid? UserId { get; set; }
+        public Guid UserId { get; set; }
+        public string? UserName { get; set; }
+        
 
-        //public int? SubscriptionId { get; set; }
+        public int? SubscriptionId { get; set; }
 
         public decimal? Amount { get; set; }
 

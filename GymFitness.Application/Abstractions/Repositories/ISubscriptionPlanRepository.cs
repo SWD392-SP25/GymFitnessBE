@@ -17,5 +17,9 @@ namespace GymFitness.Application.Abstractions.Repositories
                                                    int pageSize = 10);
 
         Task<SubscriptionPlan?> GetSubscriptionPlanById(int id);
+        Task Add(SubscriptionPlan input);
+        Task Update(SubscriptionPlan input, List<string> updatedProperties);
+        Task Delete(int id);
+
     }
 }
