@@ -39,9 +39,14 @@ namespace GymFitness.Infrastructure.Repositories
 
         public async Task<List<Invoice?>> GetInvoiceByUser(string email)
         {
-            return await _context.Invoices.Include(x => x.PaymentMethod)
+            var invoices =  await _context.Invoices.Include(x => x.PaymentMethod)
                                           .Include(x => x.User)
                                                     .Where(x => x.User.Email.ToLower() == email.ToLower()).ToListAsync();
+            if(invoices.Count == 0)
+            {
+                return null;
+            }
+            return invoices;
         }
 
         public async Task<List<Invoice>> GetInvoices(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10)
