@@ -47,17 +47,14 @@ namespace GymFitness.Application.Services
             return await _subscriptionPlanRepository.GetSubscriptionPlanById(id);
         }
 
-        public Task UpdateSubscriptionPlan(SubscriptionPlan input, List<string> updatedProperties)
+        public async Task UpdateSubscriptionPlan(SubscriptionPlan input, List<string> updatedProperties)
         {
-            throw new NotImplementedException();
+            await _subscriptionPlanRepository.Update(input, updatedProperties);
         }
 
       
 
-        public async Task<SubscriptionPlan?> GetSubscriptionPlanById(int id)
-        {
-            return await _subscriptionPlanRepository.GetSubscriptionPlanById(id);
-        }
+    
 
     }
 }
