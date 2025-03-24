@@ -26,16 +26,17 @@ namespace GymFitness.Application.Services
 
         public Task<ChatHistory> SendMessage(int senderId, int receiverId, string messageText, bool isUserMessage)
         {
-            var message = new ChatHistory
-            {
-                SenderId = senderId,
-                ReceiverId = receiverId,
-                MessageText = messageText,
-                IsUserMessage = isUserMessage,
-                CreatedAt = DateTime.UtcNow
-            };
+            return null;
+            //var message = new ChatHistory
+            //{
+            //    StaffId = senderId,
+            //    ReceiverId = receiverId,
+            //    MessageText = messageText,
+            //    IsUserMessage = isUserMessage,
+            //    CreatedAt = DateTime.UtcNow
+            //};
 
-            return await _chatRepository.SaveMessage(message);
+            //return await _chatRepository.SaveMessage(message);
         }
     }
 }
