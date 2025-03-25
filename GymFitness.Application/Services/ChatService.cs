@@ -17,26 +17,15 @@ namespace GymFitness.Application.Services
         {
             _chatRepository = chatRepository;
         }
-        public async Task<IEnumerable<ChatHistory>> GetChatHistory(Guid senderId, Guid receiverId)
+
+        public Task AddMessageAsync(ChatHistory chatMessage)
         {
-            return await _chatRepository.GetChatHistory(senderId, receiverId);
+            throw new NotImplementedException();
         }
 
-     
-
-        public Task<ChatHistory> SendMessage(int senderId, int receiverId, string messageText, bool isUserMessage)
+        public Task<List<ChatHistory>> GetChatHistoryAsync(Guid userId, Guid staffId)
         {
-            return null;
-            //var message = new ChatHistory
-            //{
-            //    StaffId = senderId,
-            //    ReceiverId = receiverId,
-            //    MessageText = messageText,
-            //    IsUserMessage = isUserMessage,
-            //    CreatedAt = DateTime.UtcNow
-            //};
-
-            //return await _chatRepository.SaveMessage(message);
+            throw new NotImplementedException();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace GymFitness.Application.Abstractions.Repositories
 {
     public interface IChatRepository
     {
-        Task<IEnumerable<ChatHistory>> GetChatHistory(Guid senderId, Guid receiverId);
-        Task<ChatHistory> SaveMessage(ChatHistory message);
+        Task AddMessageAsync(ChatHistory chatMessage);
+        Task<List<ChatHistory>> GetChatHistoryAsync(Guid userId, Guid staffId);
     }
 }

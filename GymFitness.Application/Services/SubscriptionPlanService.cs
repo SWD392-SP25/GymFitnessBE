@@ -37,7 +37,12 @@ namespace GymFitness.Application.Services
                 SubscriptionPlanId = a.SubscriptionPlanId,
                 CreatedAt = a.CreatedAt,
                 Description = a.Description,
-
+                DurationMonths = a.DurationMonths,
+                Features = a.Features,
+                IsActive = a.IsActive,
+                MaxSessionsPerMonth = a.MaxSessionsPerMonth,
+                Name = a.Name,
+                Price = a.Price
             });
         }
 
