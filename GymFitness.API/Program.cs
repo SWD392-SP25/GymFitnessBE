@@ -23,6 +23,7 @@ using Azure;
 using System.Text;
 using Microsoft.OpenApi.Any;
 using Microsoft.AspNetCore.Authorization;
+using GymFitness.API.Hubs;
 
 
 
@@ -67,6 +68,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IInvoicesRepository, InvoiceRepository>();
             builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
             builder.Services.AddScoped<IPaymentMethodRepository, PaymentMehodRepository>();
+            builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
             // Add services to the container.
             builder.Services.AddScoped<IUserService, UserService>();
@@ -87,6 +89,7 @@ namespace GymFitness.API
             builder.Services.AddScoped<IDeviceTokenService, DeviceTokenService>();
             builder.Services.AddScoped<IUserSubscriptionService, UserSubscriptionService>();
             builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
 
             // Add services for Payment.
             builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
@@ -120,7 +123,7 @@ namespace GymFitness.API
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-
+            builder.Services.AddSignalR();
 
             // other services
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Path.Combine(Directory.GetCurrentDirectory(), "firebase_config.json"));
@@ -322,6 +325,7 @@ namespace GymFitness.API
 
                 await next();
             });
+            app.MapHub<ChatHub>("/chatHub");
 
             app.Run();
         }

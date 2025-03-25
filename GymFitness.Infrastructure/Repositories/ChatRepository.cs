@@ -19,20 +19,19 @@ namespace GymFitness.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<ChatHistory>> GetChatHistory(Guid senderId, Guid receiverId)
+        public async Task<List<ChatHistory>> GetChatHistoryAsync(Guid userId, Guid staffId)
         {
-            return await _context.ChatHistories
-                .Where(m => (m.UserId == senderId && m.StaffId == receiverId) || 
-                            (m.UserId == receiverId && m.StaffId == senderId))
-                .OrderBy(m => m.CreatedAt)
-                .ToListAsync();
+         
+        return await _context.ChatHistories
+            .Where(m => (m.UserId == userId && m.StaffId == staffId))
+            .OrderBy(m => m.CreatedAt)
+            .ToListAsync();
         }
 
-        public async Task<ChatHistory> SaveMessage(ChatHistory message)
+        public async Task AddMessageAsync(ChatHistory chatMessage)
         {
-            _context.ChatHistories.Add(message);
+            await _context.ChatHistories.AddAsync(chatMessage);
             await _context.SaveChangesAsync();
-            return message;
         }
     }
 }

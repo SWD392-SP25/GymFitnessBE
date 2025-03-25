@@ -37,7 +37,7 @@ namespace GymFitness.Infrastructure.Repositories
 
         public async Task<IEnumerable<SubscriptionPlan>> GetSubscriptionPlan(string? filterOn, string? filterQuery, string sortBy = "price", bool? isAscending = true , int pageNumber = 1, int pageSize = 10)
         {
-            var subscriptionPlan = _context.SubscriptionPlans
+            var subscriptionPlan = _context.SubscriptionPlans.Include(x => x.WorkoutPlans)
                                                 
                                                     
                                                     .AsQueryable();
@@ -78,7 +78,7 @@ namespace GymFitness.Infrastructure.Repositories
 
         public async Task<SubscriptionPlan?> GetSubscriptionPlanById(int id)
         {
-            return await _context.SubscriptionPlans
+            return await _context.SubscriptionPlans.Include(x => x.WorkoutPlans)
 
                                             .FirstOrDefaultAsync(x => x.SubscriptionPlanId.Equals(id));
         }
