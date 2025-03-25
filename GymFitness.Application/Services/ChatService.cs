@@ -18,14 +18,14 @@ namespace GymFitness.Application.Services
             _chatRepository = chatRepository;
         }
 
-        public Task AddMessageAsync(ChatHistory chatMessage)
+        public async Task AddMessageAsync(ChatHistory chatMessage)
         {
-            throw new NotImplementedException();
+            await _chatRepository.AddMessageAsync(chatMessage);
         }
 
-        public Task<List<ChatHistory>> GetChatHistoryAsync(Guid userId, Guid staffId)
+        public async Task<List<ChatHistory>> GetChatHistoryAsync(Guid userId, Guid staffId)
         {
-            throw new NotImplementedException();
+            return await _chatRepository.GetChatHistoryAsync(userId, staffId);
         }
     }
 }
