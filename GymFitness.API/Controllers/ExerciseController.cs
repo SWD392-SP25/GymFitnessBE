@@ -32,7 +32,7 @@ namespace GymFitness.API.Controllers
 
 
         [HttpGet]
-        [Authorize (Roles = "Admin,User,Staff")]
+ 
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn,
                                                 [FromQuery] string? filterQuery,
                                                 [FromQuery] string? sortBy,
@@ -45,7 +45,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+
         public async Task<IActionResult> GetById(int id)
         {
             var exercise = await _exerciseService.GetExerciseByIdAsync(id);
@@ -55,7 +55,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Staff")]
+ 
         public async Task<IActionResult> Create([FromForm] ExerciseCreateDto dto)
         {
             string imageUrl = null, videoUrl = null;
@@ -138,7 +138,7 @@ namespace GymFitness.API.Controllers
 
         [HttpPatch("{id}")]
         [Consumes("application/json-patch+json")]
-        [Authorize(Roles = "Admin,Staff")]
+   
         public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<ExercisePatchDto> patchDoc)
         {
             if (patchDoc == null)
@@ -195,7 +195,7 @@ namespace GymFitness.API.Controllers
 
         [HttpPatch("{id}/upload")]
         [Consumes("multipart/form-data")]
-        [Authorize(Roles = "Admin,Staff")]
+ 
         public async Task<IActionResult> PatchUpload(int id, [FromForm] ExerciseFileDto dto)
         {
             var exercise = await _exerciseService.GetExerciseByIdAsync(id);
@@ -234,7 +234,7 @@ namespace GymFitness.API.Controllers
 
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,Staff")]  
+      
         public async Task<IActionResult> Delete(int id)
         {
             await _exerciseService.DeleteExerciseAsync(id);

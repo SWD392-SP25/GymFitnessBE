@@ -18,6 +18,7 @@ namespace GymFitness.Application.Abstractions.Repositories
         Task<WorkoutPlan?> GetWorkoutPlanByIdAsync(int workoutPlanId);
         Task AddAsync(WorkoutPlan workoutPlan);
         Task UpdateAsync(WorkoutPlan workoutPlan, List<string> updatedProperties);
+        Task<List<WorkoutPlan?>> GetWorkoutPlansByStaff(Guid staffId);
         Task DeleteAsync(int workoutPlanId);
         Task<List<WorkoutPlan?>> GetWorkoutPlansBySubscriptionPlanIdAsync(int subscriptionPlanId);
     }
