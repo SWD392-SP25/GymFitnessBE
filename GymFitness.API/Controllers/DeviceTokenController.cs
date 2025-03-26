@@ -1,10 +1,12 @@
 ﻿using GymFitness.Application.Abstractions.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFitness.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DeviceTokenController : Controller
     {
         private readonly IDeviceTokenService _deviceTokenService;

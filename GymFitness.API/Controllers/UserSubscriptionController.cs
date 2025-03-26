@@ -24,7 +24,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        
         public async Task<IActionResult> GetUserSubscriptions([FromQuery] string? filterOn,
                                                              [FromQuery] string? filterQuery,
                                                              [FromQuery] int pageNumber = 1,
@@ -35,7 +35,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Staff")]
+   
         public async Task<IActionResult> GetUserSubscriptionById(int id)
         {
             var userSubscription = await _userSubscriptionService.GetUserSubscriptionById(id);
@@ -46,7 +46,7 @@ namespace GymFitness.API.Controllers
 
         [HttpPatch("{id}")]
         [Consumes("application/json-patch+json")]
-        [Authorize(Roles = "Staff")]
+       
         public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<UserSubscriptionDto> patchDoc)
         {
             if(patchDoc == null)
@@ -95,7 +95,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Staff")]
+    
         public async Task<IActionResult> Create([FromBody] UserSubscriptionCreateDto dto)
         {
             var user = await _userService.GetUserByEmail(dto.Email);
@@ -118,7 +118,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Staff")]
+    
         public async Task<IActionResult> Delete(int id)
         {
             var userSubscription = await _userSubscriptionService.GetUserSubscriptionById(id);
@@ -128,6 +128,13 @@ namespace GymFitness.API.Controllers
             }
             await _userSubscriptionService.DeleteUserSubscription(userSubscription);
             return Ok(userSubscription);
+        }
+
+        [HttpGet("trainer/{staffId}")]
+        public async Task<IActionResult> GetUsersByStaffAsync(Guid staffId)
+        {
+            var userSubscriptions = await _userSubscriptionService.GetUsersByStaffAsync(staffId);
+            return Ok(userSubscriptions);
         }
     }
 }

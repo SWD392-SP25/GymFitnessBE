@@ -10,7 +10,7 @@ namespace GymFitness.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class PaymentController : Controller
     {
         private readonly ISubscriptionPlanService _subscriptionPlanService;

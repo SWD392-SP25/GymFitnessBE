@@ -12,16 +12,22 @@ namespace GymFitness.Application.Services
     public class ChatService : IChatService
     {
         private readonly IChatRepository _chatRepository;
+        private readonly IUserSubscriptionRepository _userSubscriptionRepository;
+        private readonly IWorkoutPlanRepository _workoutPlanRepository;
 
-        public ChatService(IChatRepository chatRepository)
+
+        public ChatService(IChatRepository chatRepository, IUserSubscriptionRepository userSubscriptionRepository, IWorkoutPlanRepository workoutPlanRepository)
         {
             _chatRepository = chatRepository;
+            _userSubscriptionRepository = userSubscriptionRepository;
+            _workoutPlanRepository = workoutPlanRepository;
         }
 
         public async Task AddMessageAsync(ChatHistory chatMessage)
         {
             await _chatRepository.AddMessageAsync(chatMessage);
         }
+
 
         public async Task<List<ChatHistory>> GetChatHistoryAsync(Guid userId, Guid staffId)
         {

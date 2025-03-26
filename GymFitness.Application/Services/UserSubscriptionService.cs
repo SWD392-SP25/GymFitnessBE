@@ -35,6 +35,19 @@ namespace GymFitness.Application.Services
             return await _userSubscriptionRepository.GetPendingSubscriptionBySubscriptionId(subscriptionId);
         }
 
+        public async Task<List<UserSubscriptionBuyDto>> GetUsersByStaffAsync(Guid staffId)
+        {
+            var userSubscriptions = await  _userSubscriptionRepository.GetUsersByStaffAsync(staffId);
+
+            return userSubscriptions.Select(us => new UserSubscriptionBuyDto
+            {
+                UserId = us.UserId ?? Guid.Empty,
+                UserEmail = us.User?.Email ?? "N/A",
+                StartDate = us.StartDate,
+                EndDate = us.EndDate,
+                SubscriptionPlanName = us.SubscriptionPlan?.Name ?? "Unknown"
+            }).ToList();
+        }
 
         public async Task<UserSubscription?> GetUserSubscriptionById(int id)
         {

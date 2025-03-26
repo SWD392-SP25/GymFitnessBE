@@ -28,7 +28,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Staff,User")]
+        
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn,
                                                 [FromQuery] string? filterQuery,
                                                 [FromQuery] string? sortBy,
@@ -43,7 +43,7 @@ namespace GymFitness.API.Controllers
 
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Staff")]
+     
         public async Task<IActionResult> GetById(int id)
         {
             var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
@@ -53,7 +53,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Staff")]
+     
         public async Task<IActionResult> Create([FromBody] AppointmentDto dto)
         {
             var user = await _userService.GetUserByEmail(dto.UserEmail);
@@ -110,7 +110,7 @@ namespace GymFitness.API.Controllers
         //}
 
         [HttpPatch("{id}")]
-        [Authorize(Roles = "Staff")]
+        
         [Consumes("application/json-patch+json")]
         public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<AppointmentDto> patchDoc)
         {
@@ -192,7 +192,7 @@ namespace GymFitness.API.Controllers
 
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Staff")]
+      
         public async Task<IActionResult> Delete(int id)
         {
             await _appointmentService.DeleteAppointmentAsync(id);
