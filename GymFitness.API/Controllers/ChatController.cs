@@ -3,6 +3,7 @@ using GymFitness.API.RequestDto;
 using GymFitness.API.Services.Abstractions;
 using GymFitness.Application.Abstractions.Services;
 using GymFitness.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -11,6 +12,7 @@ namespace GymFitness.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;

@@ -19,6 +19,7 @@ namespace GymFitness.Application.Abstractions.Services
         Task<WorkoutPlan?> GetWorkoutPlanById(int workoutPlanId);
         Task AddWorkoutPlan(WorkoutPlan workoutPlan);
         Task UpdateWorkoutPlan(WorkoutPlan workoutPlan, List<string> updatedProperties);
+        Task<List<WorkoutPlan?>> GetWorkoutPlansByStaff(Guid staffId);
         Task DeleteWorkoutPlan(int workoutPlanId);
         Task<List<WorkoutPlan?>> GetWorkoutPlansBySubscriptionPlanId(int subscriptionPlanId);
     }

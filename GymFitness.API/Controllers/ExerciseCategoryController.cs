@@ -24,7 +24,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,User,Staff")]
+ 
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn, 
                                                 [FromQuery] string? filterQuery,
                                                 [FromQuery] int pageNumber = 1,
@@ -35,7 +35,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+  
         public async Task<IActionResult> GetById(int id)
         {
             var category = await _service.GetCategoryByIdAsync(id);
@@ -64,7 +64,7 @@ namespace GymFitness.API.Controllers
         //}
         [HttpPatch("{id}")]
         [Consumes("application/json-patch+json")]
-        [Authorize(Roles = "Admin,Staff")]
+
         public async Task<IActionResult> Update(int id, [FromBody] JsonPatchDocument<ExerciseCategoryDto> patchDoc)
         {
             if(patchDoc == null)
@@ -92,7 +92,7 @@ namespace GymFitness.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+ 
         public async Task<IActionResult> Delete(int id)
         {
             await _service.DeleteCategoryAsync(id);

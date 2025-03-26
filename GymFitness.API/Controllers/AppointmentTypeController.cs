@@ -14,7 +14,7 @@ namespace GymFitness.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Staff,Admin")]
+    [Authorize]
     public class AppointmentTypeController : ControllerBase
     {
         private readonly IAppointmentTypeService _service;

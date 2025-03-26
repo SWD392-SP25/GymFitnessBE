@@ -1,12 +1,14 @@
 ﻿using GymFitness.API.RequestDto;
 using GymFitness.Application.Abstractions.Services;
 using GymFitness.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFitness.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PaymentMethodController : ControllerBase
     {
         private readonly IPaymentMethodService _service;

@@ -85,6 +85,11 @@ namespace GymFitness.Application.Services
             return result;
         }
 
+        public async Task<List<WorkoutPlan?>> GetWorkoutPlansByStaff(Guid staffId)
+        {
+            return await _workoutPlanRepository.GetWorkoutPlansByStaff(staffId);
+        }
+
         public async Task<List<WorkoutPlan?>> GetWorkoutPlansBySubscriptionPlanId(int subscriptionPlanId)
         {
             return await _workoutPlanRepository.GetWorkoutPlansBySubscriptionPlanIdAsync(subscriptionPlanId);

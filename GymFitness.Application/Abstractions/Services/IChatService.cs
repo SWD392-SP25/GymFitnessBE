@@ -11,5 +11,6 @@ namespace GymFitness.Application.Abstractions.Services
     {
         Task AddMessageAsync(ChatHistory chatMessage);
         Task<List<ChatHistory>> GetChatHistoryAsync(Guid userId, Guid staffId);
+   
     }
 }

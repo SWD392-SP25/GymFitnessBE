@@ -3,6 +3,7 @@ using GymFitness.API.Services.Abstractions;
 using GymFitness.Application.Abstractions.Services;
 using GymFitness.Domain.Entities;
 using GymFitness.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;

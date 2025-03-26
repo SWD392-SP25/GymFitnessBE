@@ -89,6 +89,12 @@ namespace GymFitness.Infrastructure.Repositories
             return workoutPlans.ToListAsync();
         }
 
+        public async Task<List<WorkoutPlan?>> GetWorkoutPlansByStaff(Guid staffId)
+        {
+            return await _context.WorkoutPlans.Where(x => x.CreatedBy.Equals(staffId))
+                                              .ToListAsync();
+        }
+
         public async Task<List<WorkoutPlan?>> GetWorkoutPlansBySubscriptionPlanIdAsync(int subscriptionPlanId)
         {
             return await _context.WorkoutPlans.Include(x => x.CreatedByNavigation)

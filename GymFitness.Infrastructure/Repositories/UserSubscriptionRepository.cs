@@ -30,10 +30,25 @@ namespace GymFitness.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+
         public async Task<UserSubscription?> GetPendingSubscriptionBySubscriptionId(int subscriptionId)
         {
             return await _context.UserSubscriptions
                 .FirstOrDefaultAsync(us => us.SubscriptionId == subscriptionId && us.Status == "Pending");
+        }
+
+        public async Task<List<UserSubscription>> GetUsersByStaffAsync(Guid staffId)
+        {
+            var query = from us in _context.UserSubscriptions
+                        join sp in _context.SubscriptionPlans on us.SubscriptionPlanId equals sp.SubscriptionPlanId
+                        join wp in _context.WorkoutPlans on sp.SubscriptionPlanId equals wp.PlanId
+                        where wp.CreatedBy == staffId
+                        select us;
+
+            return await query.Include(u => u.User)
+                              .Include(u => u.SubscriptionPlan)
+                
+                              .ToListAsync();
         }
 
         public async Task<UserSubscription?> GetUserSubscriptionById(int id)
