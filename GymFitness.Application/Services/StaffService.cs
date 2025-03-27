@@ -26,7 +26,7 @@ namespace GymFitness.Application.Services
             var staffs = await _staff.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
             return staffs.Select(a => new StaffResponseDto 
             {
-                
+                StaffId = a.StaffId,
                 FirstName = a.FirstName,
                 LastName = a.LastName,
                 Email = a.Email,
@@ -58,5 +58,28 @@ namespace GymFitness.Application.Services
 
         public async Task<Staff?> GetByEmailAsync(string email) =>
             await _staff.GetByEmailAsync(email);
+
+        public async Task<StaffResponseDto?> GetStaffForChat(string email)
+        {
+            var staff = await _staff.GetByEmailAsync(email);
+            if (staff == null) return null;
+            return new StaffResponseDto
+            {
+                StaffId = staff.StaffId,
+                FirstName = staff.FirstName,
+                LastName = staff.LastName,
+                Email = staff.Email,
+                Role = staff.Role.Name ?? "No Role",
+                CreatedAt = staff.CreatedAt,
+                Department = staff.Department,
+                HireDate = staff.HireDate,
+                LastLogin = staff.LastLogin,
+                Phone = staff.Phone,
+                Salary = staff.Salary,
+                Status = staff.Status,
+                SupervisorId = staff.SupervisorId,
+                TerminationDate = staff.TerminationDate
+            };
+        }
     }
 }
