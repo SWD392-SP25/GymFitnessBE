@@ -21,5 +21,6 @@ namespace GymFitness.Application.Abstractions.Services
         Task AddStaffAsync(Staff staff);
         Task UpdateStaffAsync(Staff staff);
         Task DeleteStaffAsync(Guid id);
+        Task<StaffResponseDto?> GetStaffForChat(string email);
     }
 }
