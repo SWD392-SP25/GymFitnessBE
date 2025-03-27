@@ -91,5 +91,13 @@ namespace GymFitness.API.Controllers
             await _staffService.DeleteStaffAsync(id);
             return NoContent();
         }
+
+        //[HttpGet("/chat/{email}")]
+        //public async Task<IActionResult> GetStaffForChat(string email)
+        //{
+        //    var staff = await _staffService.GetStaffForChat(email);
+        //    if (staff == null) return NotFound();
+        //    return Ok(staff);
+        //}
     }
 }
