@@ -55,6 +55,7 @@ namespace GymFitness.Infrastructure.Repositories
         {
             return await _context.UserSubscriptions.Include(x => x.SubscriptionPlan)
                                                    .Include(x => x.Invoices)
+                                                    .Include(x => x.User)
                                                    .FirstOrDefaultAsync(x => x.SubscriptionId == id);
         }
 
@@ -62,6 +63,7 @@ namespace GymFitness.Infrastructure.Repositories
         {
             var userSubscriptions = _context.UserSubscriptions.Include(x => x.SubscriptionPlan)
                                                               .Include(x => x.Invoices)
+                                                              .Include(x => x.User)
                                                               .AsQueryable();
 
             var userSubscriptionCount = await _context.UserSubscriptions.Include(x => x.SubscriptionPlan)
