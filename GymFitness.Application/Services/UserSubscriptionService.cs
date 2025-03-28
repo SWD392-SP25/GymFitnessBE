@@ -61,14 +61,14 @@ namespace GymFitness.Application.Services
         public async Task<IEnumerable<UserSubscriptionResponseDto>> GetUserSubscriptions(string? filterOn, string? filterQuery, int pageNumber = 1, int pageSize = 10)
         {
             var userSubscriptions = await _userSubscriptionRepository.GetUserSubscriptions(filterOn, filterQuery, pageNumber, pageSize);
-            
 
-            return  userSubscriptions.Select(x => new UserSubscriptionResponseDto
+
+            return userSubscriptions.Select(x => new UserSubscriptionResponseDto
             {
                 SubscriptionId = x.SubscriptionId,
-                UserEmail = x.User.Email,
+                UserEmail = x.User != null ? x.User.Email : "Unknown", // Kiểm tra null
                 SubscriptionPlanId = x.SubscriptionPlanId,
-                SubscriptionPlanName = x.SubscriptionPlan.Name,
+                SubscriptionPlanName = x.SubscriptionPlan != null ? x.SubscriptionPlan.Name : "No Plan", // Kiểm tra null
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
                 Status = x.Status,
@@ -83,7 +83,7 @@ namespace GymFitness.Application.Services
                     Status = invoice.Status,
                     DueDate = invoice.DueDate,
                     PaidDate = invoice.PaidDate,
-                    PaymentMethod = invoice.PaymentMethod?.MethodName,
+                    PaymentMethod = invoice.PaymentMethod != null ? invoice.PaymentMethod.MethodName : "Unknown", // Kiểm tra null
                     CreatedAt = invoice.CreatedAt
                 }).ToList() ?? new List<InvoiceResponseDto>() // Tránh null list
             }).ToList();
